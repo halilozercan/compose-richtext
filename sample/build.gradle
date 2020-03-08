@@ -1,0 +1,12 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  implementation project(':richtext-ui')
+  implementation deps.androidx.appcompat
+  implementation deps.compose.foundation
+  implementation deps.compose.material
+  implementation deps.kotlin.stdlib
+}
