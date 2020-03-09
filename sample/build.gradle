@@ -8,5 +8,6 @@ dependencies {
   implementation deps.androidx.appcompat
   implementation deps.compose.foundation
   implementation deps.compose.material
+  implementation deps.compose.tooling
   implementation deps.kotlin.stdlib
 }

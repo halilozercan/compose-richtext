@@ -4,7 +4,9 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.Composable
 import androidx.ui.core.Text
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.DrawBackground
+import androidx.ui.foundation.ProvideContentColor
 import androidx.ui.graphics.Color
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.tooling.preview.Preview
@@ -13,8 +15,23 @@ import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
 
 @Preview(widthDp = 300, heightDp = 1000)
-@Composable fun RichTextDemo() {
-  RichText(modifier = DrawBackground(color = Color.White) + LayoutPadding(8.dp)) {
+@Composable fun RichTextDemoOnWhite() {
+  Box(DrawBackground(color = Color.White)) {
+    RichTextDemo()
+  }
+}
+
+@Preview(widthDp = 300, heightDp = 1000)
+@Composable fun RichTextDemoOnBlack() {
+  ProvideContentColor(color = Color.White) {
+    Box(DrawBackground(color = Color.Black)) {
+      RichTextDemo()
+    }
+  }
+}
+
+@Composable fun RichTextDemo(style: RichTextStyle? = null) {
+  RichText(modifier = LayoutPadding(8.dp), style = style) {
     Heading(0, "Paragraphs")
     Text("Simple paragraph.")
     Text("Paragraph with\nmultiple lines.")

@@ -3,12 +3,14 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.Composable
+import androidx.compose.Immutable
 import androidx.ui.core.CurrentTextStyleProvider
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Text
 import androidx.ui.core.currentTextStyle
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.DrawBackground
+import androidx.ui.foundation.ProvideContentColor
 import androidx.ui.graphics.Color
 import androidx.ui.layout.LayoutPadding
 import androidx.ui.text.TextStyle
@@ -18,11 +20,28 @@ import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 
-internal val DefaultCodeBlockTextStyle = TextStyle(
+@Immutable
+data class CodeBlockStyle(
+  val textStyle: TextStyle? = null,
+  val background: Color? = null,
+  val padding: TextUnit? = null
+) {
+  companion object {
+    val Default = CodeBlockStyle()
+  }
+}
+
+private val DefaultCodeBlockTextStyle = TextStyle(
   fontFamily = FontFamily.Monospace
 )
-internal val DefaultCodeBlockBackground: Color = Color.LightGray.copy(alpha = .5f)
-internal val DefaultCodeBlockPadding: TextUnit = 16.sp
+private val DefaultCodeBlockBackground: Color = Color.LightGray.copy(alpha = .5f)
+private val DefaultCodeBlockPadding: TextUnit = 16.sp
+
+internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
+  textStyle = textStyle ?: DefaultCodeBlockTextStyle,
+  background = background ?: DefaultCodeBlockBackground,
+  padding = padding ?: DefaultCodeBlockPadding
+)
 
 /**
  * TODO write documentation
@@ -37,11 +56,11 @@ internal val DefaultCodeBlockPadding: TextUnit = 16.sp
  * TODO write documentation
  */
 @Composable fun RichTextScope.CodeBlock(children: @Composable() RichTextScope.() -> Unit) {
-  val richTextStyle = currentRichTextStyle.resolveDefaults()
-  val textStyle = currentTextStyle().merge(richTextStyle.codeBlockTextStyle)
-  val background = DrawBackground(color = richTextStyle.codeBlockBackground!!)
+  val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
+  val textStyle = currentTextStyle().merge(richTextStyle.textStyle)
+  val background = DrawBackground(color = richTextStyle.background!!)
   val blockPadding = with(DensityAmbient.current) {
-    richTextStyle.codeBlockPadding!!.toDp()
+    richTextStyle.padding!!.toDp()
   }
 
   Box(modifier = background) {
@@ -55,28 +74,31 @@ internal val DefaultCodeBlockPadding: TextUnit = 16.sp
 }
 
 @Preview @Composable
-private fun CodeBlockPreviewOnBlack() {
-  CodeBlockPreview(containerColor = Color.Black)
+private fun CodeBlockPreviewOnWhite() {
+  CodeBlockPreview(backgroundColor = Color.White, contentColor = Color.Black)
 }
 
 @Preview @Composable
-private fun CodeBlockPreviewOnWhite() {
-  CodeBlockPreview(containerColor = Color.White)
+private fun CodeBlockPreviewOnBlack() {
+  CodeBlockPreview(backgroundColor = Color.Black, contentColor = Color.White)
 }
 
 @Composable
 private fun CodeBlockPreview(
-  containerColor: Color
+  backgroundColor: Color,
+  contentColor: Color
 ) {
-  Box(modifier = DrawBackground(color = containerColor)) {
-    Box(modifier = LayoutPadding(24.dp)) {
-      RichTextScope.CodeBlock(
-        """
+  ProvideContentColor(color = contentColor) {
+    Box(modifier = DrawBackground(color = backgroundColor)) {
+      Box(modifier = LayoutPadding(24.dp)) {
+        RichTextScope.CodeBlock(
+          """
           data class Hello(
             val name: String
           )
         """.trimIndent()
-      )
+        )
+      }
     }
   }
 }

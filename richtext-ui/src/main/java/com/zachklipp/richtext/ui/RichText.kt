@@ -24,6 +24,7 @@ fun RichText(
   with(RichTextScope) {
     // Nested RichTexts should not continue list leveling from the parent.
     RestartListLevel {
+      println("RichTextStyle: $style")
       WithStyle(style) {
         val resolvedStyle = currentRichTextStyle.resolveDefaults()
         val blockSpacing = with(DensityAmbient.current) {

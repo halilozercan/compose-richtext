@@ -86,6 +86,13 @@ private val DefaultOrderedMarkers = OrderedMarkers.text(
 )
 private val DefaultUnorderedMarkers = UnorderedMarkers.text("•", "◦", "▸", "▹")
 
+internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
+  markerIndent = markerIndent ?: DefaultMarkerIndent,
+  contentsIndent = contentsIndent ?: DefaultContentsIndent,
+  orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
+  unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
+)
+
 private val ListLevelAmbient = ambientOf { 0 }
 
 @Composable internal fun RestartListLevel(children: @Composable() () -> Unit) {
@@ -110,8 +117,7 @@ private val ListLevelAmbient = ambientOf { 0 }
   items: Iterable<T>,
   drawItem: @Composable() RichTextScope.(T) -> Unit
 ) {
-  val listStyle = currentRichTextStyle.resolveDefaults()
-    .listStyle!!.resolveDefaults()
+  val listStyle = currentRichTextStyle.resolveDefaults().listStyle!!
   val density = DensityAmbient.current
   val markerIndent = with(density) { listStyle.markerIndent!!.toDp() }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
@@ -196,10 +202,3 @@ private fun ListPreview(listType: ListType) {
     }
   }
 }
-
-private fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
-  markerIndent = markerIndent ?: DefaultMarkerIndent,
-  contentsIndent = contentsIndent ?: DefaultContentsIndent,
-  orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
-  unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
-)
