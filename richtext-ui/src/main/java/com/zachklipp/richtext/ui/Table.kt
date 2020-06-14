@@ -5,34 +5,32 @@ package com.zachklipp.richtext.ui
 import androidx.compose.Composable
 import androidx.compose.Immutable
 import androidx.compose.remember
-import androidx.ui.core.CurrentTextStyleProvider
+import androidx.ui.core.ContentDrawScope
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.DrawModifier
-import androidx.ui.core.Text
-import androidx.ui.core.currentTextStyle
+import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawBackground
+import androidx.ui.foundation.Text
+import androidx.ui.foundation.currentTextStyle
+import androidx.ui.foundation.drawBackground
 import androidx.ui.geometry.Offset
-import androidx.ui.graphics.Canvas
 import androidx.ui.graphics.Color
-import androidx.ui.graphics.Paint
-import androidx.ui.layout.LayoutPadding
+import androidx.ui.graphics.drawscope.Stroke
+import androidx.ui.layout.padding
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.Density
 import androidx.ui.unit.IntPx
-import androidx.ui.unit.PxSize
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.sp
 import kotlin.math.max
-import androidx.ui.layout.Table as ComposeTable
 
 @Immutable
 data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
-  val borderPaint: Paint? = null
+  val borderColor: Color? = null,
+  val borderStroke: Stroke? = null
 ) {
   companion object {
     val Default = TableStyle()
@@ -41,16 +39,14 @@ data class TableStyle(
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
-private val DefaultTableBorderPaint = Paint().apply {
-  strokeWidth = 1f
-  color = Color.Black
-  alpha = .3f
-}
+private val DefaultBorderColor = Color.Black.copy(alpha = .3f)
+private val DefaultBorderStroke = Stroke(width = 1f)
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
-  headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
-  cellPadding = cellPadding ?: DefaultCellPadding,
-  borderPaint = borderPaint ?: DefaultTableBorderPaint
+    headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
+    cellPadding = cellPadding ?: DefaultCellPadding,
+    borderColor = borderColor ?: DefaultBorderColor,
+    borderStroke = borderStroke ?: DefaultBorderStroke
 )
 
 interface RichTextTableRowScope {
@@ -83,6 +79,7 @@ private class RowBuilder : RichTextTableCellScope {
 /**
  * TODO write documentation
  */
+@Suppress("UNUSED_VARIABLE")
 @Composable fun RichTextScope.Table(
   headerRow: (RichTextTableCellScope.() -> Unit)? = null,
   bodyRows: RichTextTableRowScope.() -> Unit
@@ -96,57 +93,59 @@ private class RowBuilder : RichTextTableCellScope {
   }
   val columns = remember(header, rows) {
     max(
-      header?.cells?.size ?: 0,
-      rows.maxBy { it.cells.size }?.cells?.size ?: 0
+        header?.cells?.size ?: 0,
+        rows.maxBy { it.cells.size }?.cells?.size ?: 0
     )
   }
   val headerStyle = currentTextStyle().merge(tableStyle.headerTextStyle)
   val cellPadding = with(DensityAmbient.current) {
     tableStyle.cellPadding!!.toDp()
   }
-  val cellModifier = LayoutPadding(cellPadding)
+  val cellModifier = Modifier.padding(cellPadding)
 
-  ComposeTable(columns = columns) {
-    // For some reason this decoration doesn't get drawn in the Preview, but
-    // it works on-device.
-    tableDecoration(overlay = false) {
-      DrawTableBorders(verticalOffsets, horizontalOffsets, tableStyle.borderPaint!!)
-    }
-
-    if (header != null) {
-      tableRow {
-        CurrentTextStyleProvider(headerStyle) {
-          header.cells.forEach { cell ->
-            RichText(
-              modifier = cellModifier,
-              children = cell
-            )
-          }
-        }
-      }
-    }
-
-    rows.forEach { row ->
-      tableRow {
-        row.cells.forEach { cell ->
-          RichText(
-            modifier = cellModifier,
-            children = cell
-          )
-        }
-      }
-    }
-  }
+  // TODO Table was temporarily removed, fork it.
+//  ComposeTable(columns = columns) {
+//    // For some reason this decoration doesn't get drawn in the Preview, but
+//    // it works on-device.
+//    tableDecoration(overlay = false) {
+//      DrawTableBorders(verticalOffsets, horizontalOffsets, tableStyle.borderPaint!!)
+//    }
+//
+//    if (header != null) {
+//      tableRow {
+//        ProvideTextStyle(headerStyle) {
+//          header.cells.forEach { cell ->
+//            RichText(
+//              modifier = cellModifier,
+//              children = cell
+//            )
+//          }
+//        }
+//      }
+//    }
+//
+//    rows.forEach { row ->
+//      tableRow {
+//        row.cells.forEach { cell ->
+//          RichText(
+//            modifier = cellModifier,
+//            children = cell
+//          )
+//        }
+//      }
+//    }
+//  }
 }
 
 @Composable
 private fun DrawTableBorders(
   verticalOffsets: List<IntPx>,
   horizontalOffsets: List<IntPx>,
-  borderPaint: Paint
+  borderColor: Color,
+  borderStroke: Stroke
 ) {
-  val modifier = remember(verticalOffsets, horizontalOffsets, borderPaint) {
-    TableBorderModifier(verticalOffsets, horizontalOffsets, borderPaint)
+  val modifier = remember(verticalOffsets, horizontalOffsets, borderColor, borderStroke) {
+    TableBorderModifier(verticalOffsets, horizontalOffsets, borderColor, borderStroke)
   }
   Box(modifier)
 }
@@ -154,36 +153,34 @@ private fun DrawTableBorders(
 private class TableBorderModifier(
   verticalOffsets: List<IntPx>,
   horizontalOffsets: List<IntPx>,
-  private val paint: Paint
+  private val borderColor: Color,
+  private val borderStroke: Stroke
 ) : DrawModifier {
 
   private val verticalOffsets = verticalOffsets.map { it.value.toFloat() }
   private val horizontalOffsets = horizontalOffsets.map { it.value.toFloat() }
 
-  override fun draw(
-    density: Density,
-    drawContent: () -> Unit,
-    canvas: Canvas,
-    size: PxSize
-  ) {
-    val width = size.width.value
-    val height = size.height.value
+  override fun ContentDrawScope.draw() {
+    val width = size.width
+    val height = size.height
 
     // Draw horizontal borders.
     verticalOffsets.forEach { position ->
-      canvas.drawLine(
-        Offset(0f, position),
-        Offset(width, position),
-        paint
+      drawLine(
+          borderColor,
+          Offset(0f, position),
+          Offset(width, position),
+          borderStroke
       )
     }
 
     // Draw vertical borders.
     horizontalOffsets.forEach { position ->
-      canvas.drawLine(
-        Offset(position, 0f),
-        Offset(position, height),
-        paint
+      drawLine(
+          borderColor,
+          Offset(position, 0f),
+          Offset(position, height),
+          borderStroke
       )
     }
   }
@@ -199,7 +196,7 @@ private class TableBorderModifier(
 }
 
 @Composable private fun TablePreviewContents() {
-  Box(DrawBackground(Color.White)) {
+  Box(Modifier.drawBackground(Color.White)) {
     RichTextScope.Table(headerRow = {
       cell { Text("Column 1") }
       cell { Text("Column 2") }

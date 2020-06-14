@@ -4,18 +4,21 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.Composable
 import androidx.compose.Immutable
+import androidx.compose.Providers
+import androidx.compose.remember
 import androidx.ui.core.DensityAmbient
 import androidx.ui.core.Layout
-import androidx.ui.core.Text
+import androidx.ui.core.Modifier
 import androidx.ui.core.offset
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawBackground
-import androidx.ui.foundation.ProvideContentColor
+import androidx.ui.foundation.ContentColorAmbient
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.contentColor
+import androidx.ui.foundation.drawBackground
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.LayoutWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.width
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.IntPxPosition
 import androidx.ui.unit.TextUnit
@@ -38,14 +41,17 @@ interface BlockQuoteGutter {
     @Composable override fun drawGutter() {
       with(DensityAmbient.current) {
         val color = color(contentColor())
-        val padding = LayoutPadding(
-          start = startMargin.toDp(),
-          end = endMargin.toDp()
-        )
-        val background = DrawBackground(color, RoundedCornerShape(50))
+        val modifier = remember(startMargin, endMargin, barWidth, color) {
+          // Padding must come before width.
+          Modifier.padding(
+              start = startMargin.toDp(),
+              end = endMargin.toDp()
+          )
+              .width(barWidth.toDp())
+              .drawBackground(color, RoundedCornerShape(50))
+        }
 
-        // Padding must come before width.
-        Box(modifier = padding + LayoutWidth(barWidth.toDp()) + background)
+        Box(modifier = modifier)
       }
     }
   }
@@ -63,10 +69,10 @@ interface BlockQuoteGutter {
   Layout(children = {
     gutter.drawGutter()
     RichText(
-      modifier = LayoutPadding(top = spacing, bottom = spacing),
-      children = children
+        modifier = Modifier.padding(top = spacing, bottom = spacing),
+        children = children
     )
-  }) { measurables, constraints ->
+  }) { measurables, constraints, _ ->
     val gutterMeasurable = measurables[0]
     val contentsMeasurable = measurables[1]
 
@@ -85,9 +91,9 @@ interface BlockQuoteGutter {
     // Measure the gutter to fit in its min intrinsic width and exactly the
     // height of the contents.
     val gutterConstraints = constraints.copy(
-      maxWidth = gutterWidth,
-      minHeight = layoutHeight,
-      maxHeight = layoutHeight
+        maxWidth = gutterWidth,
+        minHeight = layoutHeight,
+        maxHeight = layoutHeight
     )
     val gutterPlaceable = gutterMeasurable.measure(gutterConstraints)
 
@@ -101,6 +107,7 @@ interface BlockQuoteGutter {
 @Preview @Composable private fun BlockQuotePreviewOnWhite() {
   BlockQuotePreview(backgroundColor = Color.White, contentColor = Color.Black)
 }
+
 @Preview @Composable private fun BlockQuotePreviewOnBlack() {
   BlockQuotePreview(backgroundColor = Color.Black, contentColor = Color.White)
 }
@@ -109,8 +116,8 @@ interface BlockQuoteGutter {
   backgroundColor: Color,
   contentColor: Color
 ) {
-  ProvideContentColor(contentColor) {
-    Box(DrawBackground(backgroundColor)) {
+  Providers(ContentColorAmbient provides contentColor) {
+    Box(Modifier.drawBackground(backgroundColor)) {
       RichTextScope.BlockQuote {
         Text("Some text.")
         Text("Another paragraph.")

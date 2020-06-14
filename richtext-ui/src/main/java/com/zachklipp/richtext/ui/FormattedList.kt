@@ -6,17 +6,14 @@ import androidx.compose.Composable
 import androidx.compose.Immutable
 import androidx.compose.Providers
 import androidx.compose.ambientOf
-import androidx.ui.core.Alignment
 import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Text
-import androidx.ui.core.toModifier
+import androidx.ui.core.Modifier
+import androidx.ui.core.paint
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawBackground
+import androidx.ui.foundation.Text
+import androidx.ui.foundation.drawBackground
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.painter.Painter
-import androidx.ui.layout.LayoutPadding
-import androidx.ui.layout.Table
-import androidx.ui.layout.TableColumnWidth
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.sp
@@ -29,7 +26,10 @@ enum class ListType {
 }
 
 interface OrderedMarkers {
-  @Composable fun drawMarker(level: Int, index: Int)
+  @Composable fun drawMarker(
+    level: Int,
+    index: Int
+  )
 
   companion object {
     fun text(vararg markers: (index: Int) -> String) = OrderedMarkers { level, index ->
@@ -38,7 +38,10 @@ interface OrderedMarkers {
 
     operator fun invoke(drawMarker: @Composable() (level: Int, index: Int) -> Unit): OrderedMarkers =
       object : OrderedMarkers {
-        @Composable override fun drawMarker(level: Int, index: Int) {
+        @Composable override fun drawMarker(
+          level: Int,
+          index: Int
+        ) {
           drawMarker(level, index)
         }
       }
@@ -54,7 +57,7 @@ interface UnorderedMarkers {
     }
 
     fun painters(vararg painters: Painter) = UnorderedMarkers {
-      Box(painters[it % painters.size].toModifier())
+      Box(Modifier.paint(painters[it % painters.size]))
     }
 
     operator fun invoke(drawMarker: @Composable() (level: Int) -> Unit): UnorderedMarkers =
@@ -79,18 +82,24 @@ data class ListStyle(
 private val DefaultMarkerIndent = 8.sp
 private val DefaultContentsIndent = 4.sp
 private val DefaultOrderedMarkers = OrderedMarkers.text(
-  { "${it + 1}." },
-  { "${('a'..'z').drop(it % 26).first()}." },
-  { "${it + 1})" },
-  { "${('a'..'z').drop(it % 26).first()})" }
+    { "${it + 1}." },
+    {
+      "${('a'..'z').drop(it % 26)
+          .first()}."
+    },
+    { "${it + 1})" },
+    {
+      "${('a'..'z').drop(it % 26)
+          .first()})"
+    }
 )
 private val DefaultUnorderedMarkers = UnorderedMarkers.text("•", "◦", "▸", "▹")
 
 internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
-  markerIndent = markerIndent ?: DefaultMarkerIndent,
-  contentsIndent = contentsIndent ?: DefaultContentsIndent,
-  orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
-  unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
+    markerIndent = markerIndent ?: DefaultMarkerIndent,
+    contentsIndent = contentsIndent ?: DefaultContentsIndent,
+    orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
+    unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
 
 private val ListLevelAmbient = ambientOf { 0 }
@@ -112,6 +121,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 /**
  * TODO write documentation
  */
+@Suppress("UNUSED_PARAMETER", "unused", "UNUSED_VARIABLE")
 @Composable fun <T> RichTextScope.FormattedList(
   listType: ListType,
   items: Iterable<T>,
@@ -123,40 +133,41 @@ private val ListLevelAmbient = ambientOf { 0 }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
   val currentLevel = ListLevelAmbient.current
 
-  Table(
-    columns = 2,
-    alignment = { column ->
-      when (column) {
-        0 -> Alignment.TopEnd
-        else -> Alignment.TopStart
-      }
-    },
-    columnWidth = { column ->
-      when (column) {
-        0 -> TableColumnWidth.Wrap
-        else -> TableColumnWidth.Flex(1f)
-      }
-    }
-  ) {
-    items.forEachIndexed { index, listItem ->
-      tableRow {
-        // Draw the marker.
-        Box(LayoutPadding(start = markerIndent)) {
-          when (listType) {
-            Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
-            Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
-          }
-        }
-
-        // Draw the item contents.
-        RichText(LayoutPadding(start = contentsIndent)) {
-          Providers(ListLevelAmbient provides currentLevel + 1) {
-            drawItem(listItem)
-          }
-        }
-      }
-    }
-  }
+  // TODO Table was temporarily removed, fork it.
+//  Table(
+//    columns = 2,
+//    alignment = { column ->
+//      when (column) {
+//        0 -> Alignment.TopEnd
+//        else -> Alignment.TopStart
+//      }
+//    },
+//    columnWidth = { column ->
+//      when (column) {
+//        0 -> TableColumnWidth.Wrap
+//        else -> TableColumnWidth.Flex(1f)
+//      }
+//    }
+//  ) {
+//    items.forEachIndexed { index, listItem ->
+//      tableRow {
+//        // Draw the marker.
+//        Box(LayoutPadding(start = markerIndent)) {
+//          when (listType) {
+//            Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
+//            Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
+//          }
+//        }
+//
+//        // Draw the item contents.
+//        RichText(LayoutPadding(start = contentsIndent)) {
+//          Providers(ListLevelAmbient provides currentLevel + 1) {
+//            drawItem(listItem)
+//          }
+//        }
+//      }
+//    }
+//  }
 }
 
 @Preview @Composable private fun UnorderedListPreview() {
@@ -169,23 +180,23 @@ private val ListLevelAmbient = ambientOf { 0 }
 
 @Composable
 private fun ListPreview(listType: ListType) {
-  Box(DrawBackground(color = Color.White)) {
+  Box(Modifier.drawBackground(color = Color.White)) {
     RichTextScope.FormattedList(
-      listType = listType,
-      items = listOf(
-        "Foo",
-        "Bar",
-        "Baz",
-        "Foo",
-        "Bar",
-        "Baz",
-        "Foo",
-        "Bar",
-        "Baz",
-        "Foo",
-        "Bar",
-        "Baz"
-      ).withIndex()
+        listType = listType,
+        items = listOf(
+            "Foo",
+            "Bar",
+            "Baz",
+            "Foo",
+            "Bar",
+            "Baz",
+            "Foo",
+            "Bar",
+            "Baz",
+            "Foo",
+            "Bar",
+            "Baz"
+        ).withIndex()
     ) { (index, text) ->
       Text(text)
       if (index == 0) {

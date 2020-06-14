@@ -3,13 +3,15 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.Composable
-import androidx.ui.core.CurrentTextStyleProvider
+import androidx.compose.Providers
 import androidx.ui.core.LayoutDirectionAmbient
-import androidx.ui.core.Text
-import androidx.ui.core.currentTextStyle
+import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.DrawBackground
-import androidx.ui.foundation.ProvideContentColor
+import androidx.ui.foundation.ContentColorAmbient
+import androidx.ui.foundation.ProvideTextStyle
+import androidx.ui.foundation.Text
+import androidx.ui.foundation.currentTextStyle
+import androidx.ui.foundation.drawBackground
 import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.text.TextStyle
@@ -32,31 +34,31 @@ typealias HeadingStyle = (level: Int, textStyle: TextStyle) -> TextStyle
 internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   when (level) {
     0 -> TextStyle(
-      fontSize = 36.sp,
-      fontWeight = FontWeight.Bold
+        fontSize = 36.sp,
+        fontWeight = FontWeight.Bold
     )
     1 -> TextStyle(
-      fontSize = 26.sp,
-      fontWeight = FontWeight.Bold
+        fontSize = 26.sp,
+        fontWeight = FontWeight.Bold
     )
     2 -> TextStyle(
-      fontSize = 22.sp,
-      fontWeight = FontWeight.Bold,
-      color = textStyle.color!!.copy(alpha = .7F)
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        color = textStyle.color.copy(alpha = .7F)
     )
     3 -> TextStyle(
-      fontSize = 20.sp,
-      fontWeight = FontWeight.Bold,
-      fontStyle = Italic
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        fontStyle = Italic
     )
     4 -> TextStyle(
-      fontSize = 18.sp,
-      fontWeight = FontWeight.Bold,
-      color = textStyle.color!!.copy(alpha = .7F)
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Bold,
+        color = textStyle.color.copy(alpha = .7F)
     )
     5 -> TextStyle(
-      fontWeight = FontWeight.Bold,
-      color = textStyle.color!!.copy(alpha = .5f)
+        fontWeight = FontWeight.Bold,
+        color = textStyle.color.copy(alpha = .5f)
     )
     else -> textStyle
   }
@@ -65,7 +67,10 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
 /**
  * TODO write documentation
  */
-@Composable fun RichTextScope.Heading(level: Int, text: String) {
+@Composable fun RichTextScope.Heading(
+  level: Int,
+  text: String
+) {
   Heading(level) {
     Text(text)
   }
@@ -86,7 +91,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   val headingTextStyle = headingStyleFunction(level, currentTextStyle)
   val mergedTextStyle = currentTextStyle.merge(headingTextStyle)
 
-  CurrentTextStyleProvider(mergedTextStyle) {
+  ProvideTextStyle(mergedTextStyle) {
     children()
   }
 }
@@ -103,8 +108,8 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   backgroundColor: Color,
   contentColor: Color
 ) {
-  ProvideContentColor(contentColor) {
-    Box(DrawBackground(color = backgroundColor)) {
+  Providers(ContentColorAmbient provides contentColor) {
+    Box(Modifier.drawBackground(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {
           RichTextScope.Heading(level, "Heading ${level + 1}")

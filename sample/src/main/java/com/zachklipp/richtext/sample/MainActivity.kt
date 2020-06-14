@@ -3,20 +3,21 @@ package com.zachklipp.richtext.sample
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
+import androidx.compose.getValue
+import androidx.compose.setValue
 import androidx.compose.state
-import androidx.ui.core.Text
 import androidx.ui.core.setContent
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.material.Card
 import androidx.ui.material.Checkbox
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Slider
-import androidx.ui.material.SliderPosition
+import androidx.ui.material.Surface
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
-import androidx.ui.material.surface.Card
-import androidx.ui.material.surface.Surface
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
@@ -49,14 +50,14 @@ class MainActivity : AppCompatActivity() {
           Column {
             Row {
               Checkbox(
-                checked = isDarkModeEnabled,
-                onCheckedChange = { isDarkModeEnabled = it }
+                  checked = isDarkModeEnabled,
+                  onCheckedChange = { isDarkModeEnabled = it }
               )
               Text("Dark Mode")
             }
             RichTextStyleConfig(
-              richTextStyle = richTextStyle,
-              onChanged = { richTextStyle = it }
+                richTextStyle = richTextStyle,
+                onChanged = { richTextStyle = it }
             )
           }
         }
@@ -79,29 +80,25 @@ class MainActivity : AppCompatActivity() {
 ) {
   Text("Paragraph spacing: ${richTextStyle.paragraphSpacing}")
   Slider(
-    position = SliderPosition(
-      initial = richTextStyle.paragraphSpacing!!.value,
-      valueRange = 0f..20f
-    ),
-    onValueChange = {
-      onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
-    }
+      value = richTextStyle.paragraphSpacing!!.value,
+      valueRange = 0f..20f,
+      onValueChange = {
+        onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
+      }
   )
 
   Text("Table cell padding: ${richTextStyle.tableStyle!!.cellPadding}")
   Slider(
-    position = SliderPosition(
-      initial = richTextStyle.tableStyle!!.cellPadding!!.value,
-      valueRange = 0f..20f
-    ),
-    onValueChange = {
-      onChanged(
-        richTextStyle.copy(
-          tableStyle = richTextStyle.tableStyle!!.copy(
-            cellPadding = it.sp
-          )
+      value = richTextStyle.tableStyle!!.cellPadding!!.value,
+      valueRange = 0f..20f,
+      onValueChange = {
+        onChanged(
+            richTextStyle.copy(
+                tableStyle = richTextStyle.tableStyle!!.copy(
+                    cellPadding = it.sp
+                )
+            )
         )
-      )
-    }
+      }
   )
 }

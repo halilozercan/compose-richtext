@@ -27,19 +27,19 @@ data class RichTextStyle(
 }
 
 fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = RichTextStyle(
-  paragraphSpacing = otherStyle?.paragraphSpacing ?: paragraphSpacing,
-  headingStyle = otherStyle?.headingStyle ?: headingStyle,
-  listStyle = otherStyle?.listStyle ?: listStyle,
-  blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
-  codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
-  tableStyle = otherStyle?.tableStyle ?: tableStyle
+    paragraphSpacing = otherStyle?.paragraphSpacing ?: paragraphSpacing,
+    headingStyle = otherStyle?.headingStyle ?: headingStyle,
+    listStyle = otherStyle?.listStyle ?: listStyle,
+    blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
+    codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
+    tableStyle = otherStyle?.tableStyle ?: tableStyle
 )
 
 fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
-  paragraphSpacing = paragraphSpacing ?: DefaultParagraphSpacing,
-  headingStyle = headingStyle ?: DefaultHeadingStyle,
-  listStyle = (listStyle ?: ListStyle.Default).resolveDefaults(),
-  blockQuoteGutter = blockQuoteGutter ?: DefaultBlockQuoteGutter,
-  codeBlockStyle = (codeBlockStyle ?: CodeBlockStyle.Default).resolveDefaults(),
-  tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults()
+    paragraphSpacing = paragraphSpacing ?: DefaultParagraphSpacing,
+    headingStyle = headingStyle ?: DefaultHeadingStyle,
+    listStyle = (listStyle ?: ListStyle.Default).resolveDefaults(),
+    blockQuoteGutter = blockQuoteGutter ?: DefaultBlockQuoteGutter,
+    codeBlockStyle = (codeBlockStyle ?: CodeBlockStyle.Default).resolveDefaults(),
+    tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults()
 )

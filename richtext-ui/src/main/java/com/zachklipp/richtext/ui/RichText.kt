@@ -4,13 +4,8 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.Composable
 import androidx.ui.core.DensityAmbient
-import androidx.ui.core.LayoutDirection
 import androidx.ui.core.Modifier
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Arrangement.Top
-import androidx.ui.layout.Arrangement.Vertical
 import androidx.ui.layout.Column
-import androidx.ui.unit.IntPx
 
 /**
  * Draws some rich text. Entry point to the rich text library.
