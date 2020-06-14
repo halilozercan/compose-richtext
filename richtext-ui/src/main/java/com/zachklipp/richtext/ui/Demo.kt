@@ -10,6 +10,7 @@ import androidx.ui.foundation.ContentColorAmbient
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.drawBackground
 import androidx.ui.graphics.Color
+import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
@@ -69,10 +70,12 @@ import com.zachklipp.richtext.ui.ListType.Unordered
     }
 
     Heading(0, "Table")
-    Table(headerRow = {
-      cell { Text("Column 1") }
-      cell { Text("Column 2") }
-    }) {
+    Table(
+        modifier = Modifier.fillMaxWidth(),
+        headerRow = {
+          cell { Text("Column 1") }
+          cell { Text("Column 2") }
+        }) {
       row {
         cell { Text("Hello") }
         cell {

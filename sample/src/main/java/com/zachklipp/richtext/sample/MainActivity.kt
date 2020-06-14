@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity() {
   }
 }
 
-@Composable private fun App() {
+@Composable
+private fun App() {
   var richTextStyle by state { RichTextStyle().resolveDefaults() }
   var isDarkModeEnabled by state { false }
 
@@ -70,13 +71,16 @@ class MainActivity : AppCompatActivity() {
   }
 }
 
-@Preview @Composable private fun AppPreview() {
+@Preview
+@Composable
+private fun AppPreview() {
   App()
 }
 
-@Composable private fun RichTextStyleConfig(
-  richTextStyle: RichTextStyle,
-  onChanged: (RichTextStyle) -> Unit
+@Composable
+private fun RichTextStyleConfig(
+    richTextStyle: RichTextStyle,
+    onChanged: (RichTextStyle) -> Unit
 ) {
   Text("Paragraph spacing: ${richTextStyle.paragraphSpacing}")
   Slider(
@@ -96,6 +100,21 @@ class MainActivity : AppCompatActivity() {
             richTextStyle.copy(
                 tableStyle = richTextStyle.tableStyle!!.copy(
                     cellPadding = it.sp
+                )
+            )
+        )
+      }
+  )
+
+  Text("Table border width padding: ${richTextStyle.tableStyle!!.borderStroke!!.width}")
+  Slider(
+      value = richTextStyle.tableStyle!!.borderStroke!!.width,
+      valueRange = 0f..20f,
+      onValueChange = {
+        onChanged(
+            richTextStyle.copy(
+                tableStyle = richTextStyle.tableStyle!!.copy(
+                    borderStroke = richTextStyle.tableStyle!!.borderStroke!!.copy(width = it)
                 )
             )
         )
