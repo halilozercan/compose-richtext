@@ -6,7 +6,11 @@ import androidx.compose.Composable
 import androidx.compose.Immutable
 import androidx.compose.Providers
 import androidx.compose.ambientOf
+import androidx.ui.core.Alignment
+import androidx.ui.core.Constraints
 import androidx.ui.core.DensityAmbient
+import androidx.ui.core.Layout
+import androidx.ui.core.LayoutDirection
 import androidx.ui.core.Modifier
 import androidx.ui.core.paint
 import androidx.ui.foundation.Box
@@ -14,8 +18,13 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.drawBackground
 import androidx.ui.graphics.Color
 import androidx.ui.graphics.painter.Painter
+import androidx.ui.layout.InnerPadding
+import androidx.ui.layout.padding
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.IntPxSize
 import androidx.ui.unit.TextUnit
+import androidx.ui.unit.ipx
+import androidx.ui.unit.max
 import androidx.ui.unit.sp
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
@@ -25,6 +34,11 @@ enum class ListType {
   Unordered
 }
 
+/**
+ * Defines how to draw list markers for [FormattedList]s that are [Ordered].
+ *
+ * These are typically some sort of ordinal text.
+ */
 interface OrderedMarkers {
   @Composable fun drawMarker(
     level: Int,
@@ -32,34 +46,59 @@ interface OrderedMarkers {
   )
 
   companion object {
+    /**
+     * Creates an [OrderedMarkers] that will cycle through the values in [markers] for each
+     * indentation level given the index.
+     */
     fun text(vararg markers: (index: Int) -> String) = OrderedMarkers { level, index ->
       Text(markers[level % markers.size](index))
     }
 
-    operator fun invoke(drawMarker: @Composable() (level: Int, index: Int) -> Unit): OrderedMarkers =
-      object : OrderedMarkers {
-        @Composable override fun drawMarker(
-          level: Int,
-          index: Int
-        ) {
-          drawMarker(level, index)
-        }
+    /**
+     * Creates an [OrderedMarkers] from an arbitrary composable given the indentation level and
+     * the index.
+     */
+    operator fun invoke(
+      drawMarker: @Composable() (level: Int, index: Int) -> Unit
+    ): OrderedMarkers = object : OrderedMarkers {
+      @Composable override fun drawMarker(
+        level: Int,
+        index: Int
+      ) {
+        drawMarker(level, index)
       }
+    }
   }
 }
 
+/**
+ * Defines how to draw list markers for [FormattedList]s that are [Unordered].
+ *
+ * These are typically some sort of bullet point.
+ */
 interface UnorderedMarkers {
   @Composable fun drawMarker(level: Int)
 
   companion object {
+    /**
+     * Creates an [UnorderedMarkers] that will cycle through the values in [markers] for each
+     * indentation level.
+     */
     fun text(vararg markers: String) = UnorderedMarkers {
       Text(markers[it % markers.size])
     }
 
+    /**
+     * Creates an [UnorderedMarkers] that will cycle through the values in [painters] for each
+     * indentation level.
+     */
     fun painters(vararg painters: Painter) = UnorderedMarkers {
       Box(Modifier.paint(painters[it % painters.size]))
     }
 
+    /**
+     * Creates an [UnorderedMarkers] from an arbitrary composable given the indentation level.
+     */
     operator fun invoke(drawMarker: @Composable() (level: Int) -> Unit): UnorderedMarkers =
       object : UnorderedMarkers {
         @Composable override fun drawMarker(level: Int) = drawMarker(level)
@@ -67,6 +106,12 @@ interface UnorderedMarkers {
   }
 }
 
+/**
+ * Defines how [FormattedList]s should look.
+ *
+ * @param markerIndent The padding before each marker.
+ * @param contentsIndent The padding after each marker.
+ */
 @Immutable
 data class ListStyle(
   val markerIndent: TextUnit? = null,
@@ -104,6 +149,9 @@ internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
 
 private val ListLevelAmbient = ambientOf { 0 }
 
+/**
+ * Composes [children] with their [ListLevelAmbient] reset back to 0.
+ */
 @Composable internal fun RestartListLevel(children: @Composable() () -> Unit) {
   Providers(ListLevelAmbient provides 0) {
     children()
@@ -111,7 +159,10 @@ private val ListLevelAmbient = ambientOf { 0 }
 }
 
 /**
- * TODO write documentation
+ * Creates a formatted list such as a bullet list or numbered list.
+ *
+ * @sample com.zachklipp.richtext.ui.OrderedListPreview
+ * @sample com.zachklipp.richtext.ui.UnorderedListPreview
  */
 @Composable fun RichTextScope.FormattedList(
   listType: ListType,
@@ -119,12 +170,14 @@ private val ListLevelAmbient = ambientOf { 0 }
 ) = FormattedList(listType, children.asList()) { it() }
 
 /**
- * TODO write documentation
+ * Creates a formatted list such as a bullet list or numbered list.
+ *
+ * @sample com.zachklipp.richtext.ui.OrderedListPreview
+ * @sample com.zachklipp.richtext.ui.UnorderedListPreview
  */
-@Suppress("UNUSED_PARAMETER", "unused", "UNUSED_VARIABLE")
 @Composable fun <T> RichTextScope.FormattedList(
   listType: ListType,
-  items: Iterable<T>,
+  items: List<T>,
   drawItem: @Composable() RichTextScope.(T) -> Unit
 ) {
   val listStyle = currentRichTextStyle.resolveDefaults().listStyle!!
@@ -133,83 +186,162 @@ private val ListLevelAmbient = ambientOf { 0 }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
   val currentLevel = ListLevelAmbient.current
 
-  // TODO Table was temporarily removed, fork it.
-//  Table(
-//    columns = 2,
-//    alignment = { column ->
-//      when (column) {
-//        0 -> Alignment.TopEnd
-//        else -> Alignment.TopStart
-//      }
-//    },
-//    columnWidth = { column ->
-//      when (column) {
-//        0 -> TableColumnWidth.Wrap
-//        else -> TableColumnWidth.Flex(1f)
-//      }
-//    }
-//  ) {
-//    items.forEachIndexed { index, listItem ->
-//      tableRow {
-//        // Draw the marker.
-//        Box(LayoutPadding(start = markerIndent)) {
-//          when (listType) {
-//            Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
-//            Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
-//          }
-//        }
-//
-//        // Draw the item contents.
-//        RichText(LayoutPadding(start = contentsIndent)) {
-//          Providers(ListLevelAmbient provides currentLevel + 1) {
-//            drawItem(listItem)
-//          }
-//        }
-//      }
-//    }
-//  }
+  PrefixListLayout(
+      count = items.size,
+      prefixPadding = InnerPadding(start = markerIndent, end = contentsIndent),
+      prefixForIndex = { index ->
+        when (listType) {
+          Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
+          Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
+        }
+      },
+      itemForIndex = { index ->
+        RichText {
+          Providers(ListLevelAmbient provides currentLevel + 1) {
+            drawItem(items[index])
+          }
+        }
+      }
+  )
 }
 
-@Preview @Composable private fun UnorderedListPreview() {
-  ListPreview(listType = Unordered)
+@Composable private fun PrefixListLayout(
+  count: Int,
+  prefixPadding: InnerPadding,
+  prefixForIndex: @Composable() (index: Int) -> Unit,
+  itemForIndex: @Composable() (index: Int) -> Unit
+) {
+  Layout(children = {
+    // Draw the markers first.
+    for (i in 0 until count) {
+      // TODO Use the padding in the calculation directly instead of wrapping.
+      Box(Modifier.padding(prefixPadding)) {
+        prefixForIndex(i)
+      }
+    }
+
+    // Then draw the items.
+    for (i in 0 until count) {
+      itemForIndex(i)
+    }
+  }) { measurables, constraints, layoutDirection ->
+    check(measurables.size == count * 2)
+    val prefixMeasureables = measurables.asSequence()
+        .take(count)
+    val itemMeasurables = measurables.asSequence()
+        .drop(count)
+
+    // Measure the prefixes first.
+    val prefixPlaceables = prefixMeasureables.map { marker ->
+      marker.measure(Constraints(), layoutDirection)
+    }
+        .toList()
+    val widestPrefix = prefixPlaceables.maxBy { it.width }!!
+
+    // Then measure the items, offset to the right to allow space for the prefixes and gap.
+    val itemConstraints = constraints.copy(
+        maxWidth = (constraints.maxWidth - widestPrefix.width).coerceAtLeast(0.ipx)
+    )
+    val itemPlaceables = itemMeasurables.map { item ->
+      item.measure(itemConstraints, layoutDirection)
+    }
+        .toList()
+    val widestItem = itemPlaceables.maxBy { it.width }!!
+
+    val listWidth = widestPrefix.width + widestItem.width
+    val listHeight = itemPlaceables.sumBy { it.height.value }.ipx
+    layout(listWidth, listHeight) {
+      var y = 0.ipx
+
+      // Flow the rows vertically, much like Column.
+      for (i in 0 until count) {
+        val prefix = prefixPlaceables[i]
+        val item = itemPlaceables[i]
+        val rowHeight = max(prefix.height, item.height)
+        val prefixOffset = Alignment.TopEnd.align(
+            IntPxSize(
+                width = widestPrefix.width - prefix.width,
+                height = rowHeight - prefix.height
+            ),
+            layoutDirection
+        )
+
+        prefix.place(prefixOffset.x, y + prefixOffset.y)
+        item.place(widestPrefix.width, y)
+        y += rowHeight
+      }
+    }
+  }
 }
 
-@Preview @Composable private fun OrderedListPreview() {
-  ListPreview(listType = Ordered)
+@Preview(heightDp = 400)
+@Composable private fun UnorderedListPreview() {
+  ListPreview(listType = Unordered, layoutDirection = LayoutDirection.Ltr)
 }
 
-@Composable
-private fun ListPreview(listType: ListType) {
-  Box(Modifier.drawBackground(color = Color.White)) {
-    RichTextScope.FormattedList(
-        listType = listType,
-        items = listOf(
-            "Foo",
-            "Bar",
-            "Baz",
-            "Foo",
-            "Bar",
-            "Baz",
-            "Foo",
-            "Bar",
-            "Baz",
-            "Foo",
-            "Bar",
-            "Baz"
-        ).withIndex()
-    ) { (index, text) ->
-      Text(text)
-      if (index == 0) {
-        FormattedList(listType, @Composable() {
-          Text("indented $text")
+@Preview(heightDp = 400)
+@Composable private fun UnorderedListPreviewRtl() {
+  ListPreview(listType = Unordered, layoutDirection = LayoutDirection.Rtl)
+}
+
+@Preview(heightDp = 400)
+@Composable private fun OrderedListPreview() {
+  ListPreview(listType = Ordered, layoutDirection = LayoutDirection.Ltr)
+}
+
+@Preview(heightDp = 400)
+@Composable private fun OrderedListPreviewRtl() {
+  ListPreview(listType = Ordered, layoutDirection = LayoutDirection.Rtl)
+}
+
+@Composable private fun ListPreview(
+  listType: ListType,
+  layoutDirection: LayoutDirection
+) {
+  WithLayoutDirection(layoutDirection) {
+    Box(Modifier.drawBackground(color = Color.White)) {
+      RichTextScope.FormattedList(
+          listType = listType,
+          items = listOf(
+              "Foo",
+              "Bar",
+              "Baz",
+              "Foo",
+              "Bar",
+              "Baz",
+              "Foo",
+              "Bar",
+              "Foo\nBar\nBaz",
+              "Foo"
+          ).withIndex()
+              .toList()
+      ) { (index, text) ->
+        Text(text)
+        if (index == 0) {
           FormattedList(listType, @Composable() {
             Text("indented $text")
             FormattedList(listType, @Composable() {
               Text("indented $text")
+              FormattedList(listType, @Composable() {
+                Text("indented $text")
+              })
             })
           })
-        })
+        }
       }
+    }
+  }
+}
+
+@Composable private fun WithLayoutDirection(
+  layoutDirection: LayoutDirection,
+  children: @Composable() () -> Unit
+) {
+  Layout(children) { measurables, constraints, _ ->
+    val placeable = measurables.single()
+        .measure(constraints, layoutDirection)
+    layout(placeable.width, placeable.height) {
+      placeable.place(0.ipx, 0.ipx)
     }
   }
 }
