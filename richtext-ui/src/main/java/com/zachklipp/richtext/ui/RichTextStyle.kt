@@ -4,6 +4,7 @@ import androidx.compose.Immutable
 import androidx.compose.ambientOf
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.sp
+import com.zachklipp.richtext.ui.string.RichTextStringStyle
 
 internal val RichTextStyleAmbient = ambientOf { RichTextStyle.Default }
 
@@ -19,7 +20,8 @@ data class RichTextStyle(
   val listStyle: ListStyle? = null,
   val blockQuoteGutter: BlockQuoteGutter? = null,
   val codeBlockStyle: CodeBlockStyle? = null,
-  val tableStyle: TableStyle? = null
+  val tableStyle: TableStyle? = null,
+  val stringStyle: RichTextStringStyle? = null
 ) {
   companion object {
     val Default = RichTextStyle()
@@ -32,7 +34,8 @@ fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = RichTextSty
     listStyle = otherStyle?.listStyle ?: listStyle,
     blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
     codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
-    tableStyle = otherStyle?.tableStyle ?: tableStyle
+    tableStyle = otherStyle?.tableStyle ?: tableStyle,
+    stringStyle = stringStyle?.merge(otherStyle?.stringStyle)
 )
 
 fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
@@ -41,5 +44,6 @@ fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
     listStyle = (listStyle ?: ListStyle.Default).resolveDefaults(),
     blockQuoteGutter = blockQuoteGutter ?: DefaultBlockQuoteGutter,
     codeBlockStyle = (codeBlockStyle ?: CodeBlockStyle.Default).resolveDefaults(),
-    tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults()
+    tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults(),
+    stringStyle = (stringStyle ?: RichTextStringStyle.Default).resolveDefaults()
 )

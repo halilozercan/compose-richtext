@@ -36,7 +36,7 @@ data class CodeBlockStyle(
 private val DefaultCodeBlockTextStyle = TextStyle(
     fontFamily = FontFamily.Monospace
 )
-private val DefaultCodeBlockBackground: Color = Color.LightGray.copy(alpha = .5f)
+internal val DefaultCodeBlockBackground: Color = Color.LightGray.copy(alpha = .5f)
 private val DefaultCodeBlockPadding: TextUnit = 16.sp
 
 internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(

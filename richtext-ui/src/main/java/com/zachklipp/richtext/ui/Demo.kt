@@ -16,6 +16,7 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
+import com.zachklipp.richtext.ui.string.TextPreview
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {
@@ -39,6 +40,7 @@ import com.zachklipp.richtext.ui.ListType.Unordered
     Text("Simple paragraph.")
     Text("Paragraph with\nmultiple lines.")
     Text("Paragraph with really long line that should be getting wrapped.")
+    TextPreview()
 
     Heading(0, "Lists")
     Heading(1, "Unordered")
@@ -53,7 +55,7 @@ import com.zachklipp.richtext.ui.ListType.Unordered
 
     Heading(0, "Code Block")
     CodeBlock(
-        """
+      """
         {
           "Hello": "world!"
         }
@@ -71,11 +73,11 @@ import com.zachklipp.richtext.ui.ListType.Unordered
 
     Heading(0, "Table")
     Table(
-        modifier = Modifier.fillMaxWidth(),
-        headerRow = {
-          cell { Text("Column 1") }
-          cell { Text("Column 2") }
-        }) {
+      modifier = Modifier.fillMaxWidth(),
+      headerRow = {
+        cell { Text("Column 1") }
+        cell { Text("Column 2") }
+      }) {
       row {
         cell { Text("Hello") }
         cell {
@@ -96,17 +98,17 @@ import com.zachklipp.richtext.ui.ListType.Unordered
 
 @Composable private fun RichTextScope.ListDemo(listType: ListType) {
   FormattedList(listType,
-      @Composable {
-        Text("First list item")
-        FormattedList(listType,
-            @Composable { Text("Indented 1") }
-        )
-      },
-      @Composable {
-        Text("Second list item.")
-        FormattedList(listType,
-            @Composable { Text("Indented 2") }
-        )
-      }
+    @Composable {
+      Text("First list item")
+      FormattedList(listType,
+        @Composable { Text("Indented 1") }
+      )
+    },
+    @Composable {
+      Text("Second list item.")
+      FormattedList(listType,
+        @Composable { Text("Indented 2") }
+      )
+    }
   )
 }
