@@ -1,9 +1,9 @@
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Immutable
-import androidx.compose.ambientOf
-import androidx.ui.unit.TextUnit
-import androidx.ui.unit.sp
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ambientOf
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.string.RichTextStringStyle
 
 internal val RichTextStyleAmbient = ambientOf { RichTextStyle.Default }

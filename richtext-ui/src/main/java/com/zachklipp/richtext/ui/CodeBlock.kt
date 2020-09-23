@@ -2,25 +2,25 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.compose.Immutable
-import androidx.compose.Providers
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentColorAmbient
-import androidx.ui.foundation.ProvideTextStyle
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.currentTextStyle
-import androidx.ui.foundation.drawBackground
-import androidx.ui.graphics.Color
-import androidx.ui.layout.padding
-import androidx.ui.text.TextStyle
-import androidx.ui.text.font.FontFamily
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.ProvideTextStyle
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Providers
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.TextUnit
-import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 
 @Immutable
 data class CodeBlockStyle(
@@ -60,7 +60,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 @Composable fun RichTextScope.CodeBlock(children: @Composable() RichTextScope.() -> Unit) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
   val textStyle = currentTextStyle().merge(richTextStyle.textStyle)
-  val background = Modifier.drawBackground(color = richTextStyle.background!!)
+  val background = Modifier.background(color = richTextStyle.background!!)
   val blockPadding = with(DensityAmbient.current) {
     richTextStyle.padding!!.toDp()
   }
@@ -91,14 +91,14 @@ private fun CodeBlockPreview(
   contentColor: Color
 ) {
   Providers(ContentColorAmbient provides contentColor) {
-    Box(modifier = Modifier.drawBackground(color = backgroundColor)) {
+    Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
         RichTextScope.CodeBlock(
-            """
-              data class Hello(
-                val name: String
-              )
-            """.trimIndent()
+          """
+            data class Hello(
+              val name: String
+            )
+          """.trimIndent()
         )
       }
     }

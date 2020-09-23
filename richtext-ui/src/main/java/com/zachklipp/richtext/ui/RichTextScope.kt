@@ -2,9 +2,9 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.compose.Immutable
-import androidx.compose.Providers
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Providers
 
 /**
  * Marker interface for Composable functions that can draw rich text.

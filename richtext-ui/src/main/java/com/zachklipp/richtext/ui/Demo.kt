@@ -2,25 +2,25 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.compose.Providers
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentColorAmbient
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.drawBackground
-import androidx.ui.graphics.Color
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
 import com.zachklipp.richtext.ui.string.TextPreview
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {
-  Box(Modifier.drawBackground(color = Color.White)) {
+  Box(Modifier.background(color = Color.White)) {
     RichTextDemo()
   }
 }
@@ -28,7 +28,7 @@ import com.zachklipp.richtext.ui.string.TextPreview
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnBlack() {
   Providers(ContentColorAmbient provides Color.White) {
-    Box(Modifier.drawBackground(color = Color.Black)) {
+    Box(Modifier.background(color = Color.Black)) {
       RichTextDemo()
     }
   }

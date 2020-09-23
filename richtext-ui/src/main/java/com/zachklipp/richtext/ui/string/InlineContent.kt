@@ -2,22 +2,21 @@
 
 package com.zachklipp.richtext.ui.string
 
-import androidx.compose.Composable
-import androidx.compose.StructurallyEqual
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Constraints
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Layout
-import androidx.ui.geometry.Size
-import androidx.ui.text.InlineTextContent
-import androidx.ui.text.Placeholder
-import androidx.ui.text.PlaceholderVerticalAlign.AboveBaseline
-import androidx.ui.unit.Density
-import androidx.ui.unit.px
-import androidx.ui.unit.sp
-import androidx.ui.unit.toPx
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.ui.Layout
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign.AboveBaseline
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.sp
 
 /**
  * A Composable that can be embedded inline in a [RichTextString] by passing to
@@ -27,7 +26,7 @@ import androidx.ui.unit.toPx
  * this may cause flicker.
  */
 class InlineContent(
-  internal val initialSize: (Density.() -> Size)? = null,
+  internal val initialSize: (Density.() -> IntSize)? = null,
   internal val content: @Composable() Density.(alternateText: String) -> Unit
 )
 
@@ -70,7 +69,12 @@ class InlineContent(
   density: Density,
   forceTextRelayout: () -> Unit
 ): InlineTextContent {
-  var size by state(StructurallyEqual) { content.initialSize?.invoke(density) }
+  var size by remember {
+    mutableStateOf(
+      content.initialSize?.invoke(density),
+      structuralEqualityPolicy()
+    )
+  }
 
   with(density) {
     // If size is null, content hasn't been measured yet, so just draw with zero width for now.
@@ -82,20 +86,20 @@ class InlineContent(
     )
 
     return InlineTextContent(placeholder) { alternateText ->
-      Layout(children = { content.content(this, alternateText) }) { measurables, _, _ ->
+      Layout(children = { content.content(this, alternateText) }) { measurables, _ ->
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.
         val contentPlaceable = measurables.single().measure(contentConstraints())
-        if (contentPlaceable.width.toPx().value != size?.width
-          || contentPlaceable.height.toPx().value != size?.height
+        if (contentPlaceable.width != size?.width
+          || contentPlaceable.height != size?.height
         ) {
-          size = Size(contentPlaceable.width.toPx().value, contentPlaceable.height.toPx().value)
+          size = IntSize(contentPlaceable.width, contentPlaceable.height)
           forceTextRelayout()
         }
 
         layout(contentPlaceable.width, contentPlaceable.height) {
-          contentPlaceable.place(0.px, 0.px)
+          contentPlaceable.place(0, 0)
         }
       }
     }

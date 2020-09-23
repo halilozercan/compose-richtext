@@ -2,32 +2,32 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.compose.Immutable
-import androidx.compose.Providers
-import androidx.compose.ambientOf
-import androidx.ui.core.Alignment
-import androidx.ui.core.Constraints
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Layout
-import androidx.ui.core.LayoutDirection
-import androidx.ui.core.Modifier
-import androidx.ui.core.paint
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.drawBackground
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.painter.Painter
-import androidx.ui.layout.InnerPadding
-import androidx.ui.layout.padding
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.ambientOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Layout
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.LayoutDirectionAmbient
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.IntPxSize
-import androidx.ui.unit.TextUnit
-import androidx.ui.unit.ipx
-import androidx.ui.unit.max
-import androidx.ui.unit.sp
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
+import kotlin.math.max
 
 enum class ListType {
   Ordered,
@@ -188,7 +188,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 
   PrefixListLayout(
       count = items.size,
-      prefixPadding = InnerPadding(start = markerIndent, end = contentsIndent),
+      prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
       prefixForIndex = { index ->
         when (listType) {
           Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
@@ -207,7 +207,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 
 @Composable private fun PrefixListLayout(
   count: Int,
-  prefixPadding: InnerPadding,
+  prefixPadding: PaddingValues,
   prefixForIndex: @Composable() (index: Int) -> Unit,
   itemForIndex: @Composable() (index: Int) -> Unit
 ) {
@@ -224,7 +224,7 @@ private val ListLevelAmbient = ambientOf { 0 }
     for (i in 0 until count) {
       itemForIndex(i)
     }
-  }) { measurables, constraints, layoutDirection ->
+  }) { measurables, constraints ->
     check(measurables.size == count * 2)
     val prefixMeasureables = measurables.asSequence()
         .take(count)
@@ -233,25 +233,25 @@ private val ListLevelAmbient = ambientOf { 0 }
 
     // Measure the prefixes first.
     val prefixPlaceables = prefixMeasureables.map { marker ->
-      marker.measure(Constraints(), layoutDirection)
+      marker.measure(Constraints())
     }
         .toList()
-    val widestPrefix = prefixPlaceables.maxBy { it.width }!!
+    val widestPrefix = prefixPlaceables.maxByOrNull { it.width }!!
 
     // Then measure the items, offset to the right to allow space for the prefixes and gap.
     val itemConstraints = constraints.copy(
-        maxWidth = (constraints.maxWidth - widestPrefix.width).coerceAtLeast(0.ipx)
+        maxWidth = (constraints.maxWidth - widestPrefix.width).coerceAtLeast(0)
     )
     val itemPlaceables = itemMeasurables.map { item ->
-      item.measure(itemConstraints, layoutDirection)
+      item.measure(itemConstraints)
     }
         .toList()
-    val widestItem = itemPlaceables.maxBy { it.width }!!
+    val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumBy { it.height.value }.ipx
+    val listHeight = itemPlaceables.sumBy { it.height }
     layout(listWidth, listHeight) {
-      var y = 0.ipx
+      var y = 0
 
       // Flow the rows vertically, much like Column.
       for (i in 0 until count) {
@@ -259,7 +259,7 @@ private val ListLevelAmbient = ambientOf { 0 }
         val item = itemPlaceables[i]
         val rowHeight = max(prefix.height, item.height)
         val prefixOffset = Alignment.TopEnd.align(
-            IntPxSize(
+            IntSize(
                 width = widestPrefix.width - prefix.width,
                 height = rowHeight - prefix.height
             ),
@@ -298,8 +298,8 @@ private val ListLevelAmbient = ambientOf { 0 }
   listType: ListType,
   layoutDirection: LayoutDirection
 ) {
-  WithLayoutDirection(layoutDirection) {
-    Box(Modifier.drawBackground(color = Color.White)) {
+  Providers(LayoutDirectionAmbient provides layoutDirection) {
+    Box(Modifier.background(color = Color.White)) {
       RichTextScope.FormattedList(
           listType = listType,
           items = listOf(
@@ -329,19 +329,6 @@ private val ListLevelAmbient = ambientOf { 0 }
           })
         }
       }
-    }
-  }
-}
-
-@Composable private fun WithLayoutDirection(
-  layoutDirection: LayoutDirection,
-  children: @Composable() () -> Unit
-) {
-  Layout(children) { measurables, constraints, _ ->
-    val placeable = measurables.single()
-        .measure(constraints, layoutDirection)
-    layout(placeable.width, placeable.height) {
-      placeable.place(0.ipx, 0.ipx)
     }
   }
 }

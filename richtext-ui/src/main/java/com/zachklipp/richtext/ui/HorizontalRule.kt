@@ -1,15 +1,15 @@
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.contentColor
-import androidx.ui.foundation.drawBackground
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.height
-import androidx.ui.layout.padding
-import androidx.ui.unit.dp
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.unit.dp
 
 /**
  * TODO write documentation
@@ -20,9 +20,9 @@ import androidx.ui.unit.dp
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp()
   }
   Box(
-      Modifier.padding(top = spacing, bottom = spacing)
-          .fillMaxWidth()
-          .height(1.dp)
-          .drawBackground(color)
+    Modifier.padding(top = spacing, bottom = spacing)
+      .fillMaxWidth()
+      .height(1.dp)
+      .background(color)
   )
 }

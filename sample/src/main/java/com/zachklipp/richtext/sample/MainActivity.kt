@@ -2,25 +2,26 @@ package com.zachklipp.richtext.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.setContent
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.material.Card
-import androidx.ui.material.Checkbox
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Slider
-import androidx.ui.material.Surface
-import androidx.ui.material.darkColorPalette
-import androidx.ui.material.lightColorPalette
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
+import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 import com.zachklipp.richtext.ui.RichTextDemo
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.resolveDefaults
@@ -38,10 +39,10 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 private fun App() {
-  var richTextStyle by state { RichTextStyle().resolveDefaults() }
-  var isDarkModeEnabled by state { false }
+  var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
+  var isDarkModeEnabled by remember { mutableStateOf(false) }
 
-  val colors = if (isDarkModeEnabled) darkColorPalette() else lightColorPalette()
+  val colors = if (isDarkModeEnabled) darkColors() else lightColors()
 
   MaterialTheme(colors = colors) {
     Surface {
@@ -63,7 +64,7 @@ private fun App() {
           }
         }
 
-        VerticalScroller {
+        ScrollableColumn {
           RichTextDemo(style = richTextStyle)
         }
       }
@@ -106,18 +107,18 @@ private fun RichTextStyleConfig(
       }
   )
 
-  Text("Table border width padding: ${richTextStyle.tableStyle!!.borderStroke!!.width}")
+  Text("Table border width padding: ${richTextStyle.tableStyle!!.borderStrokeWidth!!}")
   Slider(
-      value = richTextStyle.tableStyle!!.borderStroke!!.width,
-      valueRange = 0f..20f,
-      onValueChange = {
-        onChanged(
-            richTextStyle.copy(
-                tableStyle = richTextStyle.tableStyle!!.copy(
-                    borderStroke = richTextStyle.tableStyle!!.borderStroke!!.copy(width = it)
-                )
-            )
+    value = richTextStyle.tableStyle!!.borderStrokeWidth!!,
+    valueRange = 0f..20f,
+    onValueChange = {
+      onChanged(
+        richTextStyle.copy(
+          tableStyle = richTextStyle.tableStyle!!.copy(
+            borderStrokeWidth = it
+          )
         )
-      }
+      )
+    }
   )
 }

@@ -1,50 +1,47 @@
 package com.zachklipp.richtext.ui.string
 
-import androidx.animation.Infinite
-import androidx.animation.KeyframesBuilder
-import androidx.animation.LinearEasing
-import androidx.animation.RepeatableBuilder
-import androidx.animation.TweenBuilder
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.launchInComposition
-import androidx.compose.onActive
-import androidx.compose.remember
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.compose.stateFor
-import androidx.ui.animation.animatedColor
-import androidx.ui.animation.animatedFloat
-import androidx.ui.core.Alignment
-import androidx.ui.core.Constraints
-import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Layout
-import androidx.ui.core.Modifier
-import androidx.ui.core.Ref
-import androidx.ui.core.drawOpacity
-import androidx.ui.core.gesture.tapGestureFilter
-import androidx.ui.foundation.Canvas
-import androidx.ui.foundation.ContentColorAmbient
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
-import androidx.ui.foundation.contentColor
-import androidx.ui.geometry.Offset
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.StrokeCap
-import androidx.ui.graphics.drawscope.Stroke
-import androidx.ui.graphics.drawscope.withTransform
-import androidx.ui.layout.Stack
-import androidx.ui.layout.padding
-import androidx.ui.layout.size
-import androidx.ui.layout.wrapContentSize
-import androidx.ui.savedinstancestate.savedInstanceState
-import androidx.ui.text.TextLayoutResult
-import androidx.ui.text.TextStyle
+import androidx.compose.animation.animatedColor
+import androidx.compose.animation.animatedFloat
+import androidx.compose.animation.core.AnimationConstants.Infinite
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Layout
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawOpacity
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.gesture.tapGestureFilter
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap.Round
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.node.Ref
+import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
-import androidx.ui.unit.em
-import androidx.ui.unit.px
-import androidx.ui.unit.sp
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.RichTextStyleAmbient
 import com.zachklipp.richtext.ui.string.RichTextString.Builder
@@ -80,7 +77,7 @@ fun RichTextScope.Text(
     val resolvedStyle = (style ?: RichTextStringStyle.Default).resolveDefaults()
     text.toAnnotatedString(resolvedStyle, contentColor)
   }
-  val layoutResult = state<TextLayoutResult?> { null }
+  val layoutResult = remember<MutableState<TextLayoutResult?>> { mutableStateOf(null) }
   val pressIndicator = Modifier.tapGestureFilter { position ->
     layoutResult.value?.let { layoutResult ->
       val offset = layoutResult.getOffsetForPosition(position)
@@ -93,7 +90,7 @@ fun RichTextScope.Text(
   }
 
   val constraintsRef = remember { Ref<Constraints>() }
-  var hack by stateFor(annotated) { annotated }
+  var hack by remember(annotated) { mutableStateOf(annotated) }
   val inlineContents = remember(text) { text.getInlineContents() }
   // The constraints function won't be called until the content is actually composed and EM is
   // measured, which won't happen until the text is composed.
@@ -123,14 +120,14 @@ fun RichTextScope.Text(
         inlineContent = inlineTextContents
       )
     }
-  ) { measurables, constraints, _ ->
+  ) { measurables, constraints ->
     // Update the inline content before measuring text, so content will get its constraints before
     // being measured.
     constraintsRef.value = constraints
 
     val p = measurables.single().measure(constraints)
     layout(p.width, p.height) {
-      p.place(0.px, 0.px)
+      p.place(0, 0)
     }
   }
 }
@@ -138,7 +135,7 @@ fun RichTextScope.Text(
 @Preview(showBackground = true)
 @Composable internal fun TextPreview() {
   val context = ContextAmbient.current
-  var toggleLink by state { false }
+  var toggleLink by remember { mutableStateOf(false) }
   val text = remember(context, toggleLink) {
     richTextString {
       appendPreviewSentence(Bold)
@@ -187,42 +184,42 @@ private val spinningCross = InlineContent {
   val angle = animatedFloat(0f)
   val color = animatedColor(Color.Red)
   onActive {
-    val angleAnim = RepeatableBuilder<Float>().apply {
-      iterations = Infinite
-      animation = TweenBuilder<Float>().apply {
-        duration = 1000
-        easing = LinearEasing
-      }
-    }
+    val angleAnim = repeatable<Float>(
+      iterations = Infinite,
+      animation = tween(durationMillis = 1000, easing = LinearEasing)
+    )
     angle.animateTo(360f, angleAnim)
 
-    val colorAnim = RepeatableBuilder<Color>().apply {
-      iterations = Infinite
-      animation = KeyframesBuilder<Color>().apply {
-        duration = 2500
+    val colorAnim = repeatable<Color>(
+      iterations = Infinite,
+      animation = keyframes {
+        durationMillis = 2500
         Color.Blue at 500
         Color.Cyan at 1000
         Color.Green at 1500
         Color.Magenta at 2000
       }
-    }
+    )
     color.animateTo(Color.Yellow, colorAnim)
   }
 
   Canvas(modifier = Modifier.size(12.sp.toDp(), 12.sp.toDp()).padding(2.dp)) {
     withTransform({ rotate(angle.value) }) {
-      val stroke = Stroke(width = 3.dp.toPx().value, cap = StrokeCap.round)
+      val strokeWidth = 3.dp.toPx()
+      val strokeCap = Round
       drawLine(
         color.value,
-        Offset(0f, size.height / 2),
-        Offset(size.width, size.height / 2),
-        stroke
+        start = Offset(0f, size.height / 2),
+        end = Offset(size.width, size.height / 2),
+        strokeWidth = strokeWidth,
+        cap = strokeCap
       )
       drawLine(
         color.value,
-        Offset(size.width / 2, 0f),
-        Offset(size.width / 2, size.height),
-        stroke
+        start = Offset(size.width / 2, 0f),
+        end = Offset(size.width / 2, size.height),
+        strokeWidth = strokeWidth,
+        cap = strokeCap
       )
     }
   }
@@ -246,7 +243,7 @@ val slowLoadingImage = InlineContent {
       Picture(Modifier.size(size.value.sp.toDp()))
       Text(
         "click to refresh",
-        modifier = Modifier.padding(3.dp).gravity(Alignment.Center),
+        modifier = Modifier.padding(3.dp).align(Alignment.Center),
         fontSize = 8.sp,
         style = TextStyle(background = Color.LightGray)
       )
@@ -257,14 +254,13 @@ val slowLoadingImage = InlineContent {
 @Composable private fun LoadingSpinner() {
   val alpha = animatedFloat(initVal = 1f)
   onActive {
-    val anim = RepeatableBuilder<Float>().apply {
-      iterations = Infinite
-      animation = KeyframesBuilder<Float>().apply {
-        duration = 500
+    val anim = repeatable<Float>(
+      iterations = Infinite,
+      animation = keyframes {
+        durationMillis = 500
         0f at 250
         1f at 500
-      }
-    }
+      })
     alpha.animateTo(0f, anim)
   }
   Text(
@@ -278,8 +274,8 @@ val slowLoadingImage = InlineContent {
 @Composable private fun Picture(modifier: Modifier) {
   Canvas(modifier) {
     drawRect(Color.LightGray)
-    drawLine(Color.Red, Offset(0f, 0f), Offset(size.width, size.height), Stroke())
-    drawLine(Color.Red, Offset(0f, size.height), Offset(size.width, 0f), Stroke())
+    drawLine(Color.Red, Offset(0f, 0f), Offset(size.width, size.height))
+    drawLine(Color.Red, Offset(0f, size.height), Offset(size.width, 0f))
   }
 }
 

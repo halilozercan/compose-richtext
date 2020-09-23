@@ -2,19 +2,19 @@
 
 package com.zachklipp.richtext.ui.string
 
-import androidx.compose.Immutable
-import androidx.ui.graphics.Color
-import androidx.ui.text.AnnotatedString
-import androidx.ui.text.SpanStyle
-import androidx.ui.text.annotatedString
-import androidx.ui.text.appendInlineContent
-import androidx.ui.text.font.FontFamily
-import androidx.ui.text.font.FontStyle
-import androidx.ui.text.font.FontWeight
-import androidx.ui.text.length
-import androidx.ui.text.style.BaselineShift
-import androidx.ui.text.style.TextDecoration
-import androidx.ui.unit.sp
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.length
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.DefaultCodeBlockBackground
 import com.zachklipp.richtext.ui.string.RichTextString.Builder
 import com.zachklipp.richtext.ui.string.RichTextString.Format

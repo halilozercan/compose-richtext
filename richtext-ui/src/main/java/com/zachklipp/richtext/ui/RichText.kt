@@ -2,10 +2,10 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.layout.Column
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.DensityAmbient
 
 /**
  * Draws some rich text. Entry point to the rich text library.

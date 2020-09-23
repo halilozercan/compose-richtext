@@ -2,24 +2,24 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.compose.Providers
-import androidx.ui.core.LayoutDirectionAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentColorAmbient
-import androidx.ui.foundation.ProvideTextStyle
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.currentTextStyle
-import androidx.ui.foundation.drawBackground
-import androidx.ui.graphics.Color
-import androidx.ui.layout.Column
-import androidx.ui.text.TextStyle
-import androidx.ui.text.font.FontStyle.Italic
-import androidx.ui.text.font.FontWeight
-import androidx.ui.text.resolveDefaults
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.ProvideTextStyle
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LayoutDirectionAmbient
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle.Italic
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.resolveDefaults
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.sp
 
 /**
  * Function that computes the [TextStyle] for the given header level, given the current [TextStyle]
@@ -109,7 +109,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   contentColor: Color
 ) {
   Providers(ContentColorAmbient provides contentColor) {
-    Box(Modifier.drawBackground(color = backgroundColor)) {
+    Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {
           RichTextScope.Heading(level, "Heading ${level + 1}")

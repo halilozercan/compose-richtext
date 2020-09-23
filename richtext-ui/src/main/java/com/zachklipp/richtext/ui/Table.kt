@@ -2,46 +2,40 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.Composable
-import androidx.compose.Immutable
-import androidx.compose.getValue
-import androidx.compose.remember
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.ui.core.Constraints
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Layout
-import androidx.ui.core.Modifier
-import androidx.ui.core.clipToBounds
-import androidx.ui.core.drawBehind
-import androidx.ui.core.enforce
-import androidx.ui.core.hasBoundedHeight
-import androidx.ui.core.hasBoundedWidth
-import androidx.ui.foundation.ProvideTextStyle
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.currentTextStyle
-import androidx.ui.foundation.drawBackground
-import androidx.ui.geometry.Offset
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.drawscope.Stroke
-import androidx.ui.layout.padding
-import androidx.ui.text.TextStyle
-import androidx.ui.text.font.FontWeight
+import androidx.compose.foundation.ProvideTextStyle
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Layout
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.enforce
+import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.Px
-import androidx.ui.unit.TextUnit
-import androidx.ui.unit.px
-import androidx.ui.unit.round
-import androidx.ui.unit.sp
-import androidx.ui.unit.toPx
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 @Immutable
 data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
   val borderColor: Color? = null,
-  val borderStroke: Stroke? = null
+  val borderStrokeWidth: Float? = null
 ) {
   companion object {
     val Default = TableStyle()
@@ -51,13 +45,13 @@ data class TableStyle(
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Black
-private val DefaultBorderStroke = Stroke(width = 1f)
+private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
-    headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
-    cellPadding = cellPadding ?: DefaultCellPadding,
-    borderColor = borderColor ?: DefaultBorderColor,
-    borderStroke = borderStroke ?: DefaultBorderStroke
+  headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
+  cellPadding = cellPadding ?: DefaultCellPadding,
+  borderColor = borderColor ?: DefaultBorderColor,
+  borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
 
 interface RichTextTableRowScope {
@@ -142,51 +136,51 @@ fun RichTextScope.Table(
     }
   }
 
-  var tableLayoutResult by state<TableLayoutResult?> { null }
+  var tableLayoutResult by remember { mutableStateOf<TableLayoutResult?>(null) }
   val tableBorderModifier = remember<Modifier>(tableLayoutResult, tableStyle) {
     tableLayoutResult?.let {
       Modifier.drawTableBorders(
-          rowOffsets = it.rowOffsets,
-          columnOffsets = it.columnOffsets,
-          borderColor = tableStyle.borderColor!!,
-          borderStroke = tableStyle.borderStroke!!
+        rowOffsets = it.rowOffsets,
+        columnOffsets = it.columnOffsets,
+        borderColor = tableStyle.borderColor!!,
+        borderStrokeWidth = tableStyle.borderStrokeWidth!!
       )
     } ?: Modifier
   }
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   SimpleTableLayout(
-      columns = columns,
-      rows = styledRows,
-      cellSpacing = tableStyle.borderStroke!!.width.px,
-      onTableLayoutResult = { tableLayoutResult = it },
-      modifier = modifier + tableBorderModifier
+    columns = columns,
+    rows = styledRows,
+    cellSpacing = tableStyle.borderStrokeWidth!!,
+    onTableLayoutResult = { tableLayoutResult = it },
+    modifier = modifier + tableBorderModifier
   )
 }
 
 private fun Modifier.drawTableBorders(
-  rowOffsets: List<Px>,
-  columnOffsets: List<Px>,
+  rowOffsets: List<Float>,
+  columnOffsets: List<Float>,
   borderColor: Color,
-  borderStroke: Stroke
+  borderStrokeWidth: Float
 ) = drawBehind {
   // Draw horizontal borders.
   rowOffsets.forEach { position ->
     drawLine(
-        borderColor,
-        Offset(0f, position.value),
-        Offset(size.width, position.value),
-        borderStroke
+      borderColor,
+      start = Offset(0f, position),
+      end = Offset(size.width, position),
+      borderStrokeWidth
     )
   }
 
   // Draw vertical borders.
   columnOffsets.forEach { position ->
     drawLine(
-        borderColor,
-        Offset(position.value, 0f),
-        Offset(position.value, size.height),
-        borderStroke
+      borderColor,
+      Offset(position, 0f),
+      Offset(position, size.height),
+      borderStrokeWidth
     )
   }
 }
@@ -199,8 +193,8 @@ private fun Modifier.drawTableBorders(
  */
 @Immutable
 private data class TableLayoutResult(
-  val rowOffsets: List<Px>,
-  val columnOffsets: List<Px>
+  val rowOffsets: List<Float>,
+  val columnOffsets: List<Float>
 )
 
 /**
@@ -214,49 +208,49 @@ private data class TableLayoutResult(
 private fun SimpleTableLayout(
   columns: Int,
   rows: List<List<@Composable() () -> Unit>>,
-  cellSpacing: Px,
+  cellSpacing: Float,
   onTableLayoutResult: (TableLayoutResult) -> Unit,
   modifier: Modifier
 ) {
   Layout(
-      children = {
-        rows.forEach { row ->
-          check(row.size == columns)
-          row.forEach { cell ->
-            cell()
-          }
+    children = {
+      rows.forEach { row ->
+        check(row.size == columns)
+        row.forEach { cell ->
+          cell()
         }
-      },
-      modifier = modifier
-  ) { measurables, constraints, _ ->
+      }
+    },
+    modifier = modifier
+  ) { measurables, constraints ->
     val rowMeasurables = measurables.chunked(columns)
     check(rowMeasurables.size == rows.size)
 
     check(constraints.hasBoundedWidth) { "Table must have bounded width" }
     // Divide the width by the number of columns, then leave room for the padding.
     val cellSpacingWidth = cellSpacing * (columns + 1)
-    val cellWidth = (constraints.maxWidth.toPx() - cellSpacingWidth) / columns
+    val cellWidth = (constraints.maxWidth - cellSpacingWidth) / columns
     val cellSpacingHeight = cellSpacing * (rowMeasurables.size + 1)
     val cellMaxHeight = if (!constraints.hasBoundedHeight) {
-      Px.Infinity
+      Float.MAX_VALUE
     } else {
       // Divide the height by the number of rows, then leave room for the padding.
-      (constraints.maxHeight.toPx() - cellSpacingHeight) / rowMeasurables.size
+      (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
     }
-    val cellConstraints = constraints.enforce(Constraints(maxWidth = cellWidth.round()))
+    val cellConstraints = constraints.enforce(Constraints(maxWidth = cellWidth.roundToInt()))
 
     val rowPlaceables = rowMeasurables.map { cellMeasurables ->
       cellMeasurables.map { cell ->
         cell.measure(cellConstraints)
       }
     }
-    val rowHeights = rowPlaceables.map { row -> row.maxBy { it.height }!!.height }
+    val rowHeights = rowPlaceables.map { row -> row.maxByOrNull { it.height }!!.height }
 
-    val tableHeight = rowHeights.sumBy { it.value }.px + cellSpacingHeight
-    layout(constraints.maxWidth, tableHeight.round()) {
+    val tableHeight = rowHeights.sumBy { it } + cellSpacingHeight
+    layout(constraints.maxWidth, tableHeight.roundToInt()) {
       var y = cellSpacing
-      val rowOffsets = mutableListOf<Px>()
-      val columnOffsets = mutableListOf<Px>()
+      val rowOffsets = mutableListOf<Float>()
+      val columnOffsets = mutableListOf<Float>()
 
       rowPlaceables.forEachIndexed { rowIndex, cellPlaceables ->
         rowOffsets += y - cellSpacing / 2f
@@ -266,7 +260,7 @@ private fun SimpleTableLayout(
           if (rowIndex == 0) {
             columnOffsets.add(x - cellSpacing / 2f)
           }
-          cell.place(x, y)
+          cell.place(x.roundToInt(), y.roundToInt())
           x += cellWidth + cellSpacing
         }
 
@@ -275,7 +269,7 @@ private fun SimpleTableLayout(
           columnOffsets.add(x - cellSpacing / 2f)
         }
 
-        y += rowHeights[rowIndex].toPx() + cellSpacing
+        y += rowHeights[rowIndex] + cellSpacing
       }
 
       rowOffsets.add(y - cellSpacing / 2f)
@@ -304,11 +298,11 @@ private fun TablePreviewFixedWidth() {
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
   RichTextScope.Table(
-      modifier = modifier.drawBackground(Color.White),
-      headerRow = {
-        cell { Text("Column 1") }
-        cell { Text("Column 2") }
-      }
+    modifier = modifier.background(Color.White),
+    headerRow = {
+      cell { Text("Column 1") }
+      cell { Text("Column 2") }
+    }
   ) {
     row {
       cell { Text("Hello") }
