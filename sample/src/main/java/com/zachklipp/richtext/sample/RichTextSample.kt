@@ -1,7 +1,5 @@
 package com.zachklipp.richtext.sample
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
@@ -18,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
@@ -26,19 +23,12 @@ import com.zachklipp.richtext.ui.RichTextDemo
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.resolveDefaults
 
-class MainActivity : AppCompatActivity() {
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    setContent {
-      App()
-    }
-  }
+@Preview
+@Composable private fun RichTextSamplePreview() {
+  RichTextSample()
 }
 
-@Composable
-private fun App() {
+@Composable fun RichTextSample() {
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
 
@@ -52,14 +42,14 @@ private fun App() {
           Column {
             Row {
               Checkbox(
-                  checked = isDarkModeEnabled,
-                  onCheckedChange = { isDarkModeEnabled = it }
+                checked = isDarkModeEnabled,
+                onCheckedChange = { isDarkModeEnabled = it }
               )
               Text("Dark Mode")
             }
             RichTextStyleConfig(
-                richTextStyle = richTextStyle,
-                onChanged = { richTextStyle = it }
+              richTextStyle = richTextStyle,
+              onChanged = { richTextStyle = it }
             )
           }
         }
@@ -72,39 +62,33 @@ private fun App() {
   }
 }
 
-@Preview
-@Composable
-private fun AppPreview() {
-  App()
-}
-
 @Composable
 private fun RichTextStyleConfig(
-    richTextStyle: RichTextStyle,
-    onChanged: (RichTextStyle) -> Unit
+  richTextStyle: RichTextStyle,
+  onChanged: (RichTextStyle) -> Unit
 ) {
   Text("Paragraph spacing: ${richTextStyle.paragraphSpacing}")
   Slider(
-      value = richTextStyle.paragraphSpacing!!.value,
-      valueRange = 0f..20f,
-      onValueChange = {
-        onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
-      }
+    value = richTextStyle.paragraphSpacing!!.value,
+    valueRange = 0f..20f,
+    onValueChange = {
+      onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
+    }
   )
 
   Text("Table cell padding: ${richTextStyle.tableStyle!!.cellPadding}")
   Slider(
-      value = richTextStyle.tableStyle!!.cellPadding!!.value,
-      valueRange = 0f..20f,
-      onValueChange = {
-        onChanged(
-            richTextStyle.copy(
-                tableStyle = richTextStyle.tableStyle!!.copy(
-                    cellPadding = it.sp
-                )
-            )
+    value = richTextStyle.tableStyle!!.cellPadding!!.value,
+    valueRange = 0f..20f,
+    onValueChange = {
+      onChanged(
+        richTextStyle.copy(
+          tableStyle = richTextStyle.tableStyle!!.copy(
+            cellPadding = it.sp
+          )
         )
-      }
+      )
+    }
   )
 
   Text("Table border width padding: ${richTextStyle.tableStyle!!.borderStrokeWidth!!}")

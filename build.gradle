@@ -54,6 +54,7 @@ buildscript {
           foundation: "androidx.compose.foundation:foundation:${versions.compose}",
           layout: "androidx.compose.foundation:foundation-layout:${versions.compose}",
           material: "androidx.compose.material:material:${versions.compose}",
+          icons: "androidx.compose.material:material-icons-extended:${versions.compose}",
           test: "androidx.ui:ui-test:${versions.compose}",
           text: "androidx.compose.foundation:foundation-text:${versions.compose}",
           tooling: "androidx.ui:ui-tooling:${versions.compose}",

@@ -1,0 +1,10 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  implementation deps.compose.foundation
+  implementation deps.compose.tooling
+  implementation deps.kotlin.stdlib
+}

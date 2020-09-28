@@ -1,3 +1,4 @@
+include ':printing'
 include ':richtext-ui'
 include ':sample'
 rootProject.name = "compose-richtext"
