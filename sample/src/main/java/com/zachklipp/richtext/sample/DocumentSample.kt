@@ -69,7 +69,7 @@ import java.util.Locale
 import kotlin.math.max
 
 /** Dimension used for margins/spacing on "large" screens or paper. */
-private val LargeGap = 96.dp
+val LargeGap = 96.dp
 
 @Preview(showDecoration = true)
 @Composable private fun DocumentPhonePreview() {
@@ -205,7 +205,7 @@ private val LargeGap = 96.dp
   }
 }
 
-@Composable private fun Title(text: String) {
+@Composable fun Title(text: String) {
   Text(
     text,
     style = MaterialTheme.typography.h3,
@@ -215,7 +215,7 @@ private val LargeGap = 96.dp
 }
 
 @OptIn(ExperimentalLayout::class)
-@Composable private fun ContactInfo(
+@Composable fun ContactInfo(
   address: String,
   contact: String,
   contactButtons: @Composable () -> Unit
@@ -240,7 +240,7 @@ private val LargeGap = 96.dp
  */
 // For Arrangement.Vertical.
 @OptIn(InternalLayoutApi::class)
-@Composable private fun Section(
+@Composable fun Section(
   title: String,
   verticalArrangement: Arrangement.Vertical = Arrangement.Top,
   content: @Composable () -> Unit
@@ -267,7 +267,7 @@ private val LargeGap = 96.dp
 /**
  * A paragraph describing a position, degree, or other single item on the document.
  */
-@Composable private fun LargeBlurb(
+@Composable fun LargeBlurb(
   organization: String,
   location: String = "",
   title: String,
@@ -282,7 +282,7 @@ private val LargeGap = 96.dp
 /**
  * A [LargeBlurb] whose description is a bullet list.
  */
-@Composable private fun BulletBlurb(
+@Composable fun BulletBlurb(
   organization: String,
   location: String = "",
   title: String,
@@ -373,7 +373,7 @@ private val LargeGap = 96.dp
   }
 }
 
-@Composable private fun Footer(
+@Composable fun Footer(
   text: String,
   uri: String,
   onPrintClicked: () -> Unit
@@ -436,7 +436,7 @@ private val LargeGap = 96.dp
  * vertically.
  * @param minColWidth The minimum width a column will be before collapsing to vertical.
  */
-@Composable private fun ResponsiveSidebarLayout(
+@Composable fun ResponsiveSidebarLayout(
   bodyWidthFraction: Float = 2f / 3f,
   columnSpacing: Dp = 0.dp,
   verticalSpacing: Dp = 0.dp,
