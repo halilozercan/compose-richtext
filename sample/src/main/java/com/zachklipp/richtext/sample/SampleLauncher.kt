@@ -32,6 +32,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
   "Pagination" to @Composable { PagedSample() },
   "Printable Document" to @Composable { DocumentSample() },
+  "Slideshow" to @Composable { SlideshowSample() },
 )
 
 @Preview @Composable private fun SampleLauncherPreview() {

@@ -1,15 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  implementation project(':printing')
-  implementation project(':richtext-ui')
-  implementation project(':slideshow')
-  implementation deps.androidx.appcompat
   implementation deps.compose.foundation
-  implementation deps.compose.icons
   implementation deps.compose.material
   implementation deps.compose.tooling
   implementation deps.kotlin.stdlib
