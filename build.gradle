@@ -2,7 +2,7 @@
 buildscript {
   ext.versions = [
       targetSdk: 29,
-      compose: '1.0.0-alpha03',
+      compose: '1.0.0-alpha04',
       kotlin: '1.4.10',
   ]
 
@@ -32,7 +32,7 @@ buildscript {
   }
 
   ext.deps = [
-      android_gradle_plugin: "com.android.tools.build:gradle:4.2.0-alpha12",
+      android_gradle_plugin: "com.android.tools.build:gradle:4.2.0-alpha13",
 
       androidx: [
           activity: "androidx.activity:activity:1.1.0",
