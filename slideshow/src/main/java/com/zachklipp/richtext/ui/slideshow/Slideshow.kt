@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Slider
 import androidx.compose.runtime.CommitScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -40,6 +41,10 @@ import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.LayoutModifier
+import androidx.compose.ui.Measurable
+import androidx.compose.ui.MeasureScope
+import androidx.compose.ui.MeasureScope.MeasureResult
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.composed
@@ -53,6 +58,7 @@ import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.ViewAmbient
 import androidx.compose.ui.selection.Selection
 import androidx.compose.ui.selection.SelectionContainer
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -181,11 +187,9 @@ class SlideshowController {
       Box(
         Modifier
           .fillMaxHeight(.4f)
+          // Can't use custom Alignment because of https://issuetracker.google.com/issues/169982630.
+          .then(HorizontalFractionalAlignment(scrubberSlide / (slides.size - 1).toFloat()))
           .aspectRatio(theme.aspectRatio)
-          // TODO Doesn't work due to a bug?
-          //  See https://kotlinlang.slack.com/archives/CJLTWPH7S/p1601703876455100
-          // .align(FractionAlignment(scrubberSlide / slides.size.toFloat()))
-          .align(Alignment.CenterHorizontally)
           .border(.5.dp, Color.LightGray)
           .drawShadow(16.dp)
           .background(theme.backgroundColor)
@@ -339,6 +343,20 @@ private class SlidesContainerState(
           navigationInterceptorsBySlide.getValue(slide) -= handler
         }
       }
+    }
+  }
+}
+
+@Immutable
+private data class HorizontalFractionalAlignment(val fraction: Float) : LayoutModifier {
+  override fun MeasureScope.measure(
+    measurable: Measurable,
+    constraints: Constraints
+  ): MeasureResult {
+    val placeable = measurable.measure(constraints)
+    return layout(constraints.maxWidth, placeable.height) {
+      val x = ((constraints.maxWidth - placeable.width) * fraction).roundToInt()
+      placeable.placeRelative(x, 0)
     }
   }
 }
