@@ -120,7 +120,7 @@ abstract class PrintableController {
         modifier: Modifier,
         pageDpi: Int,
         printBreakpoints: Boolean,
-        content: @Composable() () -> Unit
+        content: @Composable () -> Unit
       ) {
         if (activity == null || printManager == null) return
         val adapter = ComposePrintAdapter(

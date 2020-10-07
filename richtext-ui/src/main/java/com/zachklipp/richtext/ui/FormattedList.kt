@@ -2,9 +2,9 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -59,7 +59,7 @@ interface OrderedMarkers {
      * the index.
      */
     operator fun invoke(
-      drawMarker: @Composable() (level: Int, index: Int) -> Unit
+      drawMarker: @Composable (level: Int, index: Int) -> Unit
     ): OrderedMarkers = object : OrderedMarkers {
       @Composable override fun drawMarker(
         level: Int,
@@ -99,7 +99,7 @@ interface UnorderedMarkers {
     /**
      * Creates an [UnorderedMarkers] from an arbitrary composable given the indentation level.
      */
-    operator fun invoke(drawMarker: @Composable() (level: Int) -> Unit): UnorderedMarkers =
+    operator fun invoke(drawMarker: @Composable (level: Int) -> Unit): UnorderedMarkers =
       object : UnorderedMarkers {
         @Composable override fun drawMarker(level: Int) = drawMarker(level)
       }
@@ -152,7 +152,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 /**
  * Composes [children] with their [ListLevelAmbient] reset back to 0.
  */
-@Composable internal fun RestartListLevel(children: @Composable() () -> Unit) {
+@Composable internal fun RestartListLevel(children: @Composable () -> Unit) {
   Providers(ListLevelAmbient provides 0) {
     children()
   }
@@ -210,8 +210,8 @@ private val ListLevelAmbient = ambientOf { 0 }
 @Composable private fun PrefixListLayout(
   count: Int,
   prefixPadding: PaddingValues,
-  prefixForIndex: @Composable() (index: Int) -> Unit,
-  itemForIndex: @Composable() (index: Int) -> Unit
+  prefixForIndex: @Composable (index: Int) -> Unit,
+  itemForIndex: @Composable (index: Int) -> Unit
 ) {
   Layout(children = {
     // Draw the markers first.
