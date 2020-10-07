@@ -2,6 +2,7 @@
 
 package com.zachklipp.richtext.ui
 
+import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,10 +24,10 @@ fun RichText(
       WithStyle(style) {
         val resolvedStyle = currentRichTextStyle.resolveDefaults()
         val blockSpacing = with(DensityAmbient.current) {
-          resolvedStyle.paragraphSpacing!!.toIntPx()
+          resolvedStyle.paragraphSpacing!!.toDp()
         }
 
-        Column(modifier = modifier) {
+        Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
           children()
         }
       }
