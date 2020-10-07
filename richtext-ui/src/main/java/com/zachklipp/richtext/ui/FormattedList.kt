@@ -164,7 +164,9 @@ private val ListLevelAmbient = ambientOf { 0 }
  * @sample com.zachklipp.richtext.ui.OrderedListPreview
  * @sample com.zachklipp.richtext.ui.UnorderedListPreview
  */
-@Composable fun RichTextScope.FormattedList(
+// inline is required for https://github.com/zach-klippenstein/compose-richtext/issues/7
+@Suppress("NOTHING_TO_INLINE")
+@Composable inline fun RichTextScope.FormattedList(
   listType: ListType,
   vararg children: @Composable() RichTextScope.() -> Unit
 ) = FormattedList(listType, children.asList()) { it() }
