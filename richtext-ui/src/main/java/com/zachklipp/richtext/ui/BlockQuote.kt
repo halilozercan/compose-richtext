@@ -117,7 +117,7 @@ interface BlockQuoteGutter {
 ) {
   Providers(ContentColorAmbient provides contentColor) {
     Box(Modifier.background(backgroundColor)) {
-      RichTextScope.BlockQuote {
+      RichTextScope().BlockQuote {
         Text("Some text.")
         Text("Another paragraph.")
         BlockQuote {

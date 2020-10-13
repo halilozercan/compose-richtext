@@ -112,7 +112,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
     Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {
-          RichTextScope.Heading(level, "Heading ${level + 1}")
+          RichTextScope().Heading(level, "Heading ${level + 1}")
         }
       }
     }

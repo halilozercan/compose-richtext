@@ -6,6 +6,7 @@ import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -33,6 +34,7 @@ import kotlin.math.roundToInt
 @Immutable
 data class TableStyle(
   val headerTextStyle: TextStyle? = null,
+  val headerBackgroundColor: Color? = null,
   val cellPadding: TextUnit? = null,
   val borderColor: Color? = null,
   val borderStrokeWidth: Float? = null
@@ -43,12 +45,14 @@ data class TableStyle(
 }
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
+private val DefaultTableHeaderBackgroundColor = Color(246, 248, 250)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Black
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
   headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
+  headerBackgroundColor = headerBackgroundColor ?: DefaultTableHeaderBackgroundColor,
   cellPadding = cellPadding ?: DefaultCellPadding,
   borderColor = borderColor ?: DefaultBorderColor,
   borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
@@ -108,7 +112,8 @@ fun RichTextScope.Table(
   val cellPadding = with(DensityAmbient.current) {
     tableStyle.cellPadding!!.toDp()
   }
-  val cellModifier = Modifier.clipToBounds()
+  val cellModifier = Modifier.fillMaxWidth()
+      .clipToBounds()
       .padding(cellPadding)
 
   val styledRows = remember(header, rows, cellModifier) {
@@ -119,7 +124,10 @@ fun RichTextScope.Table(
         add(headerRow.cells.map<@Composable() RichTextScope.() -> Unit, @Composable() () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
-              RichText(modifier = cellModifier, children = cell)
+              RichText(
+                modifier = Modifier.background(tableStyle.headerBackgroundColor!!).then(cellModifier),
+                children = cell
+              )
             }
           }
         })
@@ -297,7 +305,7 @@ private fun TablePreviewFixedWidth() {
 
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
-  RichTextScope.Table(
+  RichTextScope().Table(
     modifier = modifier.background(Color.White),
     headerRow = {
       cell { Text("Column 1") }

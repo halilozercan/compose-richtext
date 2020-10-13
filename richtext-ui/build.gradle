@@ -9,4 +9,8 @@ dependencies {
   implementation deps.kotlin.stdlib
   implementation deps.compose.foundation
   implementation deps.compose.text
+  implementation deps.commonmark.core
+  implementation deps.commonmark.tables
+  implementation deps.commonmark.strikethrough
+  implementation deps.accompanist
 }

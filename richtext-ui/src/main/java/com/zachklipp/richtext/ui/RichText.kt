@@ -17,7 +17,7 @@ fun RichText(
   style: RichTextStyle? = null,
   children: @Composable() RichTextScope.() -> Unit
 ) {
-  with(RichTextScope) {
+  with(RichTextScope()) {
     // Nested RichTexts should not continue list leveling from the parent.
     RestartListLevel {
       WithStyle(style) {

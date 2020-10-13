@@ -177,7 +177,7 @@ fun RichTextScope.Text(
       }
     }
   }
-  RichTextScope.Text(text)
+  RichTextScope().Text(text)
 }
 
 private val spinningCross = InlineContent {

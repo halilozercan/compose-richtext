@@ -30,6 +30,7 @@ import androidx.ui.tooling.preview.Preview
 
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
+  "Markdown Demo" to @Composable { MarkdownSample() },
   "Pagination" to @Composable { PagedSample() },
   "Printable Document" to @Composable { DocumentSample() },
   "Slideshow" to @Composable { SlideshowSample() },
