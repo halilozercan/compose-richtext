@@ -130,13 +130,17 @@ private val DefaultContentsIndent = 4.sp
 private val DefaultOrderedMarkers = OrderedMarkers.text(
     { "${it + 1}." },
     {
-      "${('a'..'z').drop(it % 26)
-          .first()}."
+      "${
+        ('a'..'z').drop(it % 26)
+            .first()
+      }."
     },
     { "${it + 1})" },
     {
-      "${('a'..'z').drop(it % 26)
-          .first()})"
+      "${
+        ('a'..'z').drop(it % 26)
+            .first()
+      })"
     }
 )
 private val DefaultUnorderedMarkers = UnorderedMarkers.text("•", "◦", "▸", "▹")
@@ -148,7 +152,7 @@ internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
     unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
 
-private val ListLevelAmbient = ambientOf { 0 }
+internal val ListLevelAmbient = ambientOf { 0 }
 
 /**
  * Composes [children] with their [ListLevelAmbient] reset back to 0.

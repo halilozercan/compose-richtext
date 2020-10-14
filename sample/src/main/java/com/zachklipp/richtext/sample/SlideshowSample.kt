@@ -9,22 +9,25 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.annotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.ui.tooling.preview.Preview
-import com.zachklipp.richtext.ui.FormattedList
+import com.zachklipp.richtext.ui.FormattedList2
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.slideshow.BodySlide
 import com.zachklipp.richtext.ui.slideshow.NavigableContentContainer
+import com.zachklipp.richtext.ui.slideshow.NavigableContentScope
 import com.zachklipp.richtext.ui.slideshow.SlideDivider
 import com.zachklipp.richtext.ui.slideshow.SlideNumberFooter
 import com.zachklipp.richtext.ui.slideshow.SlideScope
@@ -89,24 +92,65 @@ import com.zachklipp.richtext.ui.slideshow.TitleSlide
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable private fun SlideScope.AnimatedOrderedListSlide() {
+  @Composable fun NavigableContentScope.SlideRow(children: @Composable () -> Unit) {
+    NavigableContent { visible ->
+      AnimatedVisibility(
+          visible.value,
+          enter = slideInHorizontally({ it * 2 }),
+          exit = slideOutHorizontally({ it * 2 }),
+      ) {
+        children()
+      }
+    }
+  }
+
   NavigableContentContainer {
     RichText {
-      FormattedList(
-        listType = Ordered,
-        items = listOf(
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "Etiam dignissim diam quis enim lobortis scelerisque fermentum.",
-          "Duis convallis convallis tellus id interdum velit.",
-          "Congue eu consequat ac felis donec et odio pellentesque.",
-        )
+      FormattedList2(
+          listType = Ordered,
+//        items = listOf(
+//          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+//          "Etiam dignissim diam quis enim lobortis scelerisque fermentum.",
+//          "Duis convallis convallis tellus id interdum velit.",
+//          "Congue eu consequat ac felis donec et odio pellentesque.",
+//        )
       ) {
-        NavigableContent { visible ->
-          AnimatedVisibility(
-            visible.value,
-            enter = expandIn(),
-            exit = shrinkOut(),
-          ) {
-            Text(it)
+//        NavigableContent { visible ->
+//          AnimatedVisibility(
+//            visible.value,
+//            enter = expandIn(),
+//            exit = shrinkOut(),
+//          ) {
+//            Text(it)
+//          }
+//        }
+        SlideRow {
+          ListItem(Modifier) {
+            Text(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor " +
+                    "incididunt ut labore et dolore magna aliqua.",
+            )
+          }
+        }
+        SlideRow {
+          ListItem(Modifier) {
+            Text(
+                "Etiam dignissim diam quis enim lobortis scelerisque fermentum."
+            )
+          }
+        }
+        SlideRow {
+          ListItem(Modifier) {
+            Text(
+                "Duis convallis convallis tellus id interdum velit."
+            )
+          }
+        }
+        SlideRow {
+          ListItem(Modifier) {
+            Text(
+                "Congue eu consequat ac felis donec et odio pellentesque."
+            )
           }
         }
       }

@@ -89,7 +89,7 @@ private class NavigableContentState(private val slideScope: SlideScope) : Naviga
     // TODO I think this is not going to work for more complex compositions, since a child may
     //  be added to the composition without recomposing the NavigableContentContainer. Not sure how
     //  to do index tracking in that case.
-    check(recording) { "Can't use NavigableContentScope outside of NavigableContentContainer." }
+//    check(recording) { "Can't use NavigableContentScope outside of NavigableContentContainer." }
 
     val visibleState = remember {
       val initiallyVisible = currentIndex++ < numberChildrenVisible
