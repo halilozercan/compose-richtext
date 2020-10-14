@@ -2,12 +2,12 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
@@ -81,13 +81,13 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
  */
 @Composable fun RichTextScope.Heading(
   level: Int,
-  children: @Composable() RichTextScope.() -> Unit
+  children: @Composable RichTextScope.() -> Unit
 ) {
   require(level >= 0) { "Level must be at least 0" }
 
   val richTextStyle = currentRichTextStyle.resolveDefaults()
   val headingStyleFunction = richTextStyle.headingStyle!!
-  val currentTextStyle = resolveDefaults(currentTextStyle(), LayoutDirectionAmbient.current)
+  val currentTextStyle = resolveDefaults(AmbientTextStyle.current, LayoutDirectionAmbient.current)
   val headingTextStyle = headingStyleFunction(level, currentTextStyle)
   val mergedTextStyle = currentTextStyle.merge(headingTextStyle)
 
@@ -108,7 +108,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   backgroundColor: Color,
   contentColor: Color
 ) {
-  Providers(ContentColorAmbient provides contentColor) {
+  Providers(AmbientContentColor provides contentColor) {
     Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {

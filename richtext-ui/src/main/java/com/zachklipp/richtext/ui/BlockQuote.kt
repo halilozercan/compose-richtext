@@ -2,11 +2,10 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +38,7 @@ interface BlockQuoteGutter {
   ) : BlockQuoteGutter {
     @Composable override fun drawGutter() {
       with(DensityAmbient.current) {
-        val color = color(contentColor())
+        val color = color(AmbientContentColor.current)
         val modifier = remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
           Modifier.padding(
@@ -59,7 +58,7 @@ interface BlockQuoteGutter {
 /**
  * Draws a block quote.
  */
-@Composable fun RichTextScope.BlockQuote(children: @Composable() RichTextScope.() -> Unit) {
+@Composable fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
   val spacing = with(DensityAmbient.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp() / 2
@@ -115,7 +114,7 @@ interface BlockQuoteGutter {
   backgroundColor: Color,
   contentColor: Color
 ) {
-  Providers(ContentColorAmbient provides contentColor) {
+  Providers(AmbientContentColor provides contentColor) {
     Box(Modifier.background(backgroundColor)) {
       RichTextScope().BlockQuote {
         Text("Some text.")

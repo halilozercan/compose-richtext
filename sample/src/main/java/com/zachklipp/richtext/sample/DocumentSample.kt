@@ -109,7 +109,6 @@ private val LargeGap = 96.dp
           }
         }
       )
-    }
     Spacer(Modifier.size(12.dp))
 
     ResponsiveSidebarLayout(
@@ -160,18 +159,19 @@ private val LargeGap = 96.dp
       }
     )
 
-    val sourceUrl = "https://github.com/zach-klippenstein/compose-richtext"
-    Footer(
-      if (isBeingPrinted) {
-        "This document was built and printed with Compose. It is also available as an app."
-      } else {
-        "This document was built with Compose."
-      } + "\nThe source code is available at $sourceUrl",
-      sourceUrl,
-      onPrintClicked = {
-        printableController.print("Compose Document")
-      }
-    )
+      val sourceUrl = "https://github.com/zach-klippenstein/compose-richtext"
+      Footer(
+        if (isBeingPrinted) {
+          "This document was built and printed with Compose. It is also available as an app."
+        } else {
+          "This document was built with Compose."
+        } + "\nThe source code is available at $sourceUrl",
+        sourceUrl,
+        onPrintClicked = {
+          printableController.print("Compose Document")
+        }
+      )
+    }
   }
 }
 
@@ -494,9 +494,9 @@ private val LargeGap = 96.dp
     layout(width, height) {
       bodyPlaceable.placeRelative(0, 0)
       if (isSideBySide) {
-        sidebarPlaceable.placeRelative(bodySideBySideWidth.toInt() + columnSpacing.toIntPx(), 0)
+        sidebarPlaceable.place(bodySideBySideWidth.toInt() + columnSpacing.toIntPx(), 0)
       } else {
-        sidebarPlaceable.placeRelative(0, bodyPlaceable.height + verticalSpacing.toIntPx())
+        sidebarPlaceable.place(0, bodyPlaceable.height + verticalSpacing.toIntPx())
       }
     }
   }

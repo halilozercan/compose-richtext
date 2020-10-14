@@ -29,7 +29,7 @@ val RichTextScope.currentRichTextStyle: RichTextStyle
 @Composable
 fun RichTextScope.WithStyle(
   style: RichTextStyle?,
-  children: @Composable() RichTextScope.() -> Unit
+  children: @Composable RichTextScope.() -> Unit
 ) {
   if (style == null) {
     children()

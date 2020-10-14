@@ -2,29 +2,30 @@
 
 package com.zachklipp.richtext.ui
 
+import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ExperimentalSubcomposeLayoutApi
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.enforce
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
@@ -63,11 +64,11 @@ interface RichTextTableRowScope {
 }
 
 interface RichTextTableCellScope {
-  fun cell(children: @Composable() RichTextScope.() -> Unit)
+  fun cell(children: @Composable RichTextScope.() -> Unit)
 }
 
 @Immutable
-private data class TableRow(val cells: List<@Composable() RichTextScope.() -> Unit>)
+private data class TableRow(val cells: List<@Composable RichTextScope.() -> Unit>)
 
 private class TableBuilder : RichTextTableRowScope {
   val rows = mutableListOf<RowBuilder>()
@@ -80,7 +81,7 @@ private class TableBuilder : RichTextTableRowScope {
 private class RowBuilder : RichTextTableCellScope {
   var row = TableRow(emptyList())
 
-  override fun cell(children: @Composable() RichTextScope.() -> Unit) {
+  override fun cell(children: @Composable RichTextScope.() -> Unit) {
     row = TableRow(row.cells + children)
   }
 }
@@ -104,11 +105,11 @@ fun RichTextScope.Table(
   }
   val columns = remember(header, rows) {
     max(
-        header?.cells?.size ?: 0,
-        rows.maxBy { it.cells.size }?.cells?.size ?: 0
+      header?.cells?.size ?: 0,
+      rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
-  val headerStyle = currentTextStyle().merge(tableStyle.headerTextStyle)
+  val headerStyle = AmbientTextStyle.current.merge(tableStyle.headerTextStyle)
   val cellPadding = with(DensityAmbient.current) {
     tableStyle.cellPadding!!.toDp()
   }
@@ -121,7 +122,7 @@ fun RichTextScope.Table(
       header?.let { headerRow ->
         // Type inference seems to puke without explicit parameters.
         @Suppress("RemoveExplicitTypeArguments")
-        add(headerRow.cells.map<@Composable() RichTextScope.() -> Unit, @Composable() () -> Unit> { cell ->
+        add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
               RichText(
@@ -135,7 +136,7 @@ fun RichTextScope.Table(
 
       rows.mapTo(this) { row ->
         @Suppress("RemoveExplicitTypeArguments")
-        row.cells.map<@Composable() RichTextScope.() -> Unit, @Composable() () -> Unit> { cell ->
+        row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             RichText(modifier = cellModifier, children = cell)
           }
@@ -144,25 +145,20 @@ fun RichTextScope.Table(
     }
   }
 
-  var tableLayoutResult by remember { mutableStateOf<TableLayoutResult?>(null) }
-  val tableBorderModifier = remember<Modifier>(tableLayoutResult, tableStyle) {
-    tableLayoutResult?.let {
-      Modifier.drawTableBorders(
-        rowOffsets = it.rowOffsets,
-        columnOffsets = it.columnOffsets,
-        borderColor = tableStyle.borderColor!!,
-        borderStrokeWidth = tableStyle.borderStrokeWidth!!
-      )
-    } ?: Modifier
-  }
-
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   SimpleTableLayout(
     columns = columns,
     rows = styledRows,
     cellSpacing = tableStyle.borderStrokeWidth!!,
-    onTableLayoutResult = { tableLayoutResult = it },
-    modifier = modifier + tableBorderModifier
+    drawDecorations = { layoutResult ->
+      Modifier.drawTableBorders(
+        rowOffsets = layoutResult.rowOffsets,
+        columnOffsets = layoutResult.columnOffsets,
+        borderColor = tableStyle.borderColor!!,
+        borderStrokeWidth = tableStyle.borderStrokeWidth
+      )
+    },
+    modifier = modifier
   )
 }
 
@@ -211,26 +207,25 @@ private data class TableLayoutResult(
  * @param cellSpacing The space in between each cell, and between each outer cell and the edge of
  * the table.
  */
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalSubcomposeLayoutApi::class)
 @Composable
 private fun SimpleTableLayout(
   columns: Int,
-  rows: List<List<@Composable() () -> Unit>>,
+  rows: List<List<@Composable () -> Unit>>,
+  drawDecorations: (TableLayoutResult) -> Modifier,
   cellSpacing: Float,
-  onTableLayoutResult: (TableLayoutResult) -> Unit,
   modifier: Modifier
 ) {
-  Layout(
-    children = {
+  SubcomposeLayout<Boolean>(modifier = modifier) { constraints ->
+    val measurables = subcompose(false) {
       rows.forEach { row ->
         check(row.size == columns)
         row.forEach { cell ->
           cell()
         }
       }
-    },
-    modifier = modifier
-  ) { measurables, constraints ->
+    }
+
     val rowMeasurables = measurables.chunked(columns)
     check(rowMeasurables.size == rows.size)
 
@@ -239,12 +234,13 @@ private fun SimpleTableLayout(
     val cellSpacingWidth = cellSpacing * (columns + 1)
     val cellWidth = (constraints.maxWidth - cellSpacingWidth) / columns
     val cellSpacingHeight = cellSpacing * (rowMeasurables.size + 1)
-    val cellMaxHeight = if (!constraints.hasBoundedHeight) {
-      Float.MAX_VALUE
-    } else {
-      // Divide the height by the number of rows, then leave room for the padding.
-      (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
-    }
+    // TODO Handle bounded height constraints.
+    // val cellMaxHeight = if (!constraints.hasBoundedHeight) {
+    //   Float.MAX_VALUE
+    // } else {
+    //   // Divide the height by the number of rows, then leave room for the padding.
+    //   (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
+    // }
     val cellConstraints = constraints.enforce(Constraints(maxWidth = cellWidth.roundToInt()))
 
     val rowPlaceables = rowMeasurables.map { cellMeasurables ->
@@ -254,8 +250,9 @@ private fun SimpleTableLayout(
     }
     val rowHeights = rowPlaceables.map { row -> row.maxByOrNull { it.height }!!.height }
 
-    val tableHeight = rowHeights.sumBy { it } + cellSpacingHeight
-    layout(constraints.maxWidth, tableHeight.roundToInt()) {
+    val tableWidth = constraints.maxWidth
+    val tableHeight = (rowHeights.sumBy { it } + cellSpacingHeight).roundToInt()
+    layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()
       val columnOffsets = mutableListOf<Float>()
@@ -281,12 +278,14 @@ private fun SimpleTableLayout(
       }
 
       rowOffsets.add(y - cellSpacing / 2f)
-      onTableLayoutResult(
-          TableLayoutResult(
-              rowOffsets = rowOffsets,
-              columnOffsets = columnOffsets
-          )
-      )
+
+      // Compose and draw the borders.
+      val layoutResult = TableLayoutResult(rowOffsets, columnOffsets)
+      subcompose(true) {
+        Box(modifier = drawDecorations(layoutResult))
+      }.single()
+        .measure(Constraints.fixed(tableWidth, tableHeight))
+        .placeRelative(0, 0)
     }
   }
 }
@@ -306,7 +305,7 @@ private fun TablePreviewFixedWidth() {
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
   RichTextScope().Table(
-    modifier = modifier.background(Color.White),
+    modifier = modifier.background(Color.White).padding(4.dp),
     headerRow = {
       cell { Text("Column 1") }
       cell { Text("Column 2") }

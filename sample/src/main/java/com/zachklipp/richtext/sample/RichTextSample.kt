@@ -16,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.selection.Selection
+import androidx.compose.ui.selection.SelectionContainer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
@@ -54,8 +56,11 @@ import com.zachklipp.richtext.ui.resolveDefaults
           }
         }
 
-        ScrollableColumn {
-          RichTextDemo(style = richTextStyle)
+        var selection: Selection? by remember { mutableStateOf(null) }
+        SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
+          ScrollableColumn {
+            RichTextDemo(style = richTextStyle)
+          }
         }
       }
     }

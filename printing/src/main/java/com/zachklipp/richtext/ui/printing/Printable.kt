@@ -5,7 +5,7 @@ import android.content.Context.PRINT_SERVICE
 import android.content.ContextWrapper
 import android.print.PrintManager
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Box
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.onCommit
@@ -166,7 +166,7 @@ abstract class PrintableController {
   }
 
   WithConstraints {
-    Box(modifier, children = content)
+    Box(modifier) { content() }
   }
 }
 

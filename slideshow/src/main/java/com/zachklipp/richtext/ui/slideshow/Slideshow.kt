@@ -13,7 +13,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
@@ -122,7 +122,7 @@ class SlideshowController {
       .background(Color.Black)
   ) {
     Providers(
-      ContentColorAmbient provides theme.contentColor,
+      AmbientContentColor provides theme.contentColor,
       SlideshowThemeAmbient provides theme,
     ) {
       ProvideTextStyle(theme.baseTextStyle) {

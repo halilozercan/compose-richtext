@@ -1,8 +1,8 @@
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Box
+import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.background
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
  * TODO write documentation
  */
 @Composable fun RichTextScope.HorizontalRule() {
-  val color = contentColor().copy(alpha = .2f)
+  val color = AmbientContentColor.current.copy(alpha = .2f)
   val spacing = with(DensityAmbient.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp()
   }
