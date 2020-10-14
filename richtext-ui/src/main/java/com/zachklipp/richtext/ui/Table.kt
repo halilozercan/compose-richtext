@@ -6,24 +6,24 @@ import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ExperimentalSubcomposeLayoutApi
+import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.enforce
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
@@ -136,25 +136,20 @@ fun RichTextScope.Table(
     }
   }
 
-  var tableLayoutResult by remember { mutableStateOf<TableLayoutResult?>(null) }
-  val tableBorderModifier = remember<Modifier>(tableLayoutResult, tableStyle) {
-    tableLayoutResult?.let {
-      Modifier.drawTableBorders(
-        rowOffsets = it.rowOffsets,
-        columnOffsets = it.columnOffsets,
-        borderColor = tableStyle.borderColor!!,
-        borderStrokeWidth = tableStyle.borderStrokeWidth!!
-      )
-    } ?: Modifier
-  }
-
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   SimpleTableLayout(
     columns = columns,
     rows = styledRows,
     cellSpacing = tableStyle.borderStrokeWidth!!,
-    onTableLayoutResult = { tableLayoutResult = it },
-    modifier = modifier + tableBorderModifier
+    drawDecorations = { layoutResult ->
+      Modifier.drawTableBorders(
+        rowOffsets = layoutResult.rowOffsets,
+        columnOffsets = layoutResult.columnOffsets,
+        borderColor = tableStyle.borderColor!!,
+        borderStrokeWidth = tableStyle.borderStrokeWidth
+      )
+    },
+    modifier = modifier
   )
 }
 
@@ -203,26 +198,25 @@ private data class TableLayoutResult(
  * @param cellSpacing The space in between each cell, and between each outer cell and the edge of
  * the table.
  */
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalSubcomposeLayoutApi::class)
 @Composable
 private fun SimpleTableLayout(
   columns: Int,
   rows: List<List<@Composable() () -> Unit>>,
+  drawDecorations: (TableLayoutResult) -> Modifier,
   cellSpacing: Float,
-  onTableLayoutResult: (TableLayoutResult) -> Unit,
   modifier: Modifier
 ) {
-  Layout(
-    children = {
+  SubcomposeLayout<Boolean>(modifier = modifier) { constraints ->
+    val measurables = subcompose(false) {
       rows.forEach { row ->
         check(row.size == columns)
         row.forEach { cell ->
           cell()
         }
       }
-    },
-    modifier = modifier
-  ) { measurables, constraints ->
+    }
+
     val rowMeasurables = measurables.chunked(columns)
     check(rowMeasurables.size == rows.size)
 
@@ -246,8 +240,9 @@ private fun SimpleTableLayout(
     }
     val rowHeights = rowPlaceables.map { row -> row.maxByOrNull { it.height }!!.height }
 
-    val tableHeight = rowHeights.sumBy { it } + cellSpacingHeight
-    layout(constraints.maxWidth, tableHeight.roundToInt()) {
+    val tableWidth = constraints.maxWidth
+    val tableHeight = (rowHeights.sumBy { it } + cellSpacingHeight).roundToInt()
+    layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()
       val columnOffsets = mutableListOf<Float>()
@@ -273,12 +268,14 @@ private fun SimpleTableLayout(
       }
 
       rowOffsets.add(y - cellSpacing / 2f)
-      onTableLayoutResult(
-          TableLayoutResult(
-              rowOffsets = rowOffsets,
-              columnOffsets = columnOffsets
-          )
-      )
+
+      // Compose and draw the borders.
+      val layoutResult = TableLayoutResult(rowOffsets, columnOffsets)
+      subcompose(true) {
+        Box(modifier = drawDecorations(layoutResult))
+      }.single()
+        .measure(Constraints.fixed(tableWidth, tableHeight))
+        .placeRelative(0, 0)
     }
   }
 }
@@ -298,7 +295,7 @@ private fun TablePreviewFixedWidth() {
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
   RichTextScope.Table(
-    modifier = modifier.background(Color.White),
+    modifier = modifier.background(Color.White).padding(4.dp),
     headerRow = {
       cell { Text("Column 1") }
       cell { Text("Column 2") }
