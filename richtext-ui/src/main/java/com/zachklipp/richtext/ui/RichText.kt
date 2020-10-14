@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.DensityAmbient
 fun RichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
-  children: @Composable() RichTextScope.() -> Unit
+  children: @Composable RichTextScope.() -> Unit
 ) {
   with(RichTextScope) {
     // Nested RichTexts should not continue list leveling from the parent.

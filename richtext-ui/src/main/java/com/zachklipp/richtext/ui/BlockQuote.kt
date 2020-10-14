@@ -58,7 +58,7 @@ interface BlockQuoteGutter {
 /**
  * Draws a block quote.
  */
-@Composable fun RichTextScope.BlockQuote(children: @Composable() RichTextScope.() -> Unit) {
+@Composable fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
   val spacing = with(DensityAmbient.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp() / 2

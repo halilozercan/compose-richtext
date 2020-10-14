@@ -3,11 +3,11 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.currentTextStyle
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -57,9 +57,9 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 /**
  * TODO write documentation
  */
-@Composable fun RichTextScope.CodeBlock(children: @Composable() RichTextScope.() -> Unit) {
+@Composable fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
-  val textStyle = currentTextStyle().merge(richTextStyle.textStyle)
+  val textStyle = AmbientTextStyle.current.merge(richTextStyle.textStyle)
   val background = Modifier.background(color = richTextStyle.background!!)
   val blockPadding = with(DensityAmbient.current) {
     richTextStyle.padding!!.toDp()

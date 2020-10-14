@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
  */
 class InlineContent(
   internal val initialSize: (Density.() -> IntSize)? = null,
-  internal val content: @Composable() Density.(alternateText: String) -> Unit
+  internal val content: @Composable Density.(alternateText: String) -> Unit
 )
 
 /**

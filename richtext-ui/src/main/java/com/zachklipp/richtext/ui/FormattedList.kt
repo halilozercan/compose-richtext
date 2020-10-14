@@ -169,7 +169,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 @Suppress("NOTHING_TO_INLINE")
 @Composable inline fun RichTextScope.FormattedList(
   listType: ListType,
-  vararg children: @Composable() RichTextScope.() -> Unit
+  vararg children: @Composable RichTextScope.() -> Unit
 ) = FormattedList(listType, children.asList()) { it() }
 
 /**
@@ -181,7 +181,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 @Composable fun <T> RichTextScope.FormattedList(
   listType: ListType,
   items: List<T>,
-  drawItem: @Composable() RichTextScope.(T) -> Unit
+  drawItem: @Composable RichTextScope.(T) -> Unit
 ) {
   val listStyle = currentRichTextStyle.resolveDefaults().listStyle!!
   val density = DensityAmbient.current

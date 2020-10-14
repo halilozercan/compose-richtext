@@ -2,10 +2,10 @@
 
 package com.zachklipp.richtext.ui
 
+import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.currentTextStyle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -59,11 +59,11 @@ interface RichTextTableRowScope {
 }
 
 interface RichTextTableCellScope {
-  fun cell(children: @Composable() RichTextScope.() -> Unit)
+  fun cell(children: @Composable RichTextScope.() -> Unit)
 }
 
 @Immutable
-private data class TableRow(val cells: List<@Composable() RichTextScope.() -> Unit>)
+private data class TableRow(val cells: List<@Composable RichTextScope.() -> Unit>)
 
 private class TableBuilder : RichTextTableRowScope {
   val rows = mutableListOf<RowBuilder>()
@@ -76,7 +76,7 @@ private class TableBuilder : RichTextTableRowScope {
 private class RowBuilder : RichTextTableCellScope {
   var row = TableRow(emptyList())
 
-  override fun cell(children: @Composable() RichTextScope.() -> Unit) {
+  override fun cell(children: @Composable RichTextScope.() -> Unit) {
     row = TableRow(row.cells + children)
   }
 }
@@ -100,11 +100,11 @@ fun RichTextScope.Table(
   }
   val columns = remember(header, rows) {
     max(
-        header?.cells?.size ?: 0,
-        rows.maxBy { it.cells.size }?.cells?.size ?: 0
+      header?.cells?.size ?: 0,
+      rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
-  val headerStyle = currentTextStyle().merge(tableStyle.headerTextStyle)
+  val headerStyle = AmbientTextStyle.current.merge(tableStyle.headerTextStyle)
   val cellPadding = with(DensityAmbient.current) {
     tableStyle.cellPadding!!.toDp()
   }
@@ -116,7 +116,7 @@ fun RichTextScope.Table(
       header?.let { headerRow ->
         // Type inference seems to puke without explicit parameters.
         @Suppress("RemoveExplicitTypeArguments")
-        add(headerRow.cells.map<@Composable() RichTextScope.() -> Unit, @Composable() () -> Unit> { cell ->
+        add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
               RichText(modifier = cellModifier, children = cell)
@@ -127,7 +127,7 @@ fun RichTextScope.Table(
 
       rows.mapTo(this) { row ->
         @Suppress("RemoveExplicitTypeArguments")
-        row.cells.map<@Composable() RichTextScope.() -> Unit, @Composable() () -> Unit> { cell ->
+        row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             RichText(modifier = cellModifier, children = cell)
           }
@@ -202,7 +202,7 @@ private data class TableLayoutResult(
 @Composable
 private fun SimpleTableLayout(
   columns: Int,
-  rows: List<List<@Composable() () -> Unit>>,
+  rows: List<List<@Composable () -> Unit>>,
   drawDecorations: (TableLayoutResult) -> Modifier,
   cellSpacing: Float,
   modifier: Modifier
@@ -225,12 +225,13 @@ private fun SimpleTableLayout(
     val cellSpacingWidth = cellSpacing * (columns + 1)
     val cellWidth = (constraints.maxWidth - cellSpacingWidth) / columns
     val cellSpacingHeight = cellSpacing * (rowMeasurables.size + 1)
-    val cellMaxHeight = if (!constraints.hasBoundedHeight) {
-      Float.MAX_VALUE
-    } else {
-      // Divide the height by the number of rows, then leave room for the padding.
-      (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
-    }
+    // TODO Handle bounded height constraints.
+    // val cellMaxHeight = if (!constraints.hasBoundedHeight) {
+    //   Float.MAX_VALUE
+    // } else {
+    //   // Divide the height by the number of rows, then leave room for the padding.
+    //   (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
+    // }
     val cellConstraints = constraints.enforce(Constraints(maxWidth = cellWidth.roundToInt()))
 
     val rowPlaceables = rowMeasurables.map { cellMeasurables ->
