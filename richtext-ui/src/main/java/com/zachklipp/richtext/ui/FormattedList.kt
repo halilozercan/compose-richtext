@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.LayoutDirectionAmbient
+import androidx.compose.ui.selection.DisableSelection
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
@@ -214,11 +215,15 @@ private val ListLevelAmbient = ambientOf { 0 }
   itemForIndex: @Composable (index: Int) -> Unit
 ) {
   Layout(children = {
-    // Draw the markers first.
-    for (i in 0 until count) {
-      // TODO Use the padding in the calculation directly instead of wrapping.
-      Box(Modifier.padding(prefixPadding)) {
-        prefixForIndex(i)
+    // List markers aren't selectable.
+    DisableSelection {
+      // Draw the markers first.
+      for (i in 0 until count) {
+        // TODO Use the padding in the calculation directly instead of wrapping.
+        Box(Modifier.padding(prefixPadding)) {
+
+          prefixForIndex(i)
+        }
       }
     }
 
