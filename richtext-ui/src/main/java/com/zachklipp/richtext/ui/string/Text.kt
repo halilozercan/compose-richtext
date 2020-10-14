@@ -8,7 +8,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Stack
@@ -72,7 +72,7 @@ fun RichTextScope.Text(
   onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
   val style = RichTextStyleAmbient.current.stringStyle
-  val contentColor = ContentColorAmbient.current
+  val contentColor = AmbientContentColor.current
   val annotated = remember(text, style, contentColor) {
     val resolvedStyle = (style ?: RichTextStringStyle.Default).resolveDefaults()
     text.toAnnotatedString(resolvedStyle, contentColor)

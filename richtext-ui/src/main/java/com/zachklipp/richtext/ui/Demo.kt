@@ -2,8 +2,8 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,7 +27,7 @@ import com.zachklipp.richtext.ui.string.TextPreview
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnBlack() {
-  Providers(ContentColorAmbient provides Color.White) {
+  Providers(AmbientContentColor provides Color.White) {
     Box(Modifier.background(color = Color.Black)) {
       RichTextDemo()
     }

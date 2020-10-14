@@ -10,10 +10,10 @@ import android.view.ViewTreeObserver.OnDrawListener
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable

@@ -1,15 +1,15 @@
 package com.zachklipp.richtext.ui.printing
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,7 +26,7 @@ import androidx.compose.ui.layout.ExperimentalSubcomposeLayoutApi
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.globalPosition
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.onPositioned
+import androidx.compose.ui.onGloballyPositioned
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntBounds
 import androidx.compose.ui.unit.IntSize
@@ -217,7 +217,7 @@ interface PageLayoutResult {
 
   var coordinates: LayoutCoordinates? by remember { mutableStateOf(null) }
   var pageLayoutResult: PageLayoutResult? by remember { mutableStateOf(null) }
-  var measureModifier = modifier.onPositioned { coordinates = it }
+  var measureModifier = modifier.onGloballyPositioned { coordinates = it }
     .then(pageModifier)
 
   measureModifier = measureModifier.drawWithContent {
@@ -243,7 +243,7 @@ interface PageLayoutResult {
       onBreakpoints = { globalBreakpoints ->
         coordinates?.let { coords ->
           val localBreakpoints = globalBreakpoints.map { breakpointGlobalBounds ->
-            val localRect = breakpointGlobalBounds.toRect().shift(-coords.globalPosition)
+            val localRect = breakpointGlobalBounds.toRect().translate(-coords.globalPosition)
             PageBreakpoint(
               xAnchorPx = Pair(localRect.left.toInt(), localRect.right.toInt()),
               yPx = localRect.bottom.toInt(),
@@ -381,7 +381,7 @@ private fun DrawScope.drawBreakpoints(
   // We need to wait for the positions to settle before reading the slot table.
   // The coroutine started by launchInComposition won't start right away, it will wait until the
   // frame is committed, and then dispatch, so this provides the necessary delay.
-  launchInComposition {
+  LaunchedTask {
     // Read the slot table on the main thread, but calculate everything else in the background.
     val rootGroup = composer.slotTable.asTree()
     val breakpoints = mutableListOf<IntBounds>()

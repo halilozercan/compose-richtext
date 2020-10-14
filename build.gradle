@@ -2,7 +2,7 @@
 buildscript {
   ext.versions = [
       targetSdk: 29,
-      compose: '1.0.0-alpha04',
+      compose: '1.0.0-alpha05',
       kotlin: '1.4.10',
   ]
 

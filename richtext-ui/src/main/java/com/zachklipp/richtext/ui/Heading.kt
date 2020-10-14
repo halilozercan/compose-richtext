@@ -2,8 +2,8 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentColorAmbient
+import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
@@ -108,7 +108,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   backgroundColor: Color,
   contentColor: Color
 ) {
-  Providers(ContentColorAmbient provides contentColor) {
+  Providers(AmbientContentColor provides contentColor) {
     Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {
