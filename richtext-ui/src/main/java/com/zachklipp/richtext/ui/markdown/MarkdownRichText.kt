@@ -1,13 +1,16 @@
 package com.zachklipp.richtext.ui.markdown
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.zachklipp.richtext.ui.*
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.RichTextString
 import com.zachklipp.richtext.ui.string.withFormat
 import dev.chrisbanes.accompanist.coil.CoilImage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import org.commonmark.ext.gfm.strikethrough.Strikethrough
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.*
@@ -15,30 +18,33 @@ import org.commonmark.node.*
 import org.commonmark.parser.Parser
 
 @Composable
-private fun getMarkdownAst(
-    text: String,
-    log: Boolean = true
-): Node {
-    val parser = remember { Parser.builder()
-        .extensions(
-            listOf(
-                TablesExtension.create(),
-                StrikethroughExtension.create()
-            )
-        ).build() }
-    return remember(text) {
-        parser.parse(text)
-    }.also { node ->
-        if(log) {
-            traversePreOrder(node)
+private fun getMarkdownAst(text: String): ASTNode? {
+    val parser = remember {
+        Parser.builder()
+            .extensions(
+                listOf(
+                    TablesExtension.create(),
+                    StrikethroughExtension.create()
+                )
+            ).build()
+    }
+    var rootASTNode by remember { mutableStateOf<ASTNode?>(null) }
+
+    val coroutineScope = rememberCoroutineScope() + Dispatchers.Default
+
+    onCommit(text) {
+        coroutineScope.launch {
+            rootASTNode = convert(parser.parse(text))
         }
     }
+
+    return rootASTNode
 }
 
 @Composable
-internal fun MarkdownTextScope.visitChildren(node: Node) {
-    var iterator = node.firstChild
-    while(iterator != null) {
+internal fun MarkdownTextScope.visitChildren(node: ASTNode?) {
+    var iterator = node?.firstChild
+    while (iterator != null) {
         val next = iterator.next
         RecursiveRenderMarkdownAst(
             node = iterator
@@ -48,70 +54,72 @@ internal fun MarkdownTextScope.visitChildren(node: Node) {
 }
 
 @Composable
-private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: Node) {
-    when(node) {
-        is BlockQuote -> {
+private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: ASTNode?) {
+    if (node == null) return
+
+    when (node) {
+        is ASTBlockQuote -> {
             BlockQuote {
                 richTextBlock {
                     visitChildren(node)
                 }
             }
         }
-        is BulletList -> {
+        is ASTBulletList -> {
             // Formatted List API should allow me to pass a generic composable
             // that would be called for every child, rather than vararg argument
             FormattedList(
                 listType = ListType.Unordered,
-                items = node.filterChildren<Node>()
+                items = node.filterChildren<ASTNode>()
             ) {
                 richTextBlock {
                     visitChildren(node)
                 }
             }
         }
-        is Code -> {
+        is ASTCode -> {
             updateRichText {
                 withFormat(RichTextString.Format.Code) {
                     append(node.literal)
                 }
             }
         }
-        is Document -> {
+        is ASTDocument -> {
             visitChildren(node)
         }
-        is Emphasis -> {
+        is ASTEmphasis -> {
             updateRichText {
                 withFormat(RichTextString.Format.Italic) {
                     visitChildren(node)
                 }
             }
         }
-        is FencedCodeBlock -> {
+        is ASTFencedCodeBlock -> {
             CodeBlock(text = node.literal)
         }
-        is HardLineBreak -> {
+        is ASTHardLineBreak -> {
             updateRichText {
                 append("\n")
                 visitChildren(node)
             }
         }
-        is Heading -> {
+        is ASTHeading -> {
             Heading(level = node.level) {
                 richTextBlock {
                     visitChildren(node)
                 }
             }
         }
-        is ThematicBreak -> {
+        is ASTThematicBreak -> {
             HorizontalRule()
         }
-        is HtmlInline -> {
+        is ASTHtmlInline -> {
             visitChildren(node)
         }
-        is HtmlBlock -> {
+        is ASTHtmlBlock -> {
             renderHtmlBlock(node)
         }
-        is Image -> {
+        is ASTImage -> {
             updateRichText {
                 appendInlineContent(content = InlineContent {
                     CoilImage(
@@ -126,10 +134,10 @@ private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: Node) {
                 })
             }
         }
-        is IndentedCodeBlock -> {
+        is ASTIndentedCodeBlock -> {
             CodeBlock(text = node.literal)
         }
-        is Link -> {
+        is ASTLink -> {
             updateRichText {
                 withFormat(RichTextString.Format.Link {
                     onLinkClick(node.destination)
@@ -138,16 +146,16 @@ private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: Node) {
                 }
             }
         }
-        is ListItem -> {
+        is ASTListItem -> {
             richTextBlock {
                 visitChildren(node)
             }
         }
-        is OrderedList -> {
+        is ASTOrderedList -> {
             richTextBlock {
                 FormattedList(
                     listType = ListType.Ordered,
-                    items = node.filterChildren<ListItem>()
+                    items = node.filterChildren<ASTListItem>()
                 ) {
                     richTextBlock {
                         visitChildren(node)
@@ -155,30 +163,30 @@ private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: Node) {
                 }
             }
         }
-        is Paragraph -> {
+        is ASTParagraph -> {
             richTextBlock {
                 visitChildren(node)
             }
         }
-        is SoftLineBreak -> {
+        is ASTSoftLineBreak -> {
             updateRichText {
                 append(" ")
                 visitChildren(node)
             }
         }
-        is StrongEmphasis -> {
+        is ASTStrongEmphasis -> {
             updateRichText {
                 withFormat(RichTextString.Format.Bold) {
                     visitChildren(node)
                 }
             }
         }
-        is Text -> {
+        is ASTText -> {
             updateRichText {
                 append(node.literal)
             }
         }
-        is LinkReferenceDefinition -> {
+        is ASTLinkReferenceDefinition -> {
             updateRichText {
                 withFormat(RichTextString.Format.Link {
                     onLinkClick(node.destination)
@@ -187,14 +195,14 @@ private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: Node) {
                 }
             }
         }
-        is CustomBlock -> {
+        is ASTCustomBlock -> {
             richTextBlock {
                 if (node is TableBlock) {
-                    renderTable(node)
+//                    renderTable(node)
                 }
             }
         }
-        is CustomNode -> {
+        is ASTCustomNode -> {
             if (node is Strikethrough) {
                 updateRichText {
                     withFormat(RichTextString.Format.Strikethrough) {
@@ -208,13 +216,15 @@ private fun MarkdownTextScope.RecursiveRenderMarkdownAst(node: Node) {
 
 typealias OnLinkClick = (String) -> Unit
 
-internal interface MarkdownTextScope: RichTextScope {
+@Immutable
+internal interface MarkdownTextScope : RichTextScope {
     val richTextStringBuilderHelper: RichTextStringBuilderHelper
 
     val onLinkClick: OnLinkClick
 }
 
-@Composable fun MarkdownText(
+@Composable
+fun MarkdownText(
     content: String,
     modifier: Modifier = Modifier,
     style: RichTextStyle? = null,
@@ -224,17 +234,38 @@ internal interface MarkdownTextScope: RichTextScope {
         modifier = modifier,
         style = style
     ) {
-        with(object: MarkdownTextScope {
+        val markdownTextScope = remember(content, onLinkClick) {
+            object : MarkdownTextScope {
 
-            override val richTextStringBuilderHelper = RichTextStringBuilderHelper()
+                override val richTextStringBuilderHelper = RichTextStringBuilderHelper()
 
-            override val onLinkClick = onLinkClick
+                override val onLinkClick = onLinkClick
 
-        }) {
-            val markdownAst = getMarkdownAst(text = content)
-            RecursiveRenderMarkdownAst(
-                node = markdownAst
-            )
+            }
+        }
+
+        with(markdownTextScope) {
+//            val markdownAst = getMarkdownAst(text = content)
+            val parser = remember {
+                Parser.builder()
+                    .extensions(
+                        listOf(
+                            TablesExtension.create(),
+                            StrikethroughExtension.create()
+                        )
+                    ).build()
+            }
+            var rootASTNode by remember { mutableStateOf<ASTNode?>(null) }
+
+            val coroutineScope = rememberCoroutineScope() + Dispatchers.Default
+
+            onCommit(content) {
+                coroutineScope.launch {
+                    rootASTNode = convert(parser.parse(content))
+                }
+            }
+
+            RecursiveRenderMarkdownAst(node = rootASTNode)
         }
     }
 }

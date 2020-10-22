@@ -4,13 +4,7 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Surface
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +53,11 @@ import com.zachklipp.richtext.ui.resolveDefaults
         var selection: Selection? by remember { mutableStateOf(null) }
         SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
           ScrollableColumn {
-            RichTextDemo(style = richTextStyle)
+            var header by remember { mutableStateOf("Header") }
+            Button(onClick = { header = "Header"}) {
+              Text("don't change anything")
+            }
+            RichTextDemo(style = richTextStyle, header)
           }
         }
       }

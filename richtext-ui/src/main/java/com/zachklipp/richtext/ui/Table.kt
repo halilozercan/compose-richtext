@@ -35,7 +35,6 @@ import kotlin.math.roundToInt
 @Immutable
 data class TableStyle(
   val headerTextStyle: TextStyle? = null,
-  val headerBackgroundColor: Color? = null,
   val cellPadding: TextUnit? = null,
   val borderColor: Color? = null,
   val borderStrokeWidth: Float? = null
@@ -46,14 +45,12 @@ data class TableStyle(
 }
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
-private val DefaultTableHeaderBackgroundColor = Color(246, 248, 250)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Black
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
   headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
-  headerBackgroundColor = headerBackgroundColor ?: DefaultTableHeaderBackgroundColor,
   cellPadding = cellPadding ?: DefaultCellPadding,
   borderColor = borderColor ?: DefaultBorderColor,
   borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
@@ -126,7 +123,7 @@ fun RichTextScope.Table(
           @Composable {
             ProvideTextStyle(headerStyle) {
               RichText(
-                modifier = Modifier.background(tableStyle.headerBackgroundColor!!).then(cellModifier),
+                modifier = cellModifier,
                 children = cell
               )
             }
@@ -252,6 +249,7 @@ private fun SimpleTableLayout(
 
     val tableWidth = constraints.maxWidth
     val tableHeight = (rowHeights.sumBy { it } + cellSpacingHeight).roundToInt()
+
     layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()

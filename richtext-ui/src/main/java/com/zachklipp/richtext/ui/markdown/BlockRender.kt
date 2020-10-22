@@ -10,8 +10,8 @@ import com.zachklipp.richtext.ui.string.InlineContent
 import org.commonmark.ext.gfm.tables.*
 import org.commonmark.node.HtmlBlock
 
-@Composable
-internal fun MarkdownTextScope.renderTable(node: TableBlock) {
+/*@Composable
+internal fun MarkdownTextScope.renderTable(node: ASTTableBlock) {
     Table(
         headerRow = {
             node.filterChildren<TableHead>()
@@ -44,10 +44,10 @@ internal fun MarkdownTextScope.renderTable(node: TableBlock) {
                 }
             }
     }
-}
+}*/
 
 @Composable
-internal fun MarkdownTextScope.renderHtmlBlock(node: HtmlBlock) {
+internal fun MarkdownTextScope.renderHtmlBlock(node: ASTHtmlBlock) {
     richTextBlock {
         updateRichText {
             appendInlineContent(content = InlineContent {
