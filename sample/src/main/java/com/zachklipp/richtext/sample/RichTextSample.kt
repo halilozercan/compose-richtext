@@ -2,14 +2,18 @@ package com.zachklipp.richtext.sample
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.selection.Selection
 import androidx.compose.ui.selection.SelectionContainer
 import androidx.compose.ui.unit.dp
@@ -36,11 +40,17 @@ import com.zachklipp.richtext.ui.resolveDefaults
         // Config
         Card(elevation = 4.dp) {
           Column {
-            Row {
+            Row(
+              Modifier
+                .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
+                .padding(8.dp),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
               Checkbox(
                 checked = isDarkModeEnabled,
-                onCheckedChange = { isDarkModeEnabled = it }
-              )
+                onCheckedChange = { isDarkModeEnabled = it },
+
+                )
               Text("Dark Mode")
             }
             RichTextStyleConfig(
@@ -53,11 +63,7 @@ import com.zachklipp.richtext.ui.resolveDefaults
         var selection: Selection? by remember { mutableStateOf(null) }
         SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
           ScrollableColumn {
-            var header by remember { mutableStateOf("Header") }
-            Button(onClick = { header = "Header"}) {
-              Text("don't change anything")
-            }
-            RichTextDemo(style = richTextStyle, header)
+            RichTextDemo(style = richTextStyle)
           }
         }
       }

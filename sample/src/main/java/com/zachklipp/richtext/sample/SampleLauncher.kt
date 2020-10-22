@@ -6,12 +6,17 @@ import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.ExperimentalLayout
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLifecycleObserver
 import androidx.compose.runtime.getValue
@@ -20,7 +25,11 @@ import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.TransformOrigin
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.drawLayer
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Lifecycle.State.DESTROYED
 import androidx.lifecycle.Lifecycle.State.STARTED
@@ -36,8 +45,9 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "Slideshow" to @Composable { SlideshowSample() },
 )
 
-@Preview @Composable private fun SampleLauncherPreview() {
-  SampleLauncher()
+@Preview(showBackground = true)
+@Composable private fun SampleLauncherPreview() {
+  SamplesListScreen(onSampleClicked = {})
 }
 
 @Composable fun SampleLauncher() {
@@ -52,18 +62,39 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   }
 }
 
+@OptIn(ExperimentalLayout::class)
 @Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
   MaterialTheme(colors = darkColors()) {
     Scaffold(
-      topBar = {
-        TopAppBar(title = { Text("Samples") })
-      }
+        topBar = {
+          TopAppBar(title = { Text("Samples") })
+        }
     ) {
-      LazyColumnForIndexed(Samples) { index, (title, _) ->
+      LazyColumnForIndexed(Samples) { index, (title, sampleContent) ->
         ListItem(
-          Modifier.clickable(onClick = { onSampleClicked(index) })
-        ) { Text(title) }
+            Modifier.clickable(onClick = { onSampleClicked(index) }),
+            icon = { SamplePreview(sampleContent) }
+        ) {
+          Text(title)
+        }
       }
+    }
+  }
+}
+
+@Composable private fun SamplePreview(content: @Composable () -> Unit) {
+  ScreenPreview(
+      Modifier.preferredHeight(50.dp)
+          .aspectRatio(1f)
+          .clipToBounds()
+          // "Zoom in" to the top-start corner to make the preview more legible.
+          .drawLayer(
+              scaleX = 1.5f, scaleY = 1.5f,
+              transformOrigin = TransformOrigin(0f, 0f)
+          ),
+  ) {
+    MaterialTheme(colors = lightColors()) {
+      Surface(content = content)
     }
   }
 }
