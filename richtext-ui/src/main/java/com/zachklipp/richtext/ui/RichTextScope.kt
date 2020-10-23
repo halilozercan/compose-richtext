@@ -12,7 +12,9 @@ import androidx.compose.runtime.Providers
 @Immutable
 interface RichTextScope {
   companion object {
-    operator fun invoke(): RichTextScope = object: RichTextScope {}
+    private val scope = object: RichTextScope {}
+
+    operator fun invoke(): RichTextScope = scope
   }
 }
 

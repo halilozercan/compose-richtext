@@ -72,7 +72,7 @@ import com.zachklipp.richtext.ui.resolveDefaults
 }
 
 @Composable
-private fun RichTextStyleConfig(
+fun RichTextStyleConfig(
   richTextStyle: RichTextStyle,
   onChanged: (RichTextStyle) -> Unit
 ) {
