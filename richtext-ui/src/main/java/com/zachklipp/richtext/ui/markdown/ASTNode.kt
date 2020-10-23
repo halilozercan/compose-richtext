@@ -1,6 +1,7 @@
 package com.zachklipp.richtext.ui.markdown
 
 import androidx.compose.runtime.Immutable
+import org.commonmark.ext.gfm.tables.*
 import org.commonmark.node.*
 
 /**
@@ -227,8 +228,13 @@ fun convert(
             )
         }
         is CustomBlock -> {
+            val data: Any = when(node) {
+                is TableBlock -> ASTTable.ASTTableBlock
+                else -> Unit
+            }
+
             ASTCustomBlock(
-                data = Unit,
+                data = data,
                 parent = parentNode,
                 previous = previousNode,
                 firstChild = null,
@@ -237,8 +243,24 @@ fun convert(
             )
         }
         is CustomNode -> {
+            val data: Any = when(node) {
+                is TableHead -> ASTTable.ASTTableHeader
+                is TableBody -> ASTTable.ASTTableBody
+                is TableRow -> ASTTable.ASTTableRow
+                is TableCell -> ASTTable.ASTTableCell(
+                    header = node.isHeader,
+                    alignment = when(node.alignment) {
+                        TableCell.Alignment.LEFT -> ASTTable.ASTTableCellAlignment.LEFT
+                        TableCell.Alignment.CENTER -> ASTTable.ASTTableCellAlignment.CENTER
+                        TableCell.Alignment.RIGHT -> ASTTable.ASTTableCellAlignment.RIGHT
+                        null -> ASTTable.ASTTableCellAlignment.LEFT
+                    }
+                )
+                else -> Unit
+            }
+
             ASTCustomNode(
-                data = Unit,
+                data = data,
                 parent = parentNode,
                 previous = previousNode,
                 firstChild = null,

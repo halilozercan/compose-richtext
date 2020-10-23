@@ -1,6 +1,5 @@
 package com.zachklipp.richtext.sample
 
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,13 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
-import androidx.compose.ui.selection.Selection
-import androidx.compose.ui.selection.SelectionContainer
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import com.zachklipp.richtext.ui.RichTextDemo
-import com.zachklipp.richtext.ui.markdown.MarkdownText
+import com.zachklipp.richtext.ui.markdown.Markdown
 
 @Preview
 @Composable private fun MarkdownSamplePreview() {
@@ -25,39 +21,19 @@ import com.zachklipp.richtext.ui.markdown.MarkdownText
 }
 
 @Composable fun MarkdownSample() {
-    var markdownContent by remember { mutableStateOf(TextFieldValue(simpleMarkdown)) }
     val colors = lightColors()
-    val context = ContextAmbient.current
 
     MaterialTheme(colors = colors) {
         Surface {
-            Column {
-                // Config
-                Card(elevation = 4.dp) {
-                    OutlinedTextField(
-                        value = markdownContent,
-                        onValueChange = { markdownContent = it },
-                        modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp)
-                    )
-                }
-
-                ScrollableColumn {
-                    MarkdownText(
-                        modifier = Modifier.padding(16.dp),
-                        content = markdownContent.text,
-                    )
-                }
+            ScrollableColumn {
+                Markdown(
+                    modifier = Modifier.padding(16.dp),
+                    content = sampleMarkdown,
+                )
             }
         }
     }
 }
-
-private val simpleMarkdown = """
-    # Header
-    Some text with *emphasis* and **strong emphasis**.
-    
-    > Quot*e?*
-""".trimIndent()
 
 private val sampleMarkdown = """
               # Demo
