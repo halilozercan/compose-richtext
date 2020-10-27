@@ -7,8 +7,6 @@ import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.currentTextStyle
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -110,8 +108,7 @@ fun RichTextScope.Table(
   val cellPadding = with(DensityAmbient.current) {
     tableStyle.cellPadding!!.toDp()
   }
-  val cellModifier = Modifier.fillMaxWidth()
-      .clipToBounds()
+  val cellModifier = Modifier.clipToBounds()
       .padding(cellPadding)
 
   val styledRows = remember(header, rows, cellModifier) {
@@ -122,10 +119,7 @@ fun RichTextScope.Table(
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
-              RichText(
-                modifier = cellModifier,
-                children = cell
-              )
+              RichText(modifier = cellModifier, children = cell)
             }
           }
         })
@@ -249,7 +243,6 @@ private fun SimpleTableLayout(
 
     val tableWidth = constraints.maxWidth
     val tableHeight = (rowHeights.sumBy { it } + cellSpacingHeight).roundToInt()
-
     layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()
@@ -302,7 +295,7 @@ private fun TablePreviewFixedWidth() {
 
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
-  RichTextScope().Table(
+  RichTextScope.Table(
     modifier = modifier.background(Color.White).padding(4.dp),
     headerRow = {
       cell { Text("Column 1") }

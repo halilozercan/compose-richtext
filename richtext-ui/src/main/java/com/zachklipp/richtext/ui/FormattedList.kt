@@ -307,7 +307,7 @@ private val ListLevelAmbient = ambientOf { 0 }
 ) {
   Providers(LayoutDirectionAmbient provides layoutDirection) {
     Box(Modifier.background(color = Color.White)) {
-      RichTextScope().FormattedList(
+      RichTextScope.FormattedList(
           listType = listType,
           items = listOf(
               "Foo",

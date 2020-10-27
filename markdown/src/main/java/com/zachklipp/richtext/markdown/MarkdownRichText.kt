@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.FormattedList
+import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.RichTextString
 import com.zachklipp.richtext.ui.string.withFormat
@@ -36,18 +37,21 @@ import com.zachklipp.richtext.ui.string.Text as InlineRichText
  * @param astNode Root node to accept as Text Content container.
  */
 @Composable
-internal fun MarkdownTextScope.MarkdownRichText(astNode: AstNode) {
+internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
+    val onLinkClicked = AmbientOnLinkClicked.current
     // Refer to notes at the top this file.
     // Assume that only RichText nodes reside below this level.
-    val richText = remember(astNode) {
-        computeRichTextString(astNode)
+    val richText = remember(astNode, onLinkClicked) {
+        computeRichTextString(astNode, onLinkClicked)
     }
 
     InlineRichText(text = richText)
 }
 
-// This function lives under MarkdownTextScope to access onLinkClicked function.
-private fun MarkdownTextScope.computeRichTextString(astNode: AstNode): RichTextString {
+private fun computeRichTextString(
+    astNode: AstNode,
+    onLinkClicked: (String) -> Unit
+): RichTextString {
     val richTextStringBuilder = RichTextString.Builder()
 
     // Modified pre-order traversal with pushFormat, popFormat support.
@@ -85,9 +89,9 @@ private fun MarkdownTextScope.computeRichTextString(astNode: AstNode): RichTextS
                     })
                     null
                 }
-                is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(onClick = {
-                    onLinkClick(currentNode.destination)
-                }))
+                is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
+                    onClick = { onLinkClicked(currentNode.destination) }
+                ))
                 is AstSoftLineBreak -> {
                     richTextStringBuilder.append(" ")
                     null
@@ -101,9 +105,9 @@ private fun MarkdownTextScope.computeRichTextString(astNode: AstNode): RichTextS
                     richTextStringBuilder.append(currentNode.literal)
                     null
                 }
-                is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(onClick = {
-                    onLinkClick(currentNode.destination)
-                }))
+                is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
+                    onClick = { onLinkClicked(currentNode.destination) }
+                ))
                 else -> null
             }
 

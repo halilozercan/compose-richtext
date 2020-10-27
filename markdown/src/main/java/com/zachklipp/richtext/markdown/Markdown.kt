@@ -5,7 +5,6 @@ import android.text.Html
 import android.widget.TextView
 import androidx.compose.foundation.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.zachklipp.richtext.ui.*
@@ -13,8 +12,6 @@ import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.Text
 import com.zachklipp.richtext.ui.string.richTextString
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TablesExtension
@@ -38,18 +35,7 @@ fun Markdown(
         modifier = modifier,
         style = style
     ) {
-        val onLinkClickedState by remember(onLinkClicked) { mutableStateOf(onLinkClicked) }
-
-        val markdownTextScope = remember {
-            object : MarkdownTextScope {
-                override fun onLinkClick(destination: String) {
-                    onLinkClickedState?.invoke(destination)
-                }
-
-            }
-        }
-
-        with(markdownTextScope) {
+        Providers(AmbientOnLinkClicked provides (onLinkClicked ?: {})) {
             val markdownAst = getMarkdownAst(text = content)
             RecursiveRenderMarkdownAst(astNode = markdownAst)
         }
@@ -82,8 +68,8 @@ fun Markdown(
  * @param astNode Root node to start rendering.
  */
 @Composable
-internal fun MarkdownTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
-    if (astNode == null) return
+internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
+    astNode ?: return
 
     when (astNode) {
         is AstBlockQuote -> {
@@ -199,10 +185,15 @@ internal fun getMarkdownAst(text: String): AstNode? {
  * @param node Root ASTNode whose children will be visited.
  */
 @Composable
-internal fun MarkdownTextScope.visitChildren(node: AstNode?) {
-    node ?: return
-    val children = node.childrenSequence()
-    children.forEach {
+internal fun RichTextScope.visitChildren(node: AstNode?) {
+    node?.childrenSequence()?.forEach {
         RecursiveRenderMarkdownAst(astNode = it)
     }
 }
+
+/**
+ * An internal ambient to pass through OnLinkClicked function from root [Markdown] composable
+ * to children that render links. Although being explicit is preferred, recursive calls to
+ * [visitChildren] increases verbosity with each extra argument.
+ */
+internal val AmbientOnLinkClicked = ambientOf<(String) -> Unit> { error("OnLinkClicked is not provided") }

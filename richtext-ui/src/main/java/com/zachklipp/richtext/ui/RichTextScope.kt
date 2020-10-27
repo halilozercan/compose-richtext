@@ -10,13 +10,7 @@ import androidx.compose.runtime.Providers
  * Marker interface for Composable functions that can draw rich text.
  */
 @Immutable
-interface RichTextScope {
-  companion object {
-    private val scope = object: RichTextScope {}
-
-    operator fun invoke(): RichTextScope = scope
-  }
-}
+object RichTextScope
 
 /**
  * The current [RichTextStyle].
