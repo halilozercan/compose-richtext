@@ -1,24 +1,19 @@
 package com.zachklipp.richtext.markdown
 
 import androidx.compose.runtime.Composable
+import com.zachklipp.richtext.markdown.extensions.*
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.Table
 
-internal inline fun <reified T: AstTableSection> AstNode.filterTable(): Sequence<AstCustomNode> {
-    return this.filterChildrenIsInstance<AstCustomNode>().filter {
-        it.data is T
-    }
-}
-
 @Composable
-internal fun RichTextScope.renderTable(node: AstCustomBlock) {
+internal fun RichTextScope.renderTable(node: AstTableRoot) {
     Table(
         headerRow = {
-            node.filterTable<AstTableSection.Header>()
+            node.filterChildrenIsInstance<AstTableHeader>()
                 .firstOrNull()
-                ?.filterTable<AstTableSection.Row>()
+                ?.filterChildrenIsInstance<AstTableRow>()
                 ?.firstOrNull()
-                ?.filterTable<AstTableSection.Cell>()
+                ?.filterChildrenIsInstance<AstTableCell>()
                 ?.forEach { tableCell ->
                     cell {
                         MarkdownRichText(tableCell)
@@ -26,12 +21,12 @@ internal fun RichTextScope.renderTable(node: AstCustomBlock) {
                 }
         }
     ) {
-        node.filterTable<AstTableSection.Body>()
+        node.filterChildrenIsInstance<AstTableBody>()
             .firstOrNull()
-            ?.filterTable<AstTableSection.Row>()
+            ?.filterChildrenIsInstance<AstTableRow>()
             ?.forEach { tableRow ->
                 row {
-                    tableRow.filterTable<AstTableSection.Cell>()
+                    tableRow.filterChildrenIsInstance<AstTableCell>()
                         .forEach { tableCell ->
                             cell {
                                 MarkdownRichText(tableCell)

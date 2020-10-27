@@ -3,6 +3,7 @@ package com.zachklipp.richtext.markdown
 import androidx.compose.foundation.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.zachklipp.richtext.markdown.extensions.AstStrikethrough
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.RichTextScope
@@ -75,6 +76,7 @@ private fun computeRichTextString(
                     null
                 }
                 is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
+                is AstStrikethrough -> richTextStringBuilder.pushFormat(RichTextString.Format.Strikethrough)
                 is AstImage -> {
                     richTextStringBuilder.appendInlineContent(content = InlineContent {
                         CoilImage(

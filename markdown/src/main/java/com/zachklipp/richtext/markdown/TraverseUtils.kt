@@ -1,8 +1,5 @@
 package com.zachklipp.richtext.markdown
 
-import android.util.Log
-import java.util.*
-
 internal fun AstNode.childrenSequence(
     reverse: Boolean = false
 ): Sequence<AstNode> {

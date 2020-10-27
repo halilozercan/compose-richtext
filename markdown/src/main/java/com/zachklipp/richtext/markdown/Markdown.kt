@@ -7,6 +7,7 @@ import androidx.compose.foundation.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.zachklipp.richtext.markdown.extensions.AstTableRoot
 import com.zachklipp.richtext.ui.*
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.Text
@@ -78,11 +79,17 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
             }
         }
         is AstBulletList -> {
-            FormattedList(
-                listType = ListType.Unordered,
-                items = astNode.filterChildrenIsInstance<AstListItem>().toList()
-            ) { astListItem ->
-                visitChildren(astListItem)
+            WithStyle(style = RichTextStyle(
+                listStyle = ListStyle.Default.copy(
+                    unorderedMarkers = UnorderedMarkers.text("${astNode.bulletMarker}")
+                )
+            )) {
+                FormattedList(
+                    listType = ListType.Unordered,
+                    items = astNode.childrenSequence().toList()
+                ) { astListItem ->
+                    visitChildren(astListItem)
+                }
             }
         }
         is AstFencedCodeBlock -> {
@@ -90,9 +97,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         }
         is AstHeading -> {
             Heading(level = astNode.level) {
-                MarkdownRichText(
-                    astNode = astNode
-                )
+                MarkdownRichText(astNode)
             }
         }
         is AstThematicBreak -> {
@@ -123,7 +128,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         is AstOrderedList -> {
             FormattedList(
                 listType = ListType.Ordered,
-                items = astNode.filterChildrenIsInstance<AstListItem>().toList()
+                items = astNode.childrenSequence().toList()
             ) { astListItem ->
                 visitChildren(astListItem)
             }
@@ -138,14 +143,8 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         is AstText -> {
             Text(astNode.literal)
         }
-        is AstCustomBlock -> {
-            if (astNode.data is AstTableSection.Root) {
-                renderTable(astNode)
-            }
-        }
-        is AstCustomNode -> {
-            // TODO
-            // Don't even visit children. No idea what would come out
+        is AstTableRoot -> {
+            renderTable(astNode)
         }
         else -> visitChildren(astNode)
     }
