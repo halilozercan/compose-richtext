@@ -5,7 +5,7 @@ import com.zachklipp.richtext.markdown.AstNode
 import com.zachklipp.richtext.markdown.AstNodeLinks
 
 @Immutable
-data class AstStrikethrough(
+internal data class AstStrikethrough(
     val delimiter: String,
     private val nodeLinks: AstNodeLinks
 ): AstNode by nodeLinks

@@ -37,7 +37,7 @@ fun Markdown(
         style = style
     ) {
         Providers(AmbientOnLinkClicked provides (onLinkClicked ?: {})) {
-            val markdownAst = getMarkdownAst(text = content)
+            val markdownAst = parsedMarkdownAst(text = content)
             RecursiveRenderMarkdownAst(astNode = markdownAst)
         }
     }
@@ -157,7 +157,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
  * @param text Markdown text to be parsed.
  */
 @Composable
-internal fun getMarkdownAst(text: String): AstNode? {
+internal fun parsedMarkdownAst(text: String): AstNode? {
     val parser = remember {
         Parser.builder()
             .extensions(
@@ -167,7 +167,7 @@ internal fun getMarkdownAst(text: String): AstNode? {
                 )
             ).build()
     }
-    var rootASTNode by remember { mutableStateOf<AstNode?>(null) }
+    var rootASTNode: AstNode? by remember { mutableStateOf(null) }
 
     LaunchedTask(text) {
         withContext(Dispatchers.Default) {

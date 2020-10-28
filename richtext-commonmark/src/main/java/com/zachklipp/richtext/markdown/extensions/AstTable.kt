@@ -5,32 +5,32 @@ import com.zachklipp.richtext.markdown.AstNode
 import com.zachklipp.richtext.markdown.AstNodeLinks
 
 @Immutable
-data class AstTableRoot(
+internal data class AstTableRoot(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstTableBody(
+internal data class AstTableBody(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstTableHeader(
+internal data class AstTableHeader(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstTableRow(
+internal data class AstTableRow(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstTableCell(
+internal data class AstTableCell(
     val header: Boolean,
     val alignment: AstTableCellAlignment,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
-enum class AstTableCellAlignment {
+internal enum class AstTableCellAlignment {
     LEFT, CENTER, RIGHT
 }

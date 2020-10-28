@@ -133,7 +133,7 @@ internal fun convert(
  * Generic AstNode implementation that can define any node in Abstract Syntax Tree.
  * All the possible node types extend this interface, including extension types.
  */
-interface AstNode {
+internal interface AstNode {
     var parent: AstNode?
     var firstChild: AstNode?
     var lastChild: AstNode?
@@ -145,7 +145,7 @@ interface AstNode {
  * Used to pass AstNode links to child classes by delegation.
  */
 @Immutable
-data class AstNodeLinks(
+internal data class AstNodeLinks(
     override var parent: AstNode? = null,
     override var firstChild: AstNode? = null,
     override var lastChild: AstNode? = null,
@@ -156,35 +156,35 @@ data class AstNodeLinks(
 //region Default AstNodes
 
 @Immutable
-data class AstBlockQuote(
+internal data class AstBlockQuote(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstBulletList(
+internal data class AstBulletList(
     val bulletMarker: Char,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstCode(
+internal data class AstCode(
     val literal: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstDocument(
+internal data class AstDocument(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstEmphasis(
+internal data class AstEmphasis(
     private val delimiter: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstFencedCodeBlock(
+internal data class AstFencedCodeBlock(
     val fenceChar: Char,
     val fenceLength: Int,
     val fenceIndent: Int,
@@ -194,89 +194,89 @@ data class AstFencedCodeBlock(
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstHardLineBreak(
+internal data class AstHardLineBreak(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstHeading(
+internal data class AstHeading(
     val level: Int,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstThematicBreak(
+internal data class AstThematicBreak(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstHtmlInline(
+internal data class AstHtmlInline(
     val literal: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstHtmlBlock(
+internal data class AstHtmlBlock(
     val literal: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstImage(
+internal data class AstImage(
     val title: String,
     val destination: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstIndentedCodeBlock(
+internal data class AstIndentedCodeBlock(
     val literal: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstLink(
+internal data class AstLink(
     val destination: String,
     val title: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstListItem(
+internal data class AstListItem(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstOrderedList(
+internal data class AstOrderedList(
     val startNumber: Int,
     val delimiter: Char,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstParagraph(
+internal data class AstParagraph(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstSoftLineBreak(
+internal data class AstSoftLineBreak(
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstStrongEmphasis(
+internal data class AstStrongEmphasis(
     private val delimiter: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstText(
+internal data class AstText(
     val literal: String,
     private val nodeLinks: AstNodeLinks
 ) : AstNode by nodeLinks
 
 @Immutable
-data class AstLinkReferenceDefinition(
+internal data class AstLinkReferenceDefinition(
     val label: String,
     val destination: String,
     val title: String,
