@@ -6,10 +6,10 @@ import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,9 +34,12 @@ import com.zachklipp.richtext.ui.string.TextPreview
   }
 }
 
-@Composable fun RichTextDemo(style: RichTextStyle? = null) {
-  RichText(modifier = Modifier.padding(8.dp), style = style) {
-    Heading(0, "Paragraphs")
+@Composable fun RichTextDemo(style: RichTextStyle? = null, header: String = "") {
+  RichText(
+    modifier = Modifier.padding(8.dp),
+    style = style
+  ) {
+    Heading(0, "Paragraphs $header")
     Text("Simple paragraph.")
     Text("Paragraph with\nmultiple lines.")
     Text("Paragraph with really long line that should be getting wrapped.")
