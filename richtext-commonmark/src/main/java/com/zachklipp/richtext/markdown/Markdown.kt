@@ -6,14 +6,13 @@ import android.widget.TextView
 import androidx.compose.foundation.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.UriHandlerAmbient
 import androidx.compose.ui.viewinterop.AndroidView
 import com.zachklipp.richtext.markdown.extensions.AstTableRoot
 import com.zachklipp.richtext.ui.*
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.Text
 import com.zachklipp.richtext.ui.string.richTextString
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TablesExtension
 import org.commonmark.parser.Parser
@@ -36,7 +35,9 @@ fun Markdown(
         modifier = modifier,
         style = style
     ) {
-        Providers(AmbientOnLinkClicked provides (onLinkClicked ?: {})) {
+        Providers(
+            AmbientOnLinkClicked provides (onLinkClicked ?: UriHandlerAmbient.current::openUri)
+        ) {
             val markdownAst = parsedMarkdownAst(text = content)
             RecursiveRenderMarkdownAst(astNode = markdownAst)
         }
@@ -167,12 +168,12 @@ internal fun parsedMarkdownAst(text: String): AstNode? {
                 )
             ).build()
     }
-    var rootASTNode: AstNode? by remember { mutableStateOf(null) }
 
-    LaunchedTask(text) {
-        withContext(Dispatchers.Default) {
-            rootASTNode = convert(parser.parse(text))
-        }
+    val rootASTNode by produceState<AstNode?>(
+        initialValue = null,
+        source = text
+    ) {
+        value = convert(parser.parse(text))
     }
 
     return rootASTNode
