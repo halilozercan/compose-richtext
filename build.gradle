@@ -78,7 +78,7 @@ buildscript {
           strikethrough: "com.atlassian.commonmark:commonmark-ext-gfm-strikethrough:${versions.commonmark}"
       ],
       accompanist: "dev.chrisbanes.accompanist:accompanist-coil:0.3.0",
-      mavenPublish: "com.vanniktech:gradle-maven-publish-plugin:0.9.0",
+      mavenPublish: "com.vanniktech:gradle-maven-publish-plugin:0.11.1",
       ktlint: "org.jlleitschuh.gradle:ktlint-gradle:9.2.0",
   ]
 
@@ -92,6 +92,7 @@ buildscript {
     classpath deps.android_gradle_plugin
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
+    classpath deps.mavenPublish
   }
 }
 
