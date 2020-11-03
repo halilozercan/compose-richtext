@@ -21,7 +21,7 @@ import kotlin.math.min
  * margins.
  */
 public fun Modifier.responsivePadding(vararg minDimensionsToPadding: Pair<Dp, Dp>): Modifier =
-  object : LayoutModifier {
+  this.then(object : LayoutModifier {
     override fun MeasureScope.measure(
       measurable: Measurable,
       constraints: Constraints
@@ -37,4 +37,4 @@ public fun Modifier.responsivePadding(vararg minDimensionsToPadding: Pair<Dp, Dp
         placeable.placeRelative(padding, padding)
       }
     }
-  }
+  })

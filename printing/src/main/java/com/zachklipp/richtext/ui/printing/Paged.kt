@@ -92,7 +92,7 @@ public data class PageBreakpoint(
  *
  * This modifier must come before other layout modifiers, or it will have no effect.
  */
-public fun Modifier.keepOnPageWithNext(): Modifier = KeepWithNextModifier
+public fun Modifier.keepOnPageWithNext(): Modifier = this.then(KeepWithNextModifier)
 
 private object KeepWithNextModifier : Modifier.Element, ParentDataModifier {
   override fun Density.modifyParentData(parentData: Any?): Any? = this
