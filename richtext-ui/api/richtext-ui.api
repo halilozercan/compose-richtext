@@ -1,0 +1,330 @@
+public abstract interface class com/zachklipp/richtext/ui/BlockQuoteGutter {
+	public abstract fun drawGutter (Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter : com/zachklipp/richtext/ui/BlockQuoteGutter {
+	public fun <init> ()V
+	public synthetic fun <init> (JJJLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JJJLkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-XSAIIZE ()J
+	public final fun component2-XSAIIZE ()J
+	public final fun component3-XSAIIZE ()J
+	public final fun component4 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-kBY0Dtg (JJJLkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
+	public static synthetic fun copy-kBY0Dtg$default (Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;JJJLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
+	public fun drawGutter (Landroidx/compose/runtime/Composer;I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBarWidth-XSAIIZE ()J
+	public final fun getColor ()Lkotlin/jvm/functions/Function1;
+	public final fun getEndMargin-XSAIIZE ()J
+	public final fun getStartMargin-XSAIIZE ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/BlockQuoteKt {
+	public static final fun BlockQuote (Lcom/zachklipp/richtext/ui/RichTextScope;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/zachklipp/richtext/ui/CodeBlockKt {
+	public static final fun CodeBlock (Lcom/zachklipp/richtext/ui/RichTextScope;Ljava/lang/String;Landroidx/compose/runtime/Composer;I)V
+	public static final fun CodeBlock (Lcom/zachklipp/richtext/ui/RichTextScope;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/CodeBlockStyle {
+	public static final field Companion Lcom/zachklipp/richtext/ui/CodeBlockStyle$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Landroidx/compose/ui/text/TextStyle;
+	public final fun component2-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public final fun component3-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun copy-HTrtAO0 (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;)Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+	public static synthetic fun copy-HTrtAO0$default (Lcom/zachklipp/richtext/ui/CodeBlockStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackground-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public final fun getPadding-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun getTextStyle ()Landroidx/compose/ui/text/TextStyle;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/CodeBlockStyle$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+}
+
+public final class com/zachklipp/richtext/ui/FormattedListKt {
+	public static final fun FormattedList (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/ListType;Ljava/util/List;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;I)V
+	public static final fun FormattedList (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/ListType;[Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/HeadingKt {
+	public static final fun Heading (Lcom/zachklipp/richtext/ui/RichTextScope;ILjava/lang/String;Landroidx/compose/runtime/Composer;I)V
+	public static final fun Heading (Lcom/zachklipp/richtext/ui/RichTextScope;ILkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/HorizontalRuleKt {
+	public static final fun HorizontalRule (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/ListStyle {
+	public static final field Companion Lcom/zachklipp/richtext/ui/ListStyle$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun component2-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun component3 ()Lcom/zachklipp/richtext/ui/OrderedMarkers;
+	public final fun component4 ()Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+	public final fun copy-xBlEmKg (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;)Lcom/zachklipp/richtext/ui/ListStyle;
+	public static synthetic fun copy-xBlEmKg$default (Lcom/zachklipp/richtext/ui/ListStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/ListStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContentsIndent-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun getMarkerIndent-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun getOrderedMarkers ()Lcom/zachklipp/richtext/ui/OrderedMarkers;
+	public final fun getUnorderedMarkers ()Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/ListStyle$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/ui/ListStyle;
+}
+
+public final class com/zachklipp/richtext/ui/ListType : java/lang/Enum {
+	public static final field Ordered Lcom/zachklipp/richtext/ui/ListType;
+	public static final field Unordered Lcom/zachklipp/richtext/ui/ListType;
+	public static final fun valueOf (Ljava/lang/String;)Lcom/zachklipp/richtext/ui/ListType;
+	public static final fun values ()[Lcom/zachklipp/richtext/ui/ListType;
+}
+
+public abstract interface class com/zachklipp/richtext/ui/OrderedMarkers {
+	public static final field Companion Lcom/zachklipp/richtext/ui/OrderedMarkers$Companion;
+	public abstract fun drawMarker (IILandroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/OrderedMarkers$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function4;)Lcom/zachklipp/richtext/ui/OrderedMarkers;
+	public final fun text ([Lkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/OrderedMarkers;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextKt {
+	public static final fun RichText (Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/zachklipp/richtext/ui/RichTextScope {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/RichTextScope;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextScopeKt {
+	public static final fun WithStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public static final fun getCurrentRichTextStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Lcom/zachklipp/richtext/ui/RichTextStyle;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextStyle {
+	public static final field Companion Lcom/zachklipp/richtext/ui/RichTextStyle$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun component2 ()Lkotlin/jvm/functions/Function2;
+	public final fun component3 ()Lcom/zachklipp/richtext/ui/ListStyle;
+	public final fun component4 ()Lcom/zachklipp/richtext/ui/BlockQuoteGutter;
+	public final fun component5 ()Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+	public final fun component6 ()Lcom/zachklipp/richtext/ui/TableStyle;
+	public final fun component7 ()Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;
+	public final fun copy-9TGyfEQ (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
+	public static synthetic fun copy-9TGyfEQ$default (Lcom/zachklipp/richtext/ui/RichTextStyle;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/RichTextStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBlockQuoteGutter ()Lcom/zachklipp/richtext/ui/BlockQuoteGutter;
+	public final fun getCodeBlockStyle ()Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+	public final fun getHeadingStyle ()Lkotlin/jvm/functions/Function2;
+	public final fun getListStyle ()Lcom/zachklipp/richtext/ui/ListStyle;
+	public final fun getParagraphSpacing-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun getStringStyle ()Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;
+	public final fun getTableStyle ()Lcom/zachklipp/richtext/ui/TableStyle;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextStyle$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/ui/RichTextStyle;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextStyleKt {
+	public static final fun merge (Lcom/zachklipp/richtext/ui/RichTextStyle;Lcom/zachklipp/richtext/ui/RichTextStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
+	public static final fun resolveDefaults (Lcom/zachklipp/richtext/ui/RichTextStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
+}
+
+public abstract interface class com/zachklipp/richtext/ui/RichTextTableCellScope {
+	public abstract fun cell (Lkotlin/jvm/functions/Function3;)V
+}
+
+public abstract interface class com/zachklipp/richtext/ui/RichTextTableRowScope {
+	public abstract fun row (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/zachklipp/richtext/ui/TableKt {
+	public static final fun Table (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/zachklipp/richtext/ui/TableStyle {
+	public static final field Companion Lcom/zachklipp/richtext/ui/TableStyle$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Landroidx/compose/ui/text/TextStyle;
+	public final fun component2-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun component3-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public final fun component4 ()Ljava/lang/Float;
+	public final fun copy-9o9B-1o (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;)Lcom/zachklipp/richtext/ui/TableStyle;
+	public static synthetic fun copy-9o9B-1o$default (Lcom/zachklipp/richtext/ui/TableStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/TableStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBorderColor-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public final fun getBorderStrokeWidth ()Ljava/lang/Float;
+	public final fun getCellPadding-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
+	public final fun getHeaderTextStyle ()Landroidx/compose/ui/text/TextStyle;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/TableStyle$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/ui/TableStyle;
+}
+
+public abstract interface class com/zachklipp/richtext/ui/UnorderedMarkers {
+	public static final field Companion Lcom/zachklipp/richtext/ui/UnorderedMarkers$Companion;
+	public abstract fun drawMarker (ILandroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/ui/UnorderedMarkers$Companion {
+	public final fun invoke (Lkotlin/jvm/functions/Function3;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+	public final fun painters ([Landroidx/compose/ui/graphics/painter/Painter;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+	public final fun text ([Ljava/lang/String;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+}
+
+public final class com/zachklipp/richtext/ui/string/InlineContent {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString {
+	public final fun copy (Landroidx/compose/ui/text/AnnotatedString;Ljava/util/Map;)Lcom/zachklipp/richtext/ui/string/RichTextString;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/string/RichTextString;Landroidx/compose/ui/text/AnnotatedString;Ljava/util/Map;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/string/RichTextString;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLength ()I
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun plus (Lcom/zachklipp/richtext/ui/string/RichTextString;)Lcom/zachklipp/richtext/ui/string/RichTextString;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Builder {
+	public fun <init> ()V
+	public fun <init> (I)V
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun addFormat (Lcom/zachklipp/richtext/ui/string/RichTextString$Format;II)V
+	public final fun append (Lcom/zachklipp/richtext/ui/string/RichTextString;)V
+	public final fun append (Ljava/lang/String;)V
+	public final fun appendInlineContent (Ljava/lang/String;Lcom/zachklipp/richtext/ui/string/InlineContent;)V
+	public static synthetic fun appendInlineContent$default (Lcom/zachklipp/richtext/ui/string/RichTextString$Builder;Ljava/lang/String;Lcom/zachklipp/richtext/ui/string/InlineContent;ILjava/lang/Object;)V
+	public final fun pop ()V
+	public final fun pop (I)V
+	public final fun pushFormat (Lcom/zachklipp/richtext/ui/string/RichTextString$Format;)I
+	public final fun toRichTextString ()Lcom/zachklipp/richtext/ui/string/RichTextString;
+	public final fun withAnnotatedString (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public abstract class com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Bold : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Bold;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Code : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Code;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Italic : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Italic;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Link : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Link$Companion;
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public final fun component1 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (Lkotlin/jvm/functions/Function0;)Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Link;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Link;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Link;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOnClick ()Lkotlin/jvm/functions/Function0;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Strikethrough : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Strikethrough;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Subscript : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Subscript;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Superscript : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Superscript;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Underline : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Underline;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextStringKt {
+	public static final fun richTextString (Lkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/string/RichTextString;
+	public static final fun withFormat (Lcom/zachklipp/richtext/ui/string/RichTextString$Builder;Lcom/zachklipp/richtext/ui/string/RichTextString$Format;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextStringStyle {
+	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextStringStyle$Companion;
+	public fun <init> ()V
+	public fun <init> (Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;)V
+	public synthetic fun <init> (Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component2 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component3 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component4 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component5 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component6 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component7 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun component8 ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun copy (Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;)Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;Landroidx/compose/ui/text/SpanStyle;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBoldStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getCodeStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getItalicStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getLinkStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getStrikethroughStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getSubscriptStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getSuperscriptStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public final fun getUnderlineStyle ()Landroidx/compose/ui/text/SpanStyle;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/string/RichTextStringStyle$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;
+}
+
+public final class com/zachklipp/richtext/ui/string/TextKt {
+	public static final fun Text (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/string/RichTextString;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+}
+
