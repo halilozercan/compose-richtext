@@ -1,0 +1,30 @@
+site_name: Compose Richtext
+repo_name: compose-richtext
+repo_url: https://github.com/zach-klippenstein/compose-richtext
+site_description: "A collection of Compose libraries for advanced text formatting and alternative display types."
+site_author: Zach Klippenstein
+site_url: http://www.zachklipp.com/compose-richtext
+remote_branch: gh-pages
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - toc.autohide
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - admonition
+
+nav:
+  - index.md
+  - richtext-ui.md
+  - richtext-commonmark.md
+  - printing.md
+  - slideshow.md
+  - 'API Reference': api/index.md
