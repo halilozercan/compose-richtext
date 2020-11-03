@@ -7,13 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Surface
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,7 +72,7 @@ import com.zachklipp.richtext.ui.resolveDefaults
 }
 
 @Composable
-private fun RichTextStyleConfig(
+fun RichTextStyleConfig(
   richTextStyle: RichTextStyle,
   onChanged: (RichTextStyle) -> Unit
 ) {
