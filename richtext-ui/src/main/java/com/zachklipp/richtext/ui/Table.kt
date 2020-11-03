@@ -6,7 +6,6 @@ import androidx.compose.foundation.AmbientTextStyle
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -16,20 +15,23 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ExperimentalSubcomposeLayoutApi
-import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.enforce
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
 import kotlin.math.max
-import kotlin.math.roundToInt
 
+/**
+ * Defines the visual style for a [Table].
+ *
+ * @param headerTextStyle The [TextStyle] used for header rows.
+ * @param cellPadding The spacing between the contents of each cell and the borders.
+ * @param borderColor The [Color] of the table border.
+ * @param borderStrokeWidth The width of the table border.
+ */
 @Immutable
 data class TableStyle(
   val headerTextStyle: TextStyle? = null,
@@ -82,7 +84,9 @@ private class RowBuilder : RichTextTableCellScope {
 }
 
 /**
- * TODO write documentation
+ * Draws a table with an optional header row, and an arbitrary number of body rows.
+ *
+ * The style of the table is defined by the [RichTextStyle.tableStyle]&nbsp;[TableStyle].
  */
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
@@ -177,107 +181,6 @@ private fun Modifier.drawTableBorders(
         Offset(position, size.height),
         borderStrokeWidth
     )
-  }
-}
-
-/**
- * The offsets of rows and columns of a [SimpleTableLayout], centered inside their spacing.
- *
- * E.g. If a table is given a cell spacing of 2px, then the first column and row offset will each
- * be 1px.
- */
-@Immutable
-private data class TableLayoutResult(
-  val rowOffsets: List<Float>,
-  val columnOffsets: List<Float>
-)
-
-/**
- * A simple table that sizes all columns equally.
- *
- * @param cellSpacing The space in between each cell, and between each outer cell and the edge of
- * the table.
- */
-@OptIn(ExperimentalStdlibApi::class, ExperimentalSubcomposeLayoutApi::class)
-@Composable
-private fun SimpleTableLayout(
-  columns: Int,
-  rows: List<List<@Composable () -> Unit>>,
-  drawDecorations: (TableLayoutResult) -> Modifier,
-  cellSpacing: Float,
-  modifier: Modifier
-) {
-  SubcomposeLayout<Boolean>(modifier = modifier) { constraints ->
-    val measurables = subcompose(false) {
-      rows.forEach { row ->
-        check(row.size == columns)
-        row.forEach { cell ->
-          cell()
-        }
-      }
-    }
-
-    val rowMeasurables = measurables.chunked(columns)
-    check(rowMeasurables.size == rows.size)
-
-    check(constraints.hasBoundedWidth) { "Table must have bounded width" }
-    // Divide the width by the number of columns, then leave room for the padding.
-    val cellSpacingWidth = cellSpacing * (columns + 1)
-    val cellWidth = (constraints.maxWidth - cellSpacingWidth) / columns
-    val cellSpacingHeight = cellSpacing * (rowMeasurables.size + 1)
-    // TODO Handle bounded height constraints.
-    // val cellMaxHeight = if (!constraints.hasBoundedHeight) {
-    //   Float.MAX_VALUE
-    // } else {
-    //   // Divide the height by the number of rows, then leave room for the padding.
-    //   (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
-    // }
-    val cellConstraints = constraints.enforce(Constraints(maxWidth = cellWidth.roundToInt()))
-
-    val rowPlaceables = rowMeasurables.map { cellMeasurables ->
-      cellMeasurables.map { cell ->
-        cell.measure(cellConstraints)
-      }
-    }
-    val rowHeights = rowPlaceables.map { row -> row.maxByOrNull { it.height }!!.height }
-
-    val tableWidth = constraints.maxWidth
-    val tableHeight = (rowHeights.sumBy { it } + cellSpacingHeight).roundToInt()
-    layout(tableWidth, tableHeight) {
-      var y = cellSpacing
-      val rowOffsets = mutableListOf<Float>()
-      val columnOffsets = mutableListOf<Float>()
-
-      rowPlaceables.forEachIndexed { rowIndex, cellPlaceables ->
-        rowOffsets += y - cellSpacing / 2f
-        var x = cellSpacing
-
-        cellPlaceables.forEach { cell ->
-          if (rowIndex == 0) {
-            columnOffsets.add(x - cellSpacing / 2f)
-          }
-          cell.place(x.roundToInt(), y.roundToInt())
-          x += cellWidth + cellSpacing
-        }
-
-        if (rowIndex == 0) {
-          // Add the right-most edge.
-          columnOffsets.add(x - cellSpacing / 2f)
-        }
-
-        y += rowHeights[rowIndex] + cellSpacing
-      }
-
-      rowOffsets.add(y - cellSpacing / 2f)
-
-      // Compose and draw the borders.
-      val layoutResult = TableLayoutResult(rowOffsets, columnOffsets)
-      subcompose(true) {
-        Box(modifier = drawDecorations(layoutResult))
-      }.single()
-          .measure(Constraints.fixed(tableWidth, tableHeight))
-          .placeRelative(0, 0)
-    }
   }
 }
 

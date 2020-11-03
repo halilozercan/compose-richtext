@@ -34,6 +34,9 @@ import kotlin.LazyThreadSafetyMode.NONE
 @PublishedApi
 internal const val REPLACEMENT_CHAR = "\uFFFD"
 
+/**
+ * Defines the [SpanStyle]s that are used for various [RichTextString] formatting directives.
+ */
 @Immutable
 data class RichTextStringStyle(
   val boldStyle: SpanStyle? = null,
@@ -79,12 +82,16 @@ data class RichTextStringStyle(
   }
 }
 
+/**
+ * Convenience function for creating a [RichTextString] using a [Builder].
+ */
 inline fun richTextString(builder: Builder.() -> Unit): RichTextString =
   Builder().apply(builder)
       .toRichTextString()
 
 /**
- * TODO write documentation
+ * A special type of [AnnotatedString] that is formatted using higher-level directives that are
+ * configured using a [RichTextStringStyle].
  */
 @Immutable
 data class RichTextString internal constructor(

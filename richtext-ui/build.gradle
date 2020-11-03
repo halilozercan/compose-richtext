@@ -7,7 +7,6 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   compileOnly deps.compose.tooling
 
-  implementation deps.kotlin.stdlib
-  implementation deps.compose.foundation
-  implementation deps.compose.text
+  api deps.compose.foundation
+  api deps.compose.text
 }

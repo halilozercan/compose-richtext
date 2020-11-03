@@ -31,7 +31,14 @@ import com.zachklipp.richtext.ui.ListType.Unordered
 import kotlin.math.max
 
 enum class ListType {
+  /**
+   * An ordered (numbered) list.
+   */
   Ordered,
+
+  /**
+   * An unordered (bullet) list.
+   */
   Unordered
 }
 

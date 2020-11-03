@@ -1,9 +1,8 @@
 # compose-richtext
 
 A collection of Compose libraries for working with rich text formatting and documents. This repo
-is currently very experimental and really just proofs-of-concept: there are no tests, some things
-might be broken or very non-performant, and it's not published on Maven. Once Compose stabilizes, if
-it's still useful, I might eventually polish it up and actually release something.
+is currently very experimental and really just proofs-of-concept: there are no tests and some things
+might be broken or very non-performant.
 
 ```kotlin
 @Composable fun App() {
@@ -31,6 +30,7 @@ it's still useful, I might eventually polish it up and actually release somethin
 ## Table of Contents
 
 * [`richtext-ui`](#richtext-ui)
+* [`richtext-commonmark`](#richtext-commonmark)
 * [`printing`](#printing)
 * [`slideshow`](#slideshow)
 
@@ -38,8 +38,6 @@ it's still useful, I might eventually polish it up and actually release somethin
 
 A library of composables for formatting text using higher-level concepts than are supported by
 compose foundation, such as "bullet lists" and "headings".
-
-Eventually planning to add support for rendering Markdown.
 
 ### Example
 
@@ -107,6 +105,11 @@ RichText(modifier = Modifier.background(color = Color.White)) {
 Looks like this:
 
 ![demo rendering](.images/richtext-demo.png)
+
+## `richtext-commonmark`
+
+Library for rendering Markdown in Compose using Atlassian's [CommonMark](https://github.com/atlassian/commonmark-java)
+library to parse, and `richtext-ui` to render.
 
 ## `printing`
 

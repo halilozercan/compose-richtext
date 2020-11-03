@@ -5,9 +5,8 @@ apply from: rootProject.file('gradle/maven-publish.gradle')
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  implementation deps.compose.foundation
+  api deps.compose.foundation
   implementation deps.compose.tooling
-  implementation deps.kotlin.stdlib
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {

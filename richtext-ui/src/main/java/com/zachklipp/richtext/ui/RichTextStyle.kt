@@ -7,11 +7,19 @@ import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.string.RichTextStringStyle
 
 internal val RichTextStyleAmbient = ambientOf { RichTextStyle.Default }
-
 internal val DefaultParagraphSpacing: TextUnit = 8.sp
 
 /**
  * Configures all formatting attributes for drawing rich text.
+ *
+ * @param paragraphSpacing The amount of space in between blocks of text.
+ * @param headingStyle The [HeadingStyle] that defines how [Heading]s are drawn.
+ * @param listStyle The [ListStyle] used to format [FormattedList]s.
+ * @param blockQuoteGutter The [BlockQuoteGutter] used to draw [BlockQuote]s.
+ * @param codeBlockStyle The [CodeBlockStyle] that defines how [CodeBlock]s are drawn.
+ * @param tableStyle The [TableStyle] used to render [Table]s.
+ * @param stringStyle The [RichTextStringStyle] used to render
+ * [RichTextString][com.zachklipp.richtext.ui.string.RichTextString]s
  */
 @Immutable
 data class RichTextStyle(

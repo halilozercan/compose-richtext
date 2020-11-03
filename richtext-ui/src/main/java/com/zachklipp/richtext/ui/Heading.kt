@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontStyle.Italic
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.resolveDefaults
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.annotation.IntRange
 import androidx.ui.tooling.preview.Preview
 
 /**
@@ -65,10 +66,12 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
 }
 
 /**
- * TODO write documentation
+ * A section heading.
+ *
+ * @param level The non-negative rank of the header, with 0 being the most important.
  */
 @Composable fun RichTextScope.Heading(
-  level: Int,
+  @IntRange(0, Long.MAX_VALUE) level: Int,
   text: String
 ) {
   Heading(level) {
@@ -77,7 +80,9 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
 }
 
 /**
- * TODO write documentation
+ * A section heading.
+ *
+ * @param level The non-negative rank of the header, with 0 being the most important.
  */
 @Composable fun RichTextScope.Heading(
   level: Int,

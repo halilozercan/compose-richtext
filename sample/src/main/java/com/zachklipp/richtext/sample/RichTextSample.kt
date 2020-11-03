@@ -25,7 +25,6 @@ import androidx.compose.ui.selection.SelectionContainer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
-import com.zachklipp.richtext.ui.RichTextDemo
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.resolveDefaults
 

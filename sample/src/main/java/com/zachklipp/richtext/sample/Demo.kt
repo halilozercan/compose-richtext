@@ -1,6 +1,6 @@
 @file:Suppress("RemoveEmptyParenthesesFromAnnotationEntry")
 
-package com.zachklipp.richtext.ui
+package com.zachklipp.richtext.sample
 
 import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Text
@@ -14,9 +14,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
+import com.zachklipp.richtext.ui.BlockQuote
+import com.zachklipp.richtext.ui.CodeBlock
+import com.zachklipp.richtext.ui.FormattedList
+import com.zachklipp.richtext.ui.Heading
+import com.zachklipp.richtext.ui.HorizontalRule
+import com.zachklipp.richtext.ui.ListType
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
-import com.zachklipp.richtext.ui.string.TextPreview
+import com.zachklipp.richtext.ui.RichText
+import com.zachklipp.richtext.ui.RichTextScope
+import com.zachklipp.richtext.ui.RichTextStyle
+import com.zachklipp.richtext.ui.Table
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {

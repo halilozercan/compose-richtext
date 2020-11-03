@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.DensityAmbient
 
 /**
- * Draws some rich text. Entry point to the rich text library.
+ * Draws some rich text. Entry point to the compose-richtext library.
  */
 @Composable
 fun RichText(

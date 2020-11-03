@@ -7,7 +7,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Providers
 
 /**
- * Marker interface for Composable functions that can draw rich text.
+ * Scope object for composables that can draw rich text.
  */
 @Immutable
 object RichTextScope

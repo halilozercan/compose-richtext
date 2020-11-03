@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.dp
 
 /**
- * TODO write documentation
+ * A simple horizontal line drawn with the current content color.
  */
 @Composable fun RichTextScope.HorizontalRule() {
   val color = AmbientContentColor.current.copy(alpha = .2f)

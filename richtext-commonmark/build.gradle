@@ -7,13 +7,12 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   compileOnly deps.compose.tooling
 
-  implementation project(":richtext-ui")
+  api project(":richtext-ui")
+  api deps.compose.foundation
+  api deps.compose.text
 
-  implementation deps.kotlin.stdlib
-  implementation deps.compose.foundation
-  implementation deps.compose.text
-  implementation deps.commonmark.core
-  implementation deps.commonmark.tables
-  implementation deps.commonmark.strikethrough
   implementation deps.accompanist
+  implementation deps.commonmark.core
+  implementation deps.commonmark.strikethrough
+  implementation deps.commonmark.tables
 }

@@ -22,9 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.ui.tooling.preview.Preview
 
+/**
+ * Defines how [CodeBlock]s are rendered.
+ *
+ * @param textStyle The [TextStyle] to use for the block.
+ * @param background The [Color] of a code block, drawn behind the text.
+ * @param padding The amount of space between the edge of the text and the edge of the background.
+ */
 @Immutable
 data class CodeBlockStyle(
   val textStyle: TextStyle? = null,
+  // TODO Make background just a modifier instead?
   val background: Color? = null,
   val padding: TextUnit? = null
 ) {
@@ -46,7 +54,8 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 )
 
 /**
- * TODO write documentation
+ * A specially-formatted block of text that typically uses a monospace font with a tinted
+ * background.
  */
 @Composable fun RichTextScope.CodeBlock(text: String) {
   CodeBlock {
@@ -55,7 +64,8 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 }
 
 /**
- * TODO write documentation
+ * A specially-formatted block of text that typically uses a monospace font with a tinted
+ * background.
  */
 @Composable fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!

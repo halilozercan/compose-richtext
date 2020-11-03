@@ -26,7 +26,13 @@ import com.zachklipp.richtext.ui.BlockQuoteGutter.BarGutter
 
 internal val DefaultBlockQuoteGutter = BarGutter()
 
+/**
+ * A composable function that draws the gutter beside a [BlockQuote].
+ *
+ * [BarGutter] is provided as the reasonable default of a simple vertical line.
+ */
 interface BlockQuoteGutter {
+  // TODO Make this return a modifier instead?
   @Composable fun drawGutter()
 
   @Immutable
@@ -56,7 +62,7 @@ interface BlockQuoteGutter {
 }
 
 /**
- * Draws a block quote.
+ * Draws a block quote, with a [BlockQuoteGutter] drawn beside the children on the start side.
  */
 @Composable fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
