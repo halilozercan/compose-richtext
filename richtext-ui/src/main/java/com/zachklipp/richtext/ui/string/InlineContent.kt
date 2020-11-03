@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
  * @param initialSize Optional function to calculate the initial size of the content. Not specifying
  * this may cause flicker.
  */
-class InlineContent(
+public class InlineContent(
   internal val initialSize: (Density.() -> IntSize)? = null,
   internal val content: @Composable Density.(alternateText: String) -> Unit
 )

@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.DensityAmbient
  * Draws some rich text. Entry point to the compose-richtext library.
  */
 @Composable
-fun RichText(
+public fun RichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
   children: @Composable RichTextScope.() -> Unit

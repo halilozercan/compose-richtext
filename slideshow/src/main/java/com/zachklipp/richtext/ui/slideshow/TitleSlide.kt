@@ -15,7 +15,7 @@ import androidx.ui.tooling.preview.Preview
  * A composable to define a [Slideshow] slide that shows a large, bold title in the center of the
  * slide with an optional subtitle below it.
  */
-@Composable fun SlideScope.TitleSlide(
+@Composable public fun SlideScope.TitleSlide(
   title: @Composable () -> Unit,
   subtitle: (@Composable () -> Unit)? = null
 ) {

@@ -43,7 +43,7 @@ private const val ZERO_WIDTH_CHAR = "\u200B"
  */
 @Suppress("unused")
 @Composable
-fun RichTextScope.Text(
+public fun RichTextScope.Text(
   text: RichTextString,
   modifier: Modifier = Modifier,
   onTextLayout: (TextLayoutResult) -> Unit = {}

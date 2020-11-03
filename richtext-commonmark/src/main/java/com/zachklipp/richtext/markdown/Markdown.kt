@@ -41,7 +41,7 @@ import org.commonmark.parser.Parser
  * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
  */
 @Composable
-fun Markdown(
+public fun Markdown(
   content: String,
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,

@@ -23,7 +23,7 @@ import androidx.ui.tooling.preview.Preview
  *
  * See [SlideDivider] and [SlideNumberFooter].
  */
-@Composable fun SlideScope.BodySlide(
+@Composable public fun SlideScope.BodySlide(
   header: @Composable () -> Unit,
   body: @Composable () -> Unit,
   footer: @Composable () -> Unit = { SlideNumberFooter() }
@@ -46,7 +46,7 @@ import androidx.ui.tooling.preview.Preview
 /**
  * A simple horizontal divider line which uses the [SlideshowTheme] content color.
  */
-@Composable fun SlideScope.SlideDivider() {
+@Composable public fun SlideScope.SlideDivider() {
   Divider(color = SlideshowThemeAmbient.current.contentColor)
 }
 
@@ -54,7 +54,7 @@ import androidx.ui.tooling.preview.Preview
  * A text composable which displays the current slide number from the [SlideScope], right-aligned in
  * its parent.
  */
-@Composable fun SlideScope.SlideNumberFooter() {
+@Composable public fun SlideScope.SlideNumberFooter() {
   Text(
       slideNumber.toString(),
       Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)

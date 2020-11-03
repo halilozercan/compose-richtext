@@ -10,20 +10,20 @@ import androidx.compose.runtime.Providers
  * Scope object for composables that can draw rich text.
  */
 @Immutable
-object RichTextScope
+public object RichTextScope
 
 /**
  * The current [RichTextStyle].
  */
 @Composable
-val RichTextScope.currentRichTextStyle: RichTextStyle
+public val RichTextScope.currentRichTextStyle: RichTextStyle
   get() = RichTextStyleAmbient.current
 
 /**
  * Sets the [RichTextStyle] for its [children].
  */
 @Composable
-fun RichTextScope.WithStyle(
+public fun RichTextScope.WithStyle(
   style: RichTextStyle?,
   children: @Composable RichTextScope.() -> Unit
 ) {

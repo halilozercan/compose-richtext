@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 /**
  * Receiver type for [NavigableContentContainer] children.
  */
-interface NavigableContentScope : SlideScope {
+public interface NavigableContentScope : SlideScope {
   /**
    * Defines a composable which will be initially passed `visible=false`, and then invoked with
    * `visible=true` as the slideshow is advanced.
@@ -19,7 +19,7 @@ interface NavigableContentScope : SlideScope {
    * A [State] object is passed, instead of passing the boolean directly, to prevent unnecessary
    * recomposition if the value is not used in the immediate scope.
    */
-  @Composable fun NavigableContent(children: @Composable (visible: State<Boolean>) -> Unit)
+  @Composable public fun NavigableContent(children: @Composable (visible: State<Boolean>) -> Unit)
 }
 
 /**
@@ -34,7 +34,9 @@ interface NavigableContentScope : SlideScope {
  * takes a boolean visible flag and optional enter/exit animations.
  */
 @Composable
-fun SlideScope.NavigableContentContainer(children: @Composable NavigableContentScope.() -> Unit) {
+public fun SlideScope.NavigableContentContainer(
+  children: @Composable NavigableContentScope.() -> Unit
+) {
   val state = remember { NavigableContentState(this) }
 
   // Unless all content is shown or hidden, we need to handle navigation events ourself.

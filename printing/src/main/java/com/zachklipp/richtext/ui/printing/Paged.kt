@@ -80,7 +80,7 @@ import androidx.ui.tooling.preview.Preview
  * implemented yet.
  */
 @Immutable
-data class PageBreakpoint(
+public data class PageBreakpoint(
   val xAnchorPx: Pair<Int, Int>,
   val yPx: Int,
   val forceBreak: Boolean
@@ -92,7 +92,7 @@ data class PageBreakpoint(
  *
  * This modifier must come before other layout modifiers, or it will have no effect.
  */
-fun Modifier.keepOnPageWithNext(): Modifier = KeepWithNextModifier
+public fun Modifier.keepOnPageWithNext(): Modifier = KeepWithNextModifier
 
 private object KeepWithNextModifier : Modifier.Element, ParentDataModifier {
   override fun Density.modifyParentData(parentData: Any?): Any? = this
@@ -103,23 +103,23 @@ private object KeepWithNextModifier : Modifier.Element, ParentDataModifier {
  * and passed to a callback via an instance of this interface.
  */
 @Immutable
-interface PageLayoutResult {
+public interface PageLayoutResult {
   /** Page size in pixels. */
-  val pageSizePx: IntSize
+  public val pageSizePx: IntSize
 
   /**
    * The pixel offsets of each page, for passing to [Paged]'s `pageOffsetPx` parameter.
    * The last offset will be the end of the last page.
    */
-  val pageOffsetsPx: List<Int>
-  val breakpoints: List<PageBreakpoint>
+  public val pageOffsetsPx: List<Int>
+  public val breakpoints: List<PageBreakpoint>
 
   /**
    * Given the offset of the start of the current page, returns the y offset in pixels of the start
    * of the next page. In other words, the offset of the last breakpoint that would fit on the
    * current page but get clipped.
    */
-  fun nextPageOffsetPx(currentPageOffsetPx: Int): Int?
+  public fun nextPageOffsetPx(currentPageOffsetPx: Int): Int?
 }
 
 /**
@@ -158,7 +158,7 @@ interface PageLayoutResult {
  * False by default.
  * @param onPageLayout Callback that will be invoked after calculating the total number of pages.
  */
-@Composable fun Paged(
+@Composable public fun Paged(
   modifier: Modifier = Modifier,
   pageIndex: Int = 0,
   pageModifier: Modifier = Modifier,

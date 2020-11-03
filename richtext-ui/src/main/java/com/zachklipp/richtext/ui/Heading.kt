@@ -30,7 +30,7 @@ import androidx.ui.tooling.preview.Preview
  */
 // TODO factor a generic "block style" thing out, use for code block, quote block, and this, to
 // also allow controlling top/bottom space.
-typealias HeadingStyle = (level: Int, textStyle: TextStyle) -> TextStyle
+public typealias HeadingStyle = (level: Int, textStyle: TextStyle) -> TextStyle
 
 internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   when (level) {
@@ -70,7 +70,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
  *
  * @param level The non-negative rank of the header, with 0 being the most important.
  */
-@Composable fun RichTextScope.Heading(
+@Composable public fun RichTextScope.Heading(
   @IntRange(0, Long.MAX_VALUE) level: Int,
   text: String
 ) {
@@ -84,7 +84,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
  *
  * @param level The non-negative rank of the header, with 0 being the most important.
  */
-@Composable fun RichTextScope.Heading(
+@Composable public fun RichTextScope.Heading(
   level: Int,
   children: @Composable RichTextScope.() -> Unit
 ) {

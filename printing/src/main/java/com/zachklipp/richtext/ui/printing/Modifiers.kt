@@ -20,7 +20,7 @@ import kotlin.math.min
  * modifier will be applied to every page of the printed document and can be used to create page
  * margins.
  */
-fun Modifier.responsivePadding(vararg minDimensionsToPadding: Pair<Dp, Dp>): Modifier =
+public fun Modifier.responsivePadding(vararg minDimensionsToPadding: Pair<Dp, Dp>): Modifier =
   object : LayoutModifier {
     override fun MeasureScope.measure(
       measurable: Measurable,

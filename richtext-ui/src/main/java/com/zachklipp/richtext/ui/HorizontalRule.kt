@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 /**
  * A simple horizontal line drawn with the current content color.
  */
-@Composable fun RichTextScope.HorizontalRule() {
+@Composable public fun RichTextScope.HorizontalRule() {
   val color = AmbientContentColor.current.copy(alpha = .2f)
   val spacing = with(DensityAmbient.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp()

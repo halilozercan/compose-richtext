@@ -32,12 +32,12 @@ private val PrintingAmbient = staticAmbientOf { false }
 /**
  * Returns true if a [Printable] is being used to print the composition somewhere up in the tree.
  */
-@Composable val isBeingPrinted: Boolean get() = PrintingAmbient.current
+@Composable public val isBeingPrinted: Boolean get() = PrintingAmbient.current
 
 /**
  * Returns a [Modifier] that will hide the composable it's applied to when printing.
  */
-fun Modifier.hideWhenPrinting(): Modifier = composed {
+public fun Modifier.hideWhenPrinting(): Modifier = composed {
   val printing = PrintingAmbient.current
   object : LayoutModifier {
     override fun MeasureScope.measure(
@@ -55,7 +55,7 @@ fun Modifier.hideWhenPrinting(): Modifier = composed {
 /**
  * Provides the [print] method to trigger printing [Printable] composables.
  */
-abstract class PrintableController {
+public abstract class PrintableController {
 
   internal class PrintableComposable(
     val modifier: Modifier,
@@ -71,7 +71,7 @@ abstract class PrintableController {
   /**
    * Asks the [PrintManager] to start printing the [Printable] composable.
    */
-  fun print(
+  public fun print(
     documentName: String,
     jobName: String = documentName
   ) {
@@ -106,7 +106,7 @@ abstract class PrintableController {
  * Creates and remembers a [PrintableController] that can be passed to [Printable] to start
  * print jobs.
  */
-@Composable fun rememberPrintableController(): PrintableController {
+@Composable public fun rememberPrintableController(): PrintableController {
   val context = ContextAmbient.current
   val coroutineScope = rememberCoroutineScope()
   return remember {
@@ -150,7 +150,7 @@ abstract class PrintableController {
  * @param printBreakpoints If true, horizontal lines are drawn at each breakpoint for debugging.
  * False by default.
  */
-@Composable fun Printable(
+@Composable public fun Printable(
   controller: PrintableController,
   modifier: Modifier = Modifier,
   pageDpi: Int = DefaultPageDpi,

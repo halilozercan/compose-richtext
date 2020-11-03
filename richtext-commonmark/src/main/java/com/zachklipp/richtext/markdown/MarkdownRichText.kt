@@ -153,4 +153,3 @@ private data class AstNodeTraversalEntry(
   val isVisited: Boolean,
   val formatIndex: Int?
 )
-

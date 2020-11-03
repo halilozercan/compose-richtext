@@ -33,14 +33,14 @@ import kotlin.math.max
  * @param borderStrokeWidth The width of the table border.
  */
 @Immutable
-data class TableStyle(
+public data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
   val borderColor: Color? = null,
   val borderStrokeWidth: Float? = null
 ) {
-  companion object {
-    val Default = TableStyle()
+  public companion object {
+    public val Default: TableStyle = TableStyle()
   }
 }
 
@@ -56,12 +56,12 @@ internal fun TableStyle.resolveDefaults() = TableStyle(
     borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
 
-interface RichTextTableRowScope {
-  fun row(children: RichTextTableCellScope.() -> Unit)
+public interface RichTextTableRowScope {
+  public fun row(children: RichTextTableCellScope.() -> Unit)
 }
 
-interface RichTextTableCellScope {
-  fun cell(children: @Composable RichTextScope.() -> Unit)
+public interface RichTextTableCellScope {
+  public fun cell(children: @Composable RichTextScope.() -> Unit)
 }
 
 @Immutable
@@ -90,7 +90,7 @@ private class RowBuilder : RichTextTableCellScope {
  */
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
-fun RichTextScope.Table(
+public fun RichTextScope.Table(
   modifier: Modifier = Modifier,
   headerRow: (RichTextTableCellScope.() -> Unit)? = null,
   bodyRows: RichTextTableRowScope.() -> Unit

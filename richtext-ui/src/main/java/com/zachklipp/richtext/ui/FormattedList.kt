@@ -30,7 +30,7 @@ import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
 import kotlin.math.max
 
-enum class ListType {
+public enum class ListType {
   /**
    * An ordered (numbered) list.
    */
@@ -47,26 +47,27 @@ enum class ListType {
  *
  * These are typically some sort of ordinal text.
  */
-interface OrderedMarkers {
-  @Composable fun drawMarker(
+public interface OrderedMarkers {
+  @Composable public fun drawMarker(
     level: Int,
     index: Int
   )
 
-  companion object {
+  public companion object {
     /**
      * Creates an [OrderedMarkers] that will cycle through the values in [markers] for each
      * indentation level given the index.
      */
-    fun text(vararg markers: (index: Int) -> String) = OrderedMarkers { level, index ->
-      Text(markers[level % markers.size](index))
-    }
+    public fun text(vararg markers: (index: Int) -> String): OrderedMarkers =
+      OrderedMarkers { level, index ->
+        Text(markers[level % markers.size](index))
+      }
 
     /**
      * Creates an [OrderedMarkers] from an arbitrary composable given the indentation level and
      * the index.
      */
-    operator fun invoke(
+    public operator fun invoke(
       drawMarker: @Composable (level: Int, index: Int) -> Unit
     ): OrderedMarkers = object : OrderedMarkers {
       @Composable override fun drawMarker(
@@ -84,15 +85,15 @@ interface OrderedMarkers {
  *
  * These are typically some sort of bullet point.
  */
-interface UnorderedMarkers {
-  @Composable fun drawMarker(level: Int)
+public interface UnorderedMarkers {
+  @Composable public fun drawMarker(level: Int)
 
-  companion object {
+  public companion object {
     /**
      * Creates an [UnorderedMarkers] that will cycle through the values in [markers] for each
      * indentation level.
      */
-    fun text(vararg markers: String) = UnorderedMarkers {
+    public fun text(vararg markers: String): UnorderedMarkers = UnorderedMarkers {
       Text(markers[it % markers.size])
     }
 
@@ -100,14 +101,14 @@ interface UnorderedMarkers {
      * Creates an [UnorderedMarkers] that will cycle through the values in [painters] for each
      * indentation level.
      */
-    fun painters(vararg painters: Painter) = UnorderedMarkers {
+    public fun painters(vararg painters: Painter): UnorderedMarkers = UnorderedMarkers {
       Box(Modifier.paint(painters[it % painters.size]))
     }
 
     /**
      * Creates an [UnorderedMarkers] from an arbitrary composable given the indentation level.
      */
-    operator fun invoke(drawMarker: @Composable (level: Int) -> Unit): UnorderedMarkers =
+    public operator fun invoke(drawMarker: @Composable (level: Int) -> Unit): UnorderedMarkers =
       object : UnorderedMarkers {
         @Composable override fun drawMarker(level: Int) = drawMarker(level)
       }
@@ -121,14 +122,14 @@ interface UnorderedMarkers {
  * @param contentsIndent The padding after each marker.
  */
 @Immutable
-data class ListStyle(
+public data class ListStyle(
   val markerIndent: TextUnit? = null,
   val contentsIndent: TextUnit? = null,
   val orderedMarkers: OrderedMarkers? = null,
   val unorderedMarkers: UnorderedMarkers? = null
 ) {
-  companion object {
-    val Default = ListStyle()
+  public companion object {
+    public val Default: ListStyle = ListStyle()
   }
 }
 
@@ -174,10 +175,10 @@ private val ListLevelAmbient = ambientOf { 0 }
  */
 // inline is required for https://github.com/zach-klippenstein/compose-richtext/issues/7
 @Suppress("NOTHING_TO_INLINE")
-@Composable inline fun RichTextScope.FormattedList(
+@Composable public inline fun RichTextScope.FormattedList(
   listType: ListType,
   vararg children: @Composable RichTextScope.() -> Unit
-) = FormattedList(listType, children.asList()) { it() }
+): Unit = FormattedList(listType, children.asList()) { it() }
 
 /**
  * Creates a formatted list such as a bullet list or numbered list.
@@ -185,7 +186,7 @@ private val ListLevelAmbient = ambientOf { 0 }
  * @sample com.zachklipp.richtext.ui.OrderedListPreview
  * @sample com.zachklipp.richtext.ui.UnorderedListPreview
  */
-@Composable fun <T> RichTextScope.FormattedList(
+@Composable public fun <T> RichTextScope.FormattedList(
   listType: ListType,
   items: List<T>,
   drawItem: @Composable RichTextScope.(T) -> Unit

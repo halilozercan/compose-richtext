@@ -10,7 +10,7 @@ private const val POSTSCRIPT_DPI = 72
 /** How many P's in an I. */
 private const val DP_DPI = 160
 
-const val DefaultPageDpi = 100
+public const val DefaultPageDpi: Int = 100
 
 /** Represents a PostScript point (1/72 of an inch). */
 internal inline class Pts(val value: Int) {

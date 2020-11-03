@@ -41,7 +41,7 @@ import kotlin.coroutines.CoroutineContext
  * False by default.
  * @param mainContext The [CoroutineContext] to interact with the composable and view system on.
  */
-class ComposePrintAdapter(
+public class ComposePrintAdapter(
   private val activity: ComponentActivity,
   private val documentName: String,
   private val pageModifier: Modifier = Modifier,

@@ -18,7 +18,7 @@ import kotlin.coroutines.CoroutineContext
  * A [PrintDocumentAdapter] that exposes [onLayout] and [onWrite] functions as suspend functions
  * that will automatically invoke the correct callback methods.
  */
-abstract class CoroutinePrintDocumentAdapter(context: CoroutineContext) : PrintDocumentAdapter() {
+public abstract class CoroutinePrintDocumentAdapter(context: CoroutineContext) : PrintDocumentAdapter() {
 
   private val printAdapterScope = CoroutineScope(context + Job(parent = context[Job]))
 
@@ -27,13 +27,13 @@ abstract class CoroutinePrintDocumentAdapter(context: CoroutineContext) : PrintD
     super.onFinish()
   }
 
-  abstract suspend fun onLayout(
+  public abstract suspend fun onLayout(
     oldAttributes: PrintAttributes?,
     newAttributes: PrintAttributes,
     extras: Bundle?
   ): PrintDocumentInfo
 
-  abstract suspend fun onWrite(
+  public abstract suspend fun onWrite(
     pages: Array<out PageRange>,
     destination: ParcelFileDescriptor
   ): Array<out PageRange>

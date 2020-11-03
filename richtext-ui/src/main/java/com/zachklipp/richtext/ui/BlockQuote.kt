@@ -31,12 +31,12 @@ internal val DefaultBlockQuoteGutter = BarGutter()
  *
  * [BarGutter] is provided as the reasonable default of a simple vertical line.
  */
-interface BlockQuoteGutter {
+public interface BlockQuoteGutter {
   // TODO Make this return a modifier instead?
-  @Composable fun drawGutter()
+  @Composable public fun drawGutter()
 
   @Immutable
-  data class BarGutter(
+  public data class BarGutter(
     val startMargin: TextUnit = 6.sp,
     val barWidth: TextUnit = 3.sp,
     val endMargin: TextUnit = 6.sp,
@@ -64,7 +64,7 @@ interface BlockQuoteGutter {
 /**
  * Draws a block quote, with a [BlockQuoteGutter] drawn beside the children on the start side.
  */
-@Composable fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
+@Composable public fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
   val spacing = with(DensityAmbient.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp() / 2

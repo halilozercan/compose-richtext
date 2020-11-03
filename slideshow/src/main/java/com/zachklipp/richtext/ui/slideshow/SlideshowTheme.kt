@@ -1,6 +1,7 @@
 package com.zachklipp.richtext.ui.slideshow
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableAmbient
 import androidx.compose.runtime.staticAmbientOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -25,18 +26,18 @@ import androidx.compose.ui.unit.sp
  * @param aspectRatio The aspect ratio for the entire slideshow.
  */
 @Immutable
-data class SlideshowTheme(
+public data class SlideshowTheme(
   val contentColor: Color = Color.White,
   val backgroundColor: Color = Color.DarkGray,
   val baseTextStyle: TextStyle = TextStyle(fontSize = 18.sp),
   val titleStyle: TextStyle = TextStyle(
-      fontSize = 48.sp,
-      textAlign = Center,
-      fontWeight = FontWeight.Bold
+    fontSize = 48.sp,
+    textAlign = Center,
+    fontWeight = FontWeight.Bold
   ),
   val subtitleStyle: TextStyle = TextStyle(
-      fontSize = 36.sp,
-      textAlign = Center
+    fontSize = 36.sp,
+    textAlign = Center
   ),
   val headerStyle: TextStyle = TextStyle(fontSize = 28.sp),
   val footerStyle: TextStyle = TextStyle(fontSize = 12.sp),
@@ -44,4 +45,5 @@ data class SlideshowTheme(
   val aspectRatio: Float = 16 / 9f
 )
 
-val SlideshowThemeAmbient = staticAmbientOf { SlideshowTheme() }
+public val SlideshowThemeAmbient: ProvidableAmbient<SlideshowTheme> =
+  staticAmbientOf { SlideshowTheme() }

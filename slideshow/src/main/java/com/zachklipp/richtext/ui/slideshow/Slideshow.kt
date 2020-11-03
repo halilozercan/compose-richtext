@@ -67,12 +67,13 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-class SlideshowController {
-  var currentSlide by mutableStateOf(0)
-  var showingScrubber by mutableStateOf(false)
+public class SlideshowController {
+  public var currentSlide: Int by mutableStateOf(0)
+  public var showingScrubber: Boolean by mutableStateOf(false)
 }
 
-@Composable fun rememberSlideshowController() = remember { SlideshowController() }
+@Composable public fun rememberSlideshowController(): SlideshowController =
+  remember { SlideshowController() }
 
 /**
  * A slideshow consisting of a sequence of slides which can be navigated through by tapping on them.
@@ -90,7 +91,7 @@ class SlideshowController {
  *  - [NavigableContentContainer]
  */
 @OptIn(ExperimentalAnimationApi::class)
-@Composable fun Slideshow(
+@Composable public fun Slideshow(
   vararg slides: @Composable SlideScope.() -> Unit,
   controller: SlideshowController = rememberSlideshowController(),
   theme: SlideshowTheme = SlideshowTheme()

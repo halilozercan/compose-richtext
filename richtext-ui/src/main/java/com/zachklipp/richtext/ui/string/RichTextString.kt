@@ -32,13 +32,13 @@ import kotlin.LazyThreadSafetyMode.NONE
 
 /** Copied from inline content. */
 @PublishedApi
-internal const val REPLACEMENT_CHAR = "\uFFFD"
+internal const val REPLACEMENT_CHAR: String = "\uFFFD"
 
 /**
  * Defines the [SpanStyle]s that are used for various [RichTextString] formatting directives.
  */
 @Immutable
-data class RichTextStringStyle(
+public data class RichTextStringStyle(
   val boldStyle: SpanStyle? = null,
   val italicStyle: SpanStyle? = null,
   val underlineStyle: SpanStyle? = null,
@@ -74,8 +74,8 @@ data class RichTextStringStyle(
         linkStyle = linkStyle ?: Link.DefaultStyle
     )
 
-  companion object {
-    val Default = RichTextStringStyle()
+  public companion object {
+    public val Default: RichTextStringStyle = RichTextStringStyle()
 
     private fun SpanStyle?.merge(otherStyle: SpanStyle?): SpanStyle? =
       this?.merge(otherStyle) ?: otherStyle
@@ -85,16 +85,16 @@ data class RichTextStringStyle(
 /**
  * Convenience function for creating a [RichTextString] using a [Builder].
  */
-inline fun richTextString(builder: Builder.() -> Unit): RichTextString =
+public inline fun richTextString(builder: Builder.() -> Unit): RichTextString =
   Builder().apply(builder)
-      .toRichTextString()
+    .toRichTextString()
 
 /**
  * A special type of [AnnotatedString] that is formatted using higher-level directives that are
  * configured using a [RichTextStringStyle].
  */
 @Immutable
-data class RichTextString internal constructor(
+public data class RichTextString internal constructor(
   private val taggedString: AnnotatedString,
   internal val formatObjects: Map<String, Any>
 ) {
@@ -102,7 +102,7 @@ data class RichTextString internal constructor(
   val length: Int get() = taggedString.length
   val text: String get() = taggedString.text
 
-  operator fun plus(other: RichTextString): RichTextString =
+  public operator fun plus(other: RichTextString): RichTextString =
     Builder(length + other.length).run {
       append(this@RichTextString)
       append(other)
@@ -139,14 +139,14 @@ data class RichTextString internal constructor(
         }
         .toMap()
 
-  sealed class Format(private val simpleTag: String? = null) {
+  public sealed class Format(private val simpleTag: String? = null) {
 
     internal open fun getStyle(
       richTextStyle: RichTextStringStyle,
       contentColor: Color
     ): SpanStyle? = null
 
-    object Italic : Format("italic") {
+    public object Italic : Format("italic") {
       internal val DefaultStyle = SpanStyle(fontStyle = FontStyle.Italic)
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
@@ -154,7 +154,7 @@ data class RichTextString internal constructor(
       ) = richTextStyle.italicStyle
     }
 
-    object Bold : Format(simpleTag = "foo") {
+    public object Bold : Format(simpleTag = "foo") {
       internal val DefaultStyle = SpanStyle(fontWeight = FontWeight.Bold)
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
@@ -162,7 +162,7 @@ data class RichTextString internal constructor(
       ) = richTextStyle.boldStyle
     }
 
-    object Underline : Format("underline") {
+    public object Underline : Format("underline") {
       internal val DefaultStyle = SpanStyle(textDecoration = TextDecoration.Underline)
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
@@ -170,7 +170,7 @@ data class RichTextString internal constructor(
       ) = richTextStyle.underlineStyle
     }
 
-    object Strikethrough : Format("strikethrough") {
+    public object Strikethrough : Format("strikethrough") {
       internal val DefaultStyle = SpanStyle(textDecoration = TextDecoration.LineThrough)
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
@@ -178,11 +178,11 @@ data class RichTextString internal constructor(
       ) = richTextStyle.strikethroughStyle
     }
 
-    object Subscript : Format("subscript") {
+    public object Subscript : Format("subscript") {
       internal val DefaultStyle = SpanStyle(
-          baselineShift = BaselineShift(-0.2f),
-          // TODO this should be relative to current font size
-          fontSize = 10.sp
+        baselineShift = BaselineShift(-0.2f),
+        // TODO this should be relative to current font size
+        fontSize = 10.sp
       )
 
       override fun getStyle(
@@ -191,10 +191,10 @@ data class RichTextString internal constructor(
       ) = richTextStyle.subscriptStyle
     }
 
-    object Superscript : Format("superscript") {
+    public object Superscript : Format("superscript") {
       internal val DefaultStyle = SpanStyle(
-          baselineShift = BaselineShift.Superscript,
-          fontSize = 10.sp
+        baselineShift = BaselineShift.Superscript,
+        fontSize = 10.sp
       )
 
       override fun getStyle(
@@ -203,11 +203,11 @@ data class RichTextString internal constructor(
       ) = richTextStyle.superscriptStyle
     }
 
-    object Code : Format("code") {
+    public object Code : Format("code") {
       internal val DefaultStyle = SpanStyle(
-          fontFamily = FontFamily.Monospace,
-          fontWeight = FontWeight.Medium,
-          background = DefaultCodeBlockBackground
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Medium,
+        background = DefaultCodeBlockBackground
       )
 
       override fun getStyle(
@@ -216,19 +216,19 @@ data class RichTextString internal constructor(
       ) = richTextStyle.codeStyle
     }
 
-    data class Link(val onClick: () -> Unit) : Format() {
+    public data class Link(val onClick: () -> Unit) : Format() {
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.linkStyle!!.let { style ->
         // Tweak the colors a bit to make it more likely to contrast with the background color.
         val averagedValues = Color(
-            red = ((contentColor.red + style.color.red) * .5f
-                + style.color.red * .5f).coerceAtMost(1f),
-            green = ((contentColor.green + style.color.green) * .5f
-                + style.color.green * .5f).coerceAtMost(1f),
-            blue = ((contentColor.blue + style.color.blue) * .5f
-                + style.color.blue * .5f).coerceAtMost(1f)
+          red = ((contentColor.red + style.color.red) * .5f
+              + style.color.red * .5f).coerceAtMost(1f),
+          green = ((contentColor.green + style.color.green) * .5f
+              + style.color.green * .5f).coerceAtMost(1f),
+          blue = ((contentColor.blue + style.color.blue) * .5f
+              + style.color.blue * .5f).coerceAtMost(1f)
         )
         style.copy(color = averagedValues)
       }
@@ -272,11 +272,11 @@ data class RichTextString internal constructor(
     }
   }
 
-  class Builder(capacity: Int = 16) {
+  public class Builder(capacity: Int = 16) {
     private val builder = AnnotatedString.Builder(capacity)
     private val formatObjects = mutableMapOf<String, Any>()
 
-    fun addFormat(
+    public fun addFormat(
       format: Format,
       start: Int,
       end: Int
@@ -285,23 +285,23 @@ data class RichTextString internal constructor(
       builder.addStringAnnotation(FormatAnnotationScope, tag, start, end)
     }
 
-    fun pushFormat(format: Format): Int {
+    public fun pushFormat(format: Format): Int {
       val tag = format.registerTag(formatObjects)
       return builder.pushStringAnnotation(FormatAnnotationScope, tag)
     }
 
-    fun pop() = builder.pop()
+    public fun pop(): Unit = builder.pop()
 
-    fun pop(index: Int) = builder.pop(index)
+    public fun pop(index: Int): Unit = builder.pop(index)
 
-    fun append(text: String) = builder.append(text)
+    public fun append(text: String): Unit = builder.append(text)
 
-    fun append(text: RichTextString) {
+    public fun append(text: RichTextString) {
       builder.append(text.taggedString)
       formatObjects.putAll(text.formatObjects)
     }
 
-    fun appendInlineContent(
+    public fun appendInlineContent(
       alternateText: String = REPLACEMENT_CHAR,
       content: InlineContent
     ) {
@@ -314,17 +314,17 @@ data class RichTextString internal constructor(
      * Provides access to the underlying builder, which can be used to add arbitrary formatting,
      * including mixed with formatting from this Builder.
      */
-    fun <T> withAnnotatedString(block: AnnotatedString.Builder.() -> T): T = builder.block()
+    public fun <T> withAnnotatedString(block: AnnotatedString.Builder.() -> T): T = builder.block()
 
-    fun toRichTextString(): RichTextString =
+    public fun toRichTextString(): RichTextString =
       RichTextString(
-          builder.toAnnotatedString(),
-          formatObjects.toMap()
+        builder.toAnnotatedString(),
+        formatObjects.toMap()
       )
   }
 }
 
-inline fun Builder.withFormat(
+public inline fun Builder.withFormat(
   format: Format,
   block: Builder.() -> Unit
 ) {

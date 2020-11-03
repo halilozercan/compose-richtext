@@ -30,14 +30,14 @@ import androidx.ui.tooling.preview.Preview
  * @param padding The amount of space between the edge of the text and the edge of the background.
  */
 @Immutable
-data class CodeBlockStyle(
+public data class CodeBlockStyle(
   val textStyle: TextStyle? = null,
   // TODO Make background just a modifier instead?
   val background: Color? = null,
   val padding: TextUnit? = null
 ) {
-  companion object {
-    val Default = CodeBlockStyle()
+  public companion object {
+    public val Default: CodeBlockStyle = CodeBlockStyle()
   }
 }
 
@@ -57,7 +57,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  * A specially-formatted block of text that typically uses a monospace font with a tinted
  * background.
  */
-@Composable fun RichTextScope.CodeBlock(text: String) {
+@Composable public fun RichTextScope.CodeBlock(text: String) {
   CodeBlock {
     Text(text)
   }
@@ -67,7 +67,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  * A specially-formatted block of text that typically uses a monospace font with a tinted
  * background.
  */
-@Composable fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
+@Composable public fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
   val textStyle = AmbientTextStyle.current.merge(richTextStyle.textStyle)
   val background = Modifier.background(color = richTextStyle.background!!)

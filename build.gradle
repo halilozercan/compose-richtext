@@ -122,6 +122,15 @@ subprojects {
           "-Xallow-jvm-ir-dependencies",
           "-Xskip-prerelease-check",
       ]
+
+      // Require explicit public modifiers and types.
+      // TODO this should be moved to a top-level `kotlin { explicitApi() }` once that's working
+      //  for android projects, see https://youtrack.jetbrains.com/issue/KT-37652.
+      // Tests aren't part of the public API, don't turn explicit API mode on for them.
+
+      if (project.name != "sample" && !name.contains("test")) {
+        freeCompilerArgs += "-Xexplicit-api=strict"
+      }
     }
   }
 }

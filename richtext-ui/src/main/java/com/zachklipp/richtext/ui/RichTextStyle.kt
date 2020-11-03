@@ -22,7 +22,7 @@ internal val DefaultParagraphSpacing: TextUnit = 8.sp
  * [RichTextString][com.zachklipp.richtext.ui.string.RichTextString]s
  */
 @Immutable
-data class RichTextStyle(
+public data class RichTextStyle(
   val paragraphSpacing: TextUnit? = null,
   val headingStyle: HeadingStyle? = null,
   val listStyle: ListStyle? = null,
@@ -31,12 +31,12 @@ data class RichTextStyle(
   val tableStyle: TableStyle? = null,
   val stringStyle: RichTextStringStyle? = null
 ) {
-  companion object {
-    val Default = RichTextStyle()
+  public companion object {
+    public val Default: RichTextStyle = RichTextStyle()
   }
 }
 
-fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = RichTextStyle(
+public fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = RichTextStyle(
     paragraphSpacing = otherStyle?.paragraphSpacing ?: paragraphSpacing,
     headingStyle = otherStyle?.headingStyle ?: headingStyle,
     listStyle = otherStyle?.listStyle ?: listStyle,
@@ -46,7 +46,7 @@ fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = RichTextSty
     stringStyle = stringStyle?.merge(otherStyle?.stringStyle)
 )
 
-fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
+public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
     paragraphSpacing = paragraphSpacing ?: DefaultParagraphSpacing,
     headingStyle = headingStyle ?: DefaultHeadingStyle,
     listStyle = (listStyle ?: ListStyle.Default).resolveDefaults(),
