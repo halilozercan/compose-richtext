@@ -11,14 +11,14 @@ import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
@@ -109,7 +109,7 @@ fun RichTextScope.Text(
   //    correct Placeholders.
   // 2. Text doesn't re-layout the text when the placeholders change.
   Layout(
-      modifier = modifier + pressIndicator,
+      modifier = modifier.then(pressIndicator),
       children = {
         Text(
             text = hack,
@@ -204,7 +204,7 @@ private val spinningCross = InlineContent {
   }
 
   Canvas(modifier = Modifier.size(12.sp.toDp(), 12.sp.toDp()).padding(2.dp)) {
-    withTransform({ rotate(angle.value) }) {
+    withTransform({ rotate(angle.value, center) }) {
       val strokeWidth = 3.dp.toPx()
       val strokeCap = Round
       drawLine(
@@ -227,7 +227,7 @@ private val spinningCross = InlineContent {
 
 val slowLoadingImage = InlineContent {
   var loaded by savedInstanceState { false }
-  launchInComposition(loaded) {
+  LaunchedTask(loaded) {
     if (!loaded) {
       delay(3000)
       loaded = true
@@ -237,7 +237,7 @@ val slowLoadingImage = InlineContent {
   if (!loaded) {
     LoadingSpinner()
   } else {
-    Stack(Modifier.clickable(onClick = { loaded = false })) {
+    Box(Modifier.clickable(onClick = { loaded = false })) {
       val size = animatedFloat(16f)
       onActive { size.animateTo(100f) }
       Picture(Modifier.size(size.value.sp.toDp()))

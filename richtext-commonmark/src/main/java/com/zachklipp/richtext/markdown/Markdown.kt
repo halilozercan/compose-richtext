@@ -134,6 +134,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
                 it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                   Html.fromHtml(astNode.literal, 0)
                 } else {
+                  @Suppress("DEPRECATION")
                   Html.fromHtml(astNode.literal)
                 }
               }

@@ -8,3 +8,9 @@ dependencies {
   implementation deps.compose.tooling
   implementation deps.kotlin.stdlib
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    freeCompilerArgs += ["-Xinline-classes"]
+  }
+}
