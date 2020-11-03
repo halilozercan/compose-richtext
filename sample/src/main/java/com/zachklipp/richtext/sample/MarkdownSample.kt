@@ -1,10 +1,24 @@
 package com.zachklipp.richtext.sample
 
 import android.widget.Toast
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.selection.Selection
@@ -17,58 +31,58 @@ import com.zachklipp.richtext.ui.resolveDefaults
 
 @Preview
 @Composable private fun MarkdownSamplePreview() {
-    MarkdownSample()
+  MarkdownSample()
 }
 
 @Composable fun MarkdownSample() {
-    var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
-    var isDarkModeEnabled by remember { mutableStateOf(false) }
+  var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
+  var isDarkModeEnabled by remember { mutableStateOf(false) }
 
-    val colors = if (isDarkModeEnabled) darkColors() else lightColors()
-    val context = ContextAmbient.current
+  val colors = if (isDarkModeEnabled) darkColors() else lightColors()
+  val context = ContextAmbient.current
 
-    MaterialTheme(colors = colors) {
-        Surface {
-            Column {
-                // Config
-                Card(elevation = 4.dp) {
-                    Column {
-                        Row(
-                            Modifier
-                                .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
-                                .padding(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Checkbox(
-                                checked = isDarkModeEnabled,
-                                onCheckedChange = { isDarkModeEnabled = it },
+  MaterialTheme(colors = colors) {
+    Surface {
+      Column {
+        // Config
+        Card(elevation = 4.dp) {
+          Column {
+            Row(
+                Modifier
+                    .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              Checkbox(
+                  checked = isDarkModeEnabled,
+                  onCheckedChange = { isDarkModeEnabled = it },
 
-                                )
-                            Text("Dark Mode")
-                        }
-                        RichTextStyleConfig(
-                            richTextStyle = richTextStyle,
-                            onChanged = { richTextStyle = it }
-                        )
-                    }
-                }
-
-                var selection: Selection? by remember { mutableStateOf(null) }
-                SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
-                    ScrollableColumn {
-                        Markdown(
-                            content = sampleMarkdown,
-                            style = richTextStyle,
-                            modifier = Modifier.padding(8.dp),
-                            onLinkClicked = {
-                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                            }
-                        )
-                    }
-                }
+                  )
+              Text("Dark Mode")
             }
+            RichTextStyleConfig(
+                richTextStyle = richTextStyle,
+                onChanged = { richTextStyle = it }
+            )
+          }
         }
+
+        var selection: Selection? by remember { mutableStateOf(null) }
+        SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
+          ScrollableColumn {
+            Markdown(
+                content = sampleMarkdown,
+                style = richTextStyle,
+                modifier = Modifier.padding(8.dp),
+                onLinkClicked = {
+                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            )
+          }
+        }
+      }
     }
+  }
 }
 
 private val sampleMarkdown = """

@@ -94,11 +94,11 @@ private fun CodeBlockPreview(
     Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
         RichTextScope.CodeBlock(
-          """
-            data class Hello(
-              val name: String
-            )
-          """.trimIndent()
+            """
+              data class Hello(
+                val name: String
+              )
+            """.trimIndent()
         )
       }
     }

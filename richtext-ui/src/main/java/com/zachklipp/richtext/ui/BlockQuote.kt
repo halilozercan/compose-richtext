@@ -3,9 +3,9 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,11 +42,11 @@ interface BlockQuoteGutter {
         val modifier = remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
           Modifier.padding(
-            start = startMargin.toDp(),
-            end = endMargin.toDp()
+              start = startMargin.toDp(),
+              end = endMargin.toDp()
           )
-            .width(barWidth.toDp())
-            .background(color, RoundedCornerShape(50))
+              .width(barWidth.toDp())
+              .background(color, RoundedCornerShape(50))
         }
 
         Box(modifier = modifier)
@@ -67,8 +67,8 @@ interface BlockQuoteGutter {
   Layout(children = {
     gutter.drawGutter()
     RichText(
-      modifier = Modifier.padding(top = spacing, bottom = spacing),
-      children = children
+        modifier = Modifier.padding(top = spacing, bottom = spacing),
+        children = children
     )
   }) { measurables, constraints ->
     val gutterMeasurable = measurables[0]

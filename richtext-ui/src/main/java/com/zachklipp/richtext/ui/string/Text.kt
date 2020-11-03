@@ -7,8 +7,8 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.AmbientContentColor
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Stack
@@ -82,10 +82,10 @@ fun RichTextScope.Text(
     layoutResult.value?.let { layoutResult ->
       val offset = layoutResult.getOffsetForPosition(position)
       annotated.getStringAnnotations(Format.FormatAnnotationScope, offset, offset)
-        .asSequence()
-        .mapNotNull { Format.findTag(it.item, text.formatObjects) as? Link }
-        .firstOrNull()
-        ?.let { link -> link.onClick() }
+          .asSequence()
+          .mapNotNull { Format.findTag(it.item, text.formatObjects) as? Link }
+          .firstOrNull()
+          ?.let { link -> link.onClick() }
     }
   }
 
@@ -95,13 +95,13 @@ fun RichTextScope.Text(
   // The constraints function won't be called until the content is actually composed and EM is
   // measured, which won't happen until the text is composed.
   val inlineTextContents = ManageInlineTextContents(
-    inlineContents = inlineContents,
-    textConstraints = { constraintsRef.value!! },
-    forceTextRelayout = {
-      // Modifying the actual string will cause Text to realize it needs to relayout.
-      // We use a special unicode character that doesn't render so there's no visual effect.
-      hack = hack.copy(text = hack.text + ZERO_WIDTH_CHAR)
-    }
+      inlineContents = inlineContents,
+      textConstraints = { constraintsRef.value!! },
+      forceTextRelayout = {
+        // Modifying the actual string will cause Text to realize it needs to relayout.
+        // We use a special unicode character that doesn't render so there's no visual effect.
+        hack = hack.copy(text = hack.text + ZERO_WIDTH_CHAR)
+      }
   )
 
   // This is a giant hack to work around inline content limitations:
@@ -109,17 +109,17 @@ fun RichTextScope.Text(
   //    correct Placeholders.
   // 2. Text doesn't re-layout the text when the placeholders change.
   Layout(
-    modifier = modifier + pressIndicator,
-    children = {
-      Text(
-        text = hack,
-        onTextLayout = { result ->
-          layoutResult.value = result
-          onTextLayout(result)
-        },
-        inlineContent = inlineTextContents
-      )
-    }
+      modifier = modifier + pressIndicator,
+      children = {
+        Text(
+            text = hack,
+            onTextLayout = { result ->
+              layoutResult.value = result
+              onTextLayout(result)
+            },
+            inlineContent = inlineTextContents
+        )
+      }
   ) { measurables, constraints ->
     // Update the inline content before measuring text, so content will get its constraints before
     // being measured.
@@ -146,8 +146,8 @@ fun RichTextScope.Text(
       appendPreviewSentence(Superscript)
       appendPreviewSentence(Code)
       appendPreviewSentence(
-        Link { toggleLink = !toggleLink },
-        if (toggleLink) "clicked link" else "link"
+          Link { toggleLink = !toggleLink },
+          if (toggleLink) "clicked link" else "link"
       )
       append("Here, ")
       appendInlineContent(content = spinningCross)
@@ -185,20 +185,20 @@ private val spinningCross = InlineContent {
   val color = animatedColor(Color.Red)
   onActive {
     val angleAnim = repeatable<Float>(
-      iterations = Infinite,
-      animation = tween(durationMillis = 1000, easing = LinearEasing)
+        iterations = Infinite,
+        animation = tween(durationMillis = 1000, easing = LinearEasing)
     )
     angle.animateTo(360f, angleAnim)
 
     val colorAnim = repeatable<Color>(
-      iterations = Infinite,
-      animation = keyframes {
-        durationMillis = 2500
-        Color.Blue at 500
-        Color.Cyan at 1000
-        Color.Green at 1500
-        Color.Magenta at 2000
-      }
+        iterations = Infinite,
+        animation = keyframes {
+          durationMillis = 2500
+          Color.Blue at 500
+          Color.Cyan at 1000
+          Color.Green at 1500
+          Color.Magenta at 2000
+        }
     )
     color.animateTo(Color.Yellow, colorAnim)
   }
@@ -208,18 +208,18 @@ private val spinningCross = InlineContent {
       val strokeWidth = 3.dp.toPx()
       val strokeCap = Round
       drawLine(
-        color.value,
-        start = Offset(0f, size.height / 2),
-        end = Offset(size.width, size.height / 2),
-        strokeWidth = strokeWidth,
-        cap = strokeCap
+          color.value,
+          start = Offset(0f, size.height / 2),
+          end = Offset(size.width, size.height / 2),
+          strokeWidth = strokeWidth,
+          cap = strokeCap
       )
       drawLine(
-        color.value,
-        start = Offset(size.width / 2, 0f),
-        end = Offset(size.width / 2, size.height),
-        strokeWidth = strokeWidth,
-        cap = strokeCap
+          color.value,
+          start = Offset(size.width / 2, 0f),
+          end = Offset(size.width / 2, size.height),
+          strokeWidth = strokeWidth,
+          cap = strokeCap
       )
     }
   }
@@ -242,10 +242,10 @@ val slowLoadingImage = InlineContent {
       onActive { size.animateTo(100f) }
       Picture(Modifier.size(size.value.sp.toDp()))
       Text(
-        "click to refresh",
-        modifier = Modifier.padding(3.dp).align(Alignment.Center),
-        fontSize = 8.sp,
-        style = TextStyle(background = Color.LightGray)
+          "click to refresh",
+          modifier = Modifier.padding(3.dp).align(Alignment.Center),
+          fontSize = 8.sp,
+          style = TextStyle(background = Color.LightGray)
       )
     }
   }
@@ -255,19 +255,19 @@ val slowLoadingImage = InlineContent {
   val alpha = animatedFloat(initVal = 1f)
   onActive {
     val anim = repeatable<Float>(
-      iterations = Infinite,
-      animation = keyframes {
-        durationMillis = 500
-        0f at 250
-        1f at 500
-      })
+        iterations = Infinite,
+        animation = keyframes {
+          durationMillis = 500
+          0f at 250
+          1f at 500
+        })
     alpha.animateTo(0f, anim)
   }
   Text(
-    "⏳",
-    fontSize = 3.em,
-    modifier = Modifier.wrapContentSize(Alignment.Center)
-      .drawOpacity(alpha.value)
+      "⏳",
+      fontSize = 3.em,
+      modifier = Modifier.wrapContentSize(Alignment.Center)
+          .drawOpacity(alpha.value)
   )
 }
 

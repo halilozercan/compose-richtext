@@ -38,11 +38,11 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.ui.tooling.preview.Preview
 
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
-  "RichText Demo" to @Composable { RichTextSample() },
-  "Markdown Demo" to @Composable { MarkdownSample() },
-  "Pagination" to @Composable { PagedSample() },
-  "Printable Document" to @Composable { DocumentSample() },
-  "Slideshow" to @Composable { SlideshowSample() },
+    "RichText Demo" to @Composable { RichTextSample() },
+    "Markdown Demo" to @Composable { MarkdownSample() },
+    "Pagination" to @Composable { PagedSample() },
+    "Printable Document" to @Composable { DocumentSample() },
+    "Slideshow" to @Composable { SlideshowSample() },
 )
 
 @Preview(showBackground = true)
@@ -58,7 +58,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
       BackPressedHandler(onBackPressed = { currentSampleIndex = null })
       Samples[it].second()
     }
-      ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
+        ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
   }
 }
 
@@ -103,9 +103,9 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   val context = ContextAmbient.current
   val backPressedDispatcher = remember {
     generateSequence(context) { (it as? ContextWrapper)?.baseContext }
-      .filterIsInstance<OnBackPressedDispatcherOwner>()
-      .firstOrNull()
-      ?.onBackPressedDispatcher
+        .filterIsInstance<OnBackPressedDispatcherOwner>()
+        .firstOrNull()
+        ?.onBackPressedDispatcher
   } ?: return
   val compositionLifecycleOwner: LifecycleOwner = remember(onBackPressed) {
     object : LifecycleOwner, CompositionLifecycleObserver {

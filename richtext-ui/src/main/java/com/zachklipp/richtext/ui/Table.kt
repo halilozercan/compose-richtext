@@ -48,10 +48,10 @@ private val DefaultBorderColor = Color.Black
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
-  headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
-  cellPadding = cellPadding ?: DefaultCellPadding,
-  borderColor = borderColor ?: DefaultBorderColor,
-  borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
+    headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
+    cellPadding = cellPadding ?: DefaultCellPadding,
+    borderColor = borderColor ?: DefaultBorderColor,
+    borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
 
 interface RichTextTableRowScope {
@@ -100,8 +100,8 @@ fun RichTextScope.Table(
   }
   val columns = remember(header, rows) {
     max(
-      header?.cells?.size ?: 0,
-      rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
+        header?.cells?.size ?: 0,
+        rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
   val headerStyle = AmbientTextStyle.current.merge(tableStyle.headerTextStyle)
@@ -138,18 +138,18 @@ fun RichTextScope.Table(
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   SimpleTableLayout(
-    columns = columns,
-    rows = styledRows,
-    cellSpacing = tableStyle.borderStrokeWidth!!,
-    drawDecorations = { layoutResult ->
-      Modifier.drawTableBorders(
-        rowOffsets = layoutResult.rowOffsets,
-        columnOffsets = layoutResult.columnOffsets,
-        borderColor = tableStyle.borderColor!!,
-        borderStrokeWidth = tableStyle.borderStrokeWidth
-      )
-    },
-    modifier = modifier
+      columns = columns,
+      rows = styledRows,
+      cellSpacing = tableStyle.borderStrokeWidth!!,
+      drawDecorations = { layoutResult ->
+        Modifier.drawTableBorders(
+            rowOffsets = layoutResult.rowOffsets,
+            columnOffsets = layoutResult.columnOffsets,
+            borderColor = tableStyle.borderColor!!,
+            borderStrokeWidth = tableStyle.borderStrokeWidth
+        )
+      },
+      modifier = modifier
   )
 }
 
@@ -162,20 +162,20 @@ private fun Modifier.drawTableBorders(
   // Draw horizontal borders.
   rowOffsets.forEach { position ->
     drawLine(
-      borderColor,
-      start = Offset(0f, position),
-      end = Offset(size.width, position),
-      borderStrokeWidth
+        borderColor,
+        start = Offset(0f, position),
+        end = Offset(size.width, position),
+        borderStrokeWidth
     )
   }
 
   // Draw vertical borders.
   columnOffsets.forEach { position ->
     drawLine(
-      borderColor,
-      Offset(position, 0f),
-      Offset(position, size.height),
-      borderStrokeWidth
+        borderColor,
+        Offset(position, 0f),
+        Offset(position, size.height),
+        borderStrokeWidth
     )
   }
 }
@@ -275,8 +275,8 @@ private fun SimpleTableLayout(
       subcompose(true) {
         Box(modifier = drawDecorations(layoutResult))
       }.single()
-        .measure(Constraints.fixed(tableWidth, tableHeight))
-        .placeRelative(0, 0)
+          .measure(Constraints.fixed(tableWidth, tableHeight))
+          .placeRelative(0, 0)
     }
   }
 }
@@ -296,11 +296,11 @@ private fun TablePreviewFixedWidth() {
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
   RichTextScope.Table(
-    modifier = modifier.background(Color.White).padding(4.dp),
-    headerRow = {
-      cell { Text("Column 1") }
-      cell { Text("Column 2") }
-    }
+      modifier = modifier.background(Color.White).padding(4.dp),
+      headerRow = {
+        cell { Text("Column 1") }
+        cell { Text("Column 2") }
+      }
   ) {
     row {
       cell { Text("Hello") }

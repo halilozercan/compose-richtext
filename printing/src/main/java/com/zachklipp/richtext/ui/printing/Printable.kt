@@ -124,8 +124,8 @@ abstract class PrintableController {
       ) {
         if (activity == null || printManager == null) return
         val adapter = ComposePrintAdapter(
-          activity, documentName, modifier, pageDpi, printBreakpoints,
-          mainContext = coroutineScope.coroutineContext
+            activity, documentName, modifier, pageDpi, printBreakpoints,
+            mainContext = coroutineScope.coroutineContext
         ) {
           Providers(PrintingAmbient provides true, children = content)
         }

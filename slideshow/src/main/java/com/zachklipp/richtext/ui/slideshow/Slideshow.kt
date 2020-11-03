@@ -104,50 +104,50 @@ class SlideshowController {
   }
 
   Box(
-    Modifier
-      // Wire up navigation controls.
-      .splitClickable { left -> state.navigate(!left) }
-      // Show the slide scrubber when dragging up.
-      .draggable(
-        orientation = Vertical,
-        onDragStopped = { velocity ->
-          // Show or hide the scrubber depending on the direction of the drag.
-          controller.showingScrubber = velocity < 0
-        },
-        onDrag = { /* Noop */ }
-      )
-      // Fill the entire window.
-      .fillMaxSize()
-      // Always draw a black background for letterboxing.
-      .background(Color.Black)
+      Modifier
+          // Wire up navigation controls.
+          .splitClickable { left -> state.navigate(!left) }
+          // Show the slide scrubber when dragging up.
+          .draggable(
+              orientation = Vertical,
+              onDragStopped = { velocity ->
+                // Show or hide the scrubber depending on the direction of the drag.
+                controller.showingScrubber = velocity < 0
+              },
+              onDrag = { /* Noop */ }
+          )
+          // Fill the entire window.
+          .fillMaxSize()
+          // Always draw a black background for letterboxing.
+          .background(Color.Black)
   ) {
     Providers(
-      AmbientContentColor provides theme.contentColor,
-      SlideshowThemeAmbient provides theme,
+        AmbientContentColor provides theme.contentColor,
+        SlideshowThemeAmbient provides theme,
     ) {
       ProvideTextStyle(theme.baseTextStyle) {
         // This crossfade provides transitions between slides.
         Crossfade(
-          state.currentSlide,
-          Modifier
-            // Aspect-ratioed content should be centered inside the window.
-            .align(Alignment.Center)
-            // Draw the slide background outside of the crossfade so it doesn't fade to black in
-            // between slides.
-            .background(theme.backgroundColor)
+            state.currentSlide,
+            Modifier
+                // Aspect-ratioed content should be centered inside the window.
+                .align(Alignment.Center)
+                // Draw the slide background outside of the crossfade so it doesn't fade to black in
+                // between slides.
+                .background(theme.backgroundColor)
         ) { slide ->
           if (slide < slides.size) {
             // Make slide text selectable.
             var selection by remember { mutableStateOf<Selection?>(null) }
             SelectionContainer(
-              Modifier
-                // Be as big as possible with the correct aspect ratio.
-                .aspectRatio(theme.aspectRatio)
-                // Center slide content that doesn't expand. This is a more visually pleasing
-                // default than putting it at the top-left.
-                .wrapContentSize(),
-              selection = selection,
-              onSelectionChange = { selection = it }
+                Modifier
+                    // Be as big as possible with the correct aspect ratio.
+                    .aspectRatio(theme.aspectRatio)
+                    // Center slide content that doesn't expand. This is a more visually pleasing
+                    // default than putting it at the top-left.
+                    .wrapContentSize(),
+                selection = selection,
+                onSelectionChange = { selection = it }
             ) {
               val slideScope = remember { state.createSlideScopeForSlide(slide) }
               slides[slide].invoke(slideScope)
@@ -160,10 +160,10 @@ class SlideshowController {
         // Scrubber control.
         // TODO This probably shouldn't be built into the main slideshow composable.
         AnimatedVisibility(
-          controller.showingScrubber,
-          modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.BottomCenter),
-          enter = slideInVertically({ it }),
-          exit = slideOutVertically({ it })
+            controller.showingScrubber,
+            modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.BottomCenter),
+            enter = slideInVertically({ it }),
+            exit = slideOutVertically({ it })
         ) {
           SlideshowScrubber(controller, slides)
         }
@@ -185,15 +185,15 @@ class SlideshowController {
     val outerconstraints = constraints
     Column {
       Box(
-        Modifier
-          .fillMaxHeight(.4f)
-          // Can't use custom Alignment because of https://issuetracker.google.com/issues/169982630.
-          .then(HorizontalFractionalAlignment(scrubberSlide / (slides.size - 1).toFloat()))
-          .aspectRatio(theme.aspectRatio)
-          .border(.5.dp, Color.LightGray)
-          .drawShadow(16.dp)
-          .background(theme.backgroundColor)
-          .wrapContentSize()
+          Modifier
+              .fillMaxHeight(.4f)
+              // Can't use custom Alignment because of https://issuetracker.google.com/issues/169982630.
+              .then(HorizontalFractionalAlignment(scrubberSlide / (slides.size - 1).toFloat()))
+              .aspectRatio(theme.aspectRatio)
+              .border(.5.dp, Color.LightGray)
+              .drawShadow(16.dp)
+              .background(theme.backgroundColor)
+              .wrapContentSize()
       ) {
         WithConstraints {
           // Calculate the amount to change density to make it look like the preview is a shrunk-
@@ -221,20 +221,20 @@ class SlideshowController {
       Spacer(Modifier.height(24.dp))
 
       Box(
-        Modifier
-          .fillMaxWidth()
-          .background(Color.Black)
-          .padding(16.dp)
+          Modifier
+              .fillMaxWidth()
+              .background(Color.Black)
+              .padding(16.dp)
       ) {
         Slider(
-          value = scrubberSlide,
-          onValueChange = { scrubberSlide = it },
-          valueRange = 0f..(slides.size - 1).toFloat(),
-          steps = slides.size - 2,
-          onValueChangeEnd = {
-            controller.currentSlide = scrubberSlide.roundToInt()
-            controller.showingScrubber = false
-          }
+            value = scrubberSlide,
+            onValueChange = { scrubberSlide = it },
+            valueRange = 0f..(slides.size - 1).toFloat(),
+            steps = slides.size - 2,
+            onValueChangeEnd = {
+              controller.currentSlide = scrubberSlide.roundToInt()
+              controller.showingScrubber = false
+            }
         )
       }
     }
@@ -256,21 +256,21 @@ private fun Modifier.splitClickable(
   }
 
   onSizeChanged { sizeRef.value = it }
-    .tapGestureFilter { offset ->
-      onClick(offset.x < splitPoint)
-    }
+      .tapGestureFilter { offset ->
+        onClick(offset.x < splitPoint)
+      }
 }
 
 @Composable private fun EndMarker() {
   Text(
-    "End",
-    Modifier
-      .aspectRatio(16 / 9f)
-      // We don't want to draw the theme background color for this marker, but we still need
-      // to have it inside the Crossfade so that
-      .background(Color.Black)
-      .wrapContentSize(),
-    fontSize = 11.sp
+      "End",
+      Modifier
+          .aspectRatio(16 / 9f)
+          // We don't want to draw the theme background color for this marker, but we still need
+          // to have it inside the Crossfade so that
+          .background(Color.Black)
+          .wrapContentSize(),
+      fontSize = 11.sp
   )
 }
 

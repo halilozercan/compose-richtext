@@ -3,13 +3,13 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,10 +34,13 @@ import com.zachklipp.richtext.ui.string.TextPreview
   }
 }
 
-@Composable fun RichTextDemo(style: RichTextStyle? = null, header: String = "") {
+@Composable fun RichTextDemo(
+  style: RichTextStyle? = null,
+  header: String = ""
+) {
   RichText(
-    modifier = Modifier.padding(8.dp),
-    style = style
+      modifier = Modifier.padding(8.dp),
+      style = style
   ) {
     Heading(0, "Paragraphs $header")
     Text("Simple paragraph.")
@@ -58,7 +61,7 @@ import com.zachklipp.richtext.ui.string.TextPreview
 
     Heading(0, "Code Block")
     CodeBlock(
-      """
+        """
         {
           "Hello": "world!"
         }
@@ -76,11 +79,11 @@ import com.zachklipp.richtext.ui.string.TextPreview
 
     Heading(0, "Table")
     Table(
-      modifier = Modifier.fillMaxWidth(),
-      headerRow = {
-        cell { Text("Column 1") }
-        cell { Text("Column 2") }
-      }) {
+        modifier = Modifier.fillMaxWidth(),
+        headerRow = {
+          cell { Text("Column 1") }
+          cell { Text("Column 2") }
+        }) {
       row {
         cell { Text("Hello") }
         cell {
@@ -101,17 +104,17 @@ import com.zachklipp.richtext.ui.string.TextPreview
 
 @Composable private fun RichTextScope.ListDemo(listType: ListType) {
   FormattedList(listType,
-    @Composable {
-      Text("First list item")
-      FormattedList(listType,
-        @Composable { Text("Indented 1") }
-      )
-    },
-    @Composable {
-      Text("Second list item.")
-      FormattedList(listType,
-        @Composable { Text("Indented 2") }
-      )
-    }
+      @Composable {
+        Text("First list item")
+        FormattedList(listType,
+            @Composable { Text("Indented 1") }
+        )
+      },
+      @Composable {
+        Text("Second list item.")
+        FormattedList(listType,
+            @Composable { Text("Indented 2") }
+        )
+      }
   )
 }

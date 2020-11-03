@@ -4,12 +4,28 @@ import android.os.Build
 import android.text.Html
 import android.widget.TextView
 import androidx.compose.foundation.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
+import androidx.compose.runtime.ambientOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.UriHandlerAmbient
 import androidx.compose.ui.viewinterop.AndroidView
 import com.zachklipp.richtext.markdown.extensions.AstTableRoot
-import com.zachklipp.richtext.ui.*
+import com.zachklipp.richtext.ui.BlockQuote
+import com.zachklipp.richtext.ui.CodeBlock
+import com.zachklipp.richtext.ui.FormattedList
+import com.zachklipp.richtext.ui.Heading
+import com.zachklipp.richtext.ui.HorizontalRule
+import com.zachklipp.richtext.ui.ListStyle
+import com.zachklipp.richtext.ui.ListType
+import com.zachklipp.richtext.ui.RichText
+import com.zachklipp.richtext.ui.RichTextScope
+import com.zachklipp.richtext.ui.RichTextStyle
+import com.zachklipp.richtext.ui.UnorderedMarkers
+import com.zachklipp.richtext.ui.WithStyle
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.Text
 import com.zachklipp.richtext.ui.string.richTextString
@@ -26,22 +42,22 @@ import org.commonmark.parser.Parser
  */
 @Composable
 fun Markdown(
-    content: String,
-    modifier: Modifier = Modifier,
-    style: RichTextStyle? = null,
-    onLinkClicked: ((String) -> Unit)? = null
+  content: String,
+  modifier: Modifier = Modifier,
+  style: RichTextStyle? = null,
+  onLinkClicked: ((String) -> Unit)? = null
 ) {
-    RichText(
-        modifier = modifier,
-        style = style
+  RichText(
+      modifier = modifier,
+      style = style
+  ) {
+    Providers(
+        AmbientOnLinkClicked provides (onLinkClicked ?: UriHandlerAmbient.current::openUri)
     ) {
-        Providers(
-            AmbientOnLinkClicked provides (onLinkClicked ?: UriHandlerAmbient.current::openUri)
-        ) {
-            val markdownAst = parsedMarkdownAst(text = content)
-            RecursiveRenderMarkdownAst(astNode = markdownAst)
-        }
+      val markdownAst = parsedMarkdownAst(text = content)
+      RecursiveRenderMarkdownAst(astNode = markdownAst)
     }
+  }
 }
 
 /**
@@ -71,84 +87,86 @@ fun Markdown(
  */
 @Composable
 internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
-    astNode ?: return
+  astNode ?: return
 
-    when (astNode) {
-        is AstBlockQuote -> {
-            BlockQuote {
-                visitChildren(astNode)
-            }
-        }
-        is AstBulletList -> {
-            WithStyle(style = RichTextStyle(
-                listStyle = ListStyle.Default.copy(
-                    unorderedMarkers = UnorderedMarkers.text("${astNode.bulletMarker}")
-                )
-            )) {
-                FormattedList(
-                    listType = ListType.Unordered,
-                    items = astNode.childrenSequence().toList()
-                ) { astListItem ->
-                    visitChildren(astListItem)
-                }
-            }
-        }
-        is AstFencedCodeBlock -> {
-            CodeBlock(text = astNode.literal)
-        }
-        is AstHeading -> {
-            Heading(level = astNode.level) {
-                MarkdownRichText(astNode)
-            }
-        }
-        is AstThematicBreak -> {
-            HorizontalRule()
-        }
-        is AstHtmlBlock -> {
-            Text(text = richTextString {
-                appendInlineContent(content = InlineContent {
-                    AndroidView(
-                        viewBlock = { context ->
-                            // TODO: pass current styling to legacy TextView
-                            TextView(context)
-                        },
-                        update = {
-                            it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                Html.fromHtml(astNode.literal, 0)
-                            } else {
-                                Html.fromHtml(astNode.literal)
-                            }
-                        }
-                    )
-                })
-            })
-        }
-        is AstIndentedCodeBlock -> {
-            CodeBlock(text = astNode.literal)
-        }
-        is AstOrderedList -> {
-            FormattedList(
-                listType = ListType.Ordered,
-                items = astNode.childrenSequence().toList()
-            ) { astListItem ->
-                visitChildren(astListItem)
-            }
-        }
-        is AstParagraph -> {
-            MarkdownRichText(astNode)
-        }
-        // This should almost never happen. All the possible text
-        // nodes must be under either Heading, Paragraph or CustomNode
-        // In any case, we should include it here to prevent any
-        // non-rendered text problems.
-        is AstText -> {
-            Text(astNode.literal)
-        }
-        is AstTableRoot -> {
-            renderTable(astNode)
-        }
-        else -> visitChildren(astNode)
+  when (astNode) {
+    is AstBlockQuote -> {
+      BlockQuote {
+        visitChildren(astNode)
+      }
     }
+    is AstBulletList -> {
+      WithStyle(
+          style = RichTextStyle(
+              listStyle = ListStyle.Default.copy(
+                  unorderedMarkers = UnorderedMarkers.text("${astNode.bulletMarker}")
+              )
+          )
+      ) {
+        FormattedList(
+            listType = ListType.Unordered,
+            items = astNode.childrenSequence().toList()
+        ) { astListItem ->
+          visitChildren(astListItem)
+        }
+      }
+    }
+    is AstFencedCodeBlock -> {
+      CodeBlock(text = astNode.literal)
+    }
+    is AstHeading -> {
+      Heading(level = astNode.level) {
+        MarkdownRichText(astNode)
+      }
+    }
+    is AstThematicBreak -> {
+      HorizontalRule()
+    }
+    is AstHtmlBlock -> {
+      Text(text = richTextString {
+        appendInlineContent(content = InlineContent {
+          AndroidView(
+              viewBlock = { context ->
+                // TODO: pass current styling to legacy TextView
+                TextView(context)
+              },
+              update = {
+                it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                  Html.fromHtml(astNode.literal, 0)
+                } else {
+                  Html.fromHtml(astNode.literal)
+                }
+              }
+          )
+        })
+      })
+    }
+    is AstIndentedCodeBlock -> {
+      CodeBlock(text = astNode.literal)
+    }
+    is AstOrderedList -> {
+      FormattedList(
+          listType = ListType.Ordered,
+          items = astNode.childrenSequence().toList()
+      ) { astListItem ->
+        visitChildren(astListItem)
+      }
+    }
+    is AstParagraph -> {
+      MarkdownRichText(astNode)
+    }
+    // This should almost never happen. All the possible text
+    // nodes must be under either Heading, Paragraph or CustomNode
+    // In any case, we should include it here to prevent any
+    // non-rendered text problems.
+    is AstText -> {
+      Text(astNode.literal)
+    }
+    is AstTableRoot -> {
+      renderTable(astNode)
+    }
+    else -> visitChildren(astNode)
+  }
 }
 
 /**
@@ -159,24 +177,24 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
  */
 @Composable
 internal fun parsedMarkdownAst(text: String): AstNode? {
-    val parser = remember {
-        Parser.builder()
-            .extensions(
-                listOf(
-                    TablesExtension.create(),
-                    StrikethroughExtension.create()
-                )
-            ).build()
-    }
+  val parser = remember {
+    Parser.builder()
+        .extensions(
+            listOf(
+                TablesExtension.create(),
+                StrikethroughExtension.create()
+            )
+        ).build()
+  }
 
-    val rootASTNode by produceState<AstNode?>(
-        initialValue = null,
-        source = text
-    ) {
-        value = convert(parser.parse(text))
-    }
+  val rootASTNode by produceState<AstNode?>(
+      initialValue = null,
+      source = text
+  ) {
+    value = convert(parser.parse(text))
+  }
 
-    return rootASTNode
+  return rootASTNode
 }
 
 /**
@@ -186,9 +204,9 @@ internal fun parsedMarkdownAst(text: String): AstNode? {
  */
 @Composable
 internal fun RichTextScope.visitChildren(node: AstNode?) {
-    node?.childrenSequence()?.forEach {
-        RecursiveRenderMarkdownAst(astNode = it)
-    }
+  node?.childrenSequence()?.forEach {
+    RecursiveRenderMarkdownAst(astNode = it)
+  }
 }
 
 /**
@@ -196,4 +214,5 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
  * to children that render links. Although being explicit is preferred, recursive calls to
  * [visitChildren] increases verbosity with each extra argument.
  */
-internal val AmbientOnLinkClicked = ambientOf<(String) -> Unit> { error("OnLinkClicked is not provided") }
+internal val AmbientOnLinkClicked =
+  ambientOf<(String) -> Unit> { error("OnLinkClicked is not provided") }

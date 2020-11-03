@@ -47,9 +47,12 @@ private class PagedScreenState {
   var drawBreakpoints by mutableStateOf(true)
 }
 
-@Composable private fun PagedScreen(state: PagedScreenState, doPrint: () -> Unit) {
+@Composable private fun PagedScreen(
+  state: PagedScreenState,
+  doPrint: () -> Unit
+) {
   Column(
-    modifier = Modifier.fillMaxSize()
+      modifier = Modifier.fillMaxSize()
   ) {
     if (isBeingPrinted) {
       // Nested Paged composables aren't supported.
@@ -70,28 +73,28 @@ private class PagedScreenState {
 
       Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
-          checked = state.clipPage,
-          onCheckedChange = { state.clipPage = !state.clipPage })
+            checked = state.clipPage,
+            onCheckedChange = { state.clipPage = !state.clipPage })
         Text("Clip page bottom")
       }
 
       Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
-          checked = state.drawBreakpoints,
-          onCheckedChange = { state.drawBreakpoints = !state.drawBreakpoints })
+            checked = state.drawBreakpoints,
+            onCheckedChange = { state.drawBreakpoints = !state.drawBreakpoints })
         Text("Show Breakpoints")
       }
 
       Paged(
-        pageIndex = state.pageIndex,
-        onPageLayout = { state.pageCount = it },
-        clipLastBreakpoint = state.clipPage,
-        drawBreakpoints = state.drawBreakpoints,
-        modifier = Modifier
-          .weight(1f)
-          .fillMaxWidth()
-          .padding(4.dp)
-          .drawShadow(1.dp)
+          pageIndex = state.pageIndex,
+          onPageLayout = { state.pageCount = it },
+          clipLastBreakpoint = state.clipPage,
+          drawBreakpoints = state.drawBreakpoints,
+          modifier = Modifier
+              .weight(1f)
+              .fillMaxWidth()
+              .padding(4.dp)
+              .drawShadow(1.dp)
       ) {
         PagedContent()
       }

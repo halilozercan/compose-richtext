@@ -30,13 +30,13 @@ data class SlideshowTheme(
   val backgroundColor: Color = Color.DarkGray,
   val baseTextStyle: TextStyle = TextStyle(fontSize = 18.sp),
   val titleStyle: TextStyle = TextStyle(
-    fontSize = 48.sp,
-    textAlign = Center,
-    fontWeight = FontWeight.Bold
+      fontSize = 48.sp,
+      textAlign = Center,
+      fontWeight = FontWeight.Bold
   ),
   val subtitleStyle: TextStyle = TextStyle(
-    fontSize = 36.sp,
-    textAlign = Center
+      fontSize = 36.sp,
+      textAlign = Center
   ),
   val headerStyle: TextStyle = TextStyle(fontSize = 28.sp),
   val footerStyle: TextStyle = TextStyle(fontSize = 12.sp),

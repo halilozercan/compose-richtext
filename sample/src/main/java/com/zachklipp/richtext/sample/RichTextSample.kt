@@ -7,7 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
+import androidx.compose.material.Surface
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,21 +47,21 @@ import com.zachklipp.richtext.ui.resolveDefaults
         Card(elevation = 4.dp) {
           Column {
             Row(
-              Modifier
-                .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
-                .padding(8.dp),
-              horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Modifier
+                    .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
               Checkbox(
-                checked = isDarkModeEnabled,
-                onCheckedChange = { isDarkModeEnabled = it },
+                  checked = isDarkModeEnabled,
+                  onCheckedChange = { isDarkModeEnabled = it },
 
-                )
+                  )
               Text("Dark Mode")
             }
             RichTextStyleConfig(
-              richTextStyle = richTextStyle,
-              onChanged = { richTextStyle = it }
+                richTextStyle = richTextStyle,
+                onChanged = { richTextStyle = it }
             )
           }
         }
@@ -78,40 +84,40 @@ fun RichTextStyleConfig(
 ) {
   Text("Paragraph spacing: ${richTextStyle.paragraphSpacing}")
   Slider(
-    value = richTextStyle.paragraphSpacing!!.value,
-    valueRange = 0f..20f,
-    onValueChange = {
-      onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
-    }
+      value = richTextStyle.paragraphSpacing!!.value,
+      valueRange = 0f..20f,
+      onValueChange = {
+        onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
+      }
   )
 
   Text("Table cell padding: ${richTextStyle.tableStyle!!.cellPadding}")
   Slider(
-    value = richTextStyle.tableStyle!!.cellPadding!!.value,
-    valueRange = 0f..20f,
-    onValueChange = {
-      onChanged(
-        richTextStyle.copy(
-          tableStyle = richTextStyle.tableStyle!!.copy(
-            cellPadding = it.sp
-          )
+      value = richTextStyle.tableStyle!!.cellPadding!!.value,
+      valueRange = 0f..20f,
+      onValueChange = {
+        onChanged(
+            richTextStyle.copy(
+                tableStyle = richTextStyle.tableStyle!!.copy(
+                    cellPadding = it.sp
+                )
+            )
         )
-      )
-    }
+      }
   )
 
   Text("Table border width padding: ${richTextStyle.tableStyle!!.borderStrokeWidth!!}")
   Slider(
-    value = richTextStyle.tableStyle!!.borderStrokeWidth!!,
-    valueRange = 0f..20f,
-    onValueChange = {
-      onChanged(
-        richTextStyle.copy(
-          tableStyle = richTextStyle.tableStyle!!.copy(
-            borderStrokeWidth = it
-          )
+      value = richTextStyle.tableStyle!!.borderStrokeWidth!!,
+      valueRange = 0f..20f,
+      onValueChange = {
+        onChanged(
+            richTextStyle.copy(
+                tableStyle = richTextStyle.tableStyle!!.copy(
+                    borderStrokeWidth = it
+                )
+            )
         )
-      )
-    }
+      }
   )
 }

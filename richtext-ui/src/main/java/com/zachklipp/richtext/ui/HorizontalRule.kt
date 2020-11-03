@@ -1,8 +1,8 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.dp
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp()
   }
   Box(
-    Modifier.padding(top = spacing, bottom = spacing)
-      .fillMaxWidth()
-      .height(1.dp)
-      .background(color)
+      Modifier.padding(top = spacing, bottom = spacing)
+          .fillMaxWidth()
+          .height(1.dp)
+          .background(color)
   )
 }

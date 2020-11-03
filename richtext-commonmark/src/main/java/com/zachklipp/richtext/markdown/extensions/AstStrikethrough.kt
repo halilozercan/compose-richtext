@@ -8,4 +8,4 @@ import com.zachklipp.richtext.markdown.AstNodeLinks
 internal data class AstStrikethrough(
     val delimiter: String,
     private val nodeLinks: AstNodeLinks
-): AstNode by nodeLinks
+) : AstNode by nodeLinks

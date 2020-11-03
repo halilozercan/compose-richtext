@@ -39,109 +39,118 @@ import com.zachklipp.richtext.ui.string.Text as InlineRichText
  */
 @Composable
 internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
-    val onLinkClicked = AmbientOnLinkClicked.current
-    // Refer to notes at the top this file.
-    // Assume that only RichText nodes reside below this level.
-    val richText = remember(astNode, onLinkClicked) {
-        computeRichTextString(astNode, onLinkClicked)
-    }
+  val onLinkClicked = AmbientOnLinkClicked.current
+  // Refer to notes at the top this file.
+  // Assume that only RichText nodes reside below this level.
+  val richText = remember(astNode, onLinkClicked) {
+    computeRichTextString(astNode, onLinkClicked)
+  }
 
-    InlineRichText(text = richText)
+  InlineRichText(text = richText)
 }
 
 private fun computeRichTextString(
-    astNode: AstNode,
-    onLinkClicked: (String) -> Unit
+  astNode: AstNode,
+  onLinkClicked: (String) -> Unit
 ): RichTextString {
-    val richTextStringBuilder = RichTextString.Builder()
+  val richTextStringBuilder = RichTextString.Builder()
 
-    // Modified pre-order traversal with pushFormat, popFormat support.
-    val iteratorStack = LinkedList<AstNodeTraversalEntry>().apply {
-        addFirst(AstNodeTraversalEntry(
+  // Modified pre-order traversal with pushFormat, popFormat support.
+  val iteratorStack = LinkedList<AstNodeTraversalEntry>().apply {
+    addFirst(
+        AstNodeTraversalEntry(
             astNode = astNode,
             isVisited = false,
             formatIndex = null
+        )
+    )
+  }
+
+  while (iteratorStack.isNotEmpty()) {
+    val (currentNode, isVisited, formatIndex) = iteratorStack.removeFirst()
+
+    if (!isVisited) {
+      val newFormatIndex = when (currentNode) {
+        is AstCode -> {
+          richTextStringBuilder.withFormat(RichTextString.Format.Code) {
+            append(currentNode.literal)
+          }
+          null
+        }
+        is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
+        is AstStrikethrough -> richTextStringBuilder.pushFormat(
+            RichTextString.Format.Strikethrough
+        )
+        is AstImage -> {
+          richTextStringBuilder.appendInlineContent(content = InlineContent {
+            CoilImage(
+                data = currentNode.destination,
+                loading = {
+                  Text("Loading Image...")
+                },
+                error = {
+                  Text("Image failed to load")
+                }
+            )
+          })
+          null
+        }
+        is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
+            onClick = { onLinkClicked(currentNode.destination) }
         ))
-    }
-
-    while(iteratorStack.isNotEmpty()) {
-        val (currentNode, isVisited, formatIndex) = iteratorStack.removeFirst()
-
-        if(!isVisited) {
-            val newFormatIndex = when(currentNode) {
-                is AstCode -> {
-                    richTextStringBuilder.withFormat(RichTextString.Format.Code) {
-                        append(currentNode.literal)
-                    }
-                    null
-                }
-                is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
-                is AstStrikethrough -> richTextStringBuilder.pushFormat(RichTextString.Format.Strikethrough)
-                is AstImage -> {
-                    richTextStringBuilder.appendInlineContent(content = InlineContent {
-                        CoilImage(
-                            data = currentNode.destination,
-                            loading = {
-                                Text("Loading Image...")
-                            },
-                            error = {
-                                Text("Image failed to load")
-                            }
-                        )
-                    })
-                    null
-                }
-                is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
-                    onClick = { onLinkClicked(currentNode.destination) }
-                ))
-                is AstSoftLineBreak -> {
-                    richTextStringBuilder.append(" ")
-                    null
-                }
-                is AstHardLineBreak -> {
-                    richTextStringBuilder.append("\n")
-                    null
-                }
-                is AstStrongEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Bold)
-                is AstText -> {
-                    richTextStringBuilder.append(currentNode.literal)
-                    null
-                }
-                is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
-                    onClick = { onLinkClicked(currentNode.destination) }
-                ))
-                else -> null
-            }
-
-            iteratorStack.addFirst(AstNodeTraversalEntry(
-                astNode = currentNode,
-                isVisited = true,
-                formatIndex = newFormatIndex
+        is AstSoftLineBreak -> {
+          richTextStringBuilder.append(" ")
+          null
+        }
+        is AstHardLineBreak -> {
+          richTextStringBuilder.append("\n")
+          null
+        }
+        is AstStrongEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Bold)
+        is AstText -> {
+          richTextStringBuilder.append(currentNode.literal)
+          null
+        }
+        is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
+            RichTextString.Format.Link(
+                onClick = { onLinkClicked(currentNode.destination) }
             ))
+        else -> null
+      }
 
-            // Do not visit children of terminals such as Text, Image, etc.
-            if(!currentNode.isRichTextTerminal()) {
-                currentNode.childrenSequence(reverse = true).forEach {
-                    iteratorStack.addFirst(AstNodeTraversalEntry(
-                        astNode = it,
-                        isVisited = false,
-                        formatIndex = null
-                    ))
-                }
-            }
-        }
+      iteratorStack.addFirst(
+          AstNodeTraversalEntry(
+              astNode = currentNode,
+              isVisited = true,
+              formatIndex = newFormatIndex
+          )
+      )
 
-        if(formatIndex != null) {
-            richTextStringBuilder.pop(formatIndex)
+      // Do not visit children of terminals such as Text, Image, etc.
+      if (!currentNode.isRichTextTerminal()) {
+        currentNode.childrenSequence(reverse = true).forEach {
+          iteratorStack.addFirst(
+              AstNodeTraversalEntry(
+                  astNode = it,
+                  isVisited = false,
+                  formatIndex = null
+              )
+          )
         }
+      }
     }
 
-    return richTextStringBuilder.toRichTextString()
+    if (formatIndex != null) {
+      richTextStringBuilder.pop(formatIndex)
+    }
+  }
+
+  return richTextStringBuilder.toRichTextString()
 }
 
 private data class AstNodeTraversalEntry(
-    val astNode: AstNode,
-    val isVisited: Boolean,
-    val formatIndex: Int?
+  val astNode: AstNode,
+  val isVisited: Boolean,
+  val formatIndex: Int?
 )
 

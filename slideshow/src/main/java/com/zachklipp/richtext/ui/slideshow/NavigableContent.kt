@@ -49,7 +49,7 @@ fun SlideScope.NavigableContentContainer(children: @Composable NavigableContentS
 }
 
 private class NavigableContentState(private val slideScope: SlideScope) : NavigableContentScope,
-  SlideScope by slideScope {
+    SlideScope by slideScope {
 
   private var recording = false
 
