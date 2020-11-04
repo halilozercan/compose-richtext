@@ -17,14 +17,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.ConsumedData
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventPass.Initial
-import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputFilter
 import androidx.compose.ui.input.pointer.PointerInputModifier
+import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.platform.ViewAmbient
@@ -141,26 +139,13 @@ private object PassthroughTouchToParentModifier : PointerInputModifier, PointerI
     pointerEvent: PointerEvent,
     pass: PointerEventPass,
     bounds: IntSize
-  ): List<PointerInputChange> {
-    return if (pass == Initial) {
+  ) {
+    if (pass == Initial) {
       // On the initial pass (ancestors -> descendants), mark all pointer events as completely
       // consumed. This prevents children from handling any pointer events.
       // These events are all marked as unconsumed by default.
-      pointerEvent.changes.map {
-        it.copy(
-            consumed = ConsumedData(
-                downChange = true, positionChange = it.current.position ?: Offset.Zero
-            )
-        )
-      }
-    } else {
-      // On the main pass (descendants -> ancestors), pointer events are all marked as completely
-      // consumed by default, which prevents the parent from handling them. We explicitly want
-      // the parent to handle them, so we mark them as _unconsumed_.
-      // The final pass (ancestors -> descendants) also marks all events as consumed by default.
-      // I'm not really sure what the effect of modifying that pass is, but this seems to work.
-      pointerEvent.changes.map {
-        it.copy(consumed = ConsumedData(downChange = false, positionChange = Offset.Zero))
+      pointerEvent.changes.forEach {
+        it.consumeAllChanges()
       }
     }
   }
