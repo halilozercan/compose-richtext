@@ -51,9 +51,15 @@ public fun Markdown(
       modifier = modifier,
       style = style
   ) {
-    Providers(
-        AmbientOnLinkClicked provides (onLinkClicked ?: UriHandlerAmbient.current::openUri)
-    ) {
+    // Can't use UriHandlerAmbient.current::openUri here,
+    // see https://issuetracker.google.com/issues/172366483
+    val realLinkClickedHandler = onLinkClicked ?: UriHandlerAmbient.current.let {
+      remember {
+        { url -> it.openUri(url) }
+      }
+    }
+
+    Providers(AmbientOnLinkClicked provides realLinkClickedHandler) {
       val markdownAst = parsedMarkdownAst(text = content)
       RecursiveRenderMarkdownAst(astNode = markdownAst)
     }

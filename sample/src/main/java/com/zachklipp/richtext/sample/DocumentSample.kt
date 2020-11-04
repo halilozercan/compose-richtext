@@ -2,7 +2,6 @@
 
 package com.zachklipp.richtext.sample
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
@@ -24,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.TextButton
@@ -99,11 +99,11 @@ private val LargeGap = 96.dp
                 "(123) 456-7890\n" +
                     "no_reply@example.com"
             ) {
-              val openUri = UriHandlerAmbient.current::openUri
-              TextButton(onClick = { openUri("tel:1234567890") }) {
+              val uriHandler = UriHandlerAmbient.current
+              TextButton(onClick = { uriHandler.openUri("tel:1234567890") }) {
                 Icon(Icons.Outlined.Phone)
               }
-              TextButton(onClick = { openUri("mailto:no_reply@example.com") }) {
+              TextButton(onClick = { uriHandler.openUri("mailto:no_reply@example.com") }) {
                 Icon(Icons.Outlined.Email)
               }
             }
