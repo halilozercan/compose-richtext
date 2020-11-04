@@ -7,6 +7,12 @@ A collection of Compose libraries for working with rich text formatting and docu
 is currently very experimental and really just proofs-of-concept: there are no tests and some things
 might be broken or very non-performant.
 
+----
+
+**Documentation is available at [zachklipp.com/compose-richtext](http://zachklipp.com/compose-richtext).**
+
+----
+
 ```kotlin
 @Composable fun App() {
   val printController = rememberPrintableController()
@@ -29,10 +35,6 @@ might be broken or very non-performant.
   }
 }
 ```
-
-----
-
-**Documentation is available at [zachklipp.com/compose-richtext](http://zachklipp.com/compose-richtext).**
 
 ## License
 ```
