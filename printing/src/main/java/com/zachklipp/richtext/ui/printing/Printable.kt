@@ -53,7 +53,8 @@ public fun Modifier.hideWhenPrinting(): Modifier = composed {
 }
 
 /**
- * Provides the [print] method to trigger printing [Printable] composables.
+ * Provides the [print] method to trigger printing [Printable] composables. Create one by calling
+ * [rememberPrintableController].
  */
 public abstract class PrintableController {
 

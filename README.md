@@ -30,6 +30,8 @@ might be broken or very non-performant.
 }
 ```
 
+----
+
 **Documentation is available at [zachklipp.com/compose-richtext](http://zachklipp.com/compose-richtext).**
 
 ## License
