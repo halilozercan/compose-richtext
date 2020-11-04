@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Unspecified
+import androidx.compose.ui.graphics.useOrElse
 import androidx.compose.ui.platform.LayoutDirectionAmbient
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle.Italic
@@ -92,7 +94,19 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
 
   val richTextStyle = currentRichTextStyle.resolveDefaults()
   val headingStyleFunction = richTextStyle.headingStyle!!
-  val currentTextStyle = resolveDefaults(AmbientTextStyle.current, LayoutDirectionAmbient.current)
+
+  // According to [Text] composable's documentation:
+  //   "Additionally, for [color], if [color] is not set, and [style] does not have a color, then
+  //   [AmbientContentColor] will be used - this allows this [Text] or element containing this [Text]
+  //   to adapt to different background colors and still maintain contrast and accessibility."
+  // However, [resolveDefaults] uses a static default color which is [Color.Black].
+  // To fix this issue, we are specifying the text color according to [Text] documentation
+  // before calling [resolveDefaults].
+  val incomingStyle = AmbientTextStyle.current.let {
+    it.copy(color = it.color.useOrElse { AmbientContentColor.current })
+  }
+  val currentTextStyle = resolveDefaults(incomingStyle, LayoutDirectionAmbient.current)
+
   val headingTextStyle = headingStyleFunction(level, currentTextStyle)
   val mergedTextStyle = currentTextStyle.merge(headingTextStyle)
 
