@@ -28,3 +28,4 @@ nav:
   - printing.md
   - slideshow.md
   - 'API Reference': api/index.md
+  - Changelog: https://github.com/zach-klippenstein/compose-richtext/releases
