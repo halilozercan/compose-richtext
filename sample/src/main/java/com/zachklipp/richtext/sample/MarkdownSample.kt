@@ -48,21 +48,21 @@ import com.zachklipp.richtext.ui.resolveDefaults
         Card(elevation = 4.dp) {
           Column {
             Row(
-                Modifier
-                    .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+              Modifier
+                .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
+                .padding(8.dp),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
               Checkbox(
-                  checked = isDarkModeEnabled,
-                  onCheckedChange = { isDarkModeEnabled = it },
+                checked = isDarkModeEnabled,
+                onCheckedChange = { isDarkModeEnabled = it },
 
-                  )
+                )
               Text("Dark Mode")
             }
             RichTextStyleConfig(
-                richTextStyle = richTextStyle,
-                onChanged = { richTextStyle = it }
+              richTextStyle = richTextStyle,
+              onChanged = { richTextStyle = it }
             )
           }
         }
@@ -71,12 +71,12 @@ import com.zachklipp.richtext.ui.resolveDefaults
         SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
           ScrollableColumn {
             Markdown(
-                content = sampleMarkdown,
-                style = richTextStyle,
-                modifier = Modifier.padding(8.dp),
-                onLinkClicked = {
-                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
+              content = sampleMarkdown,
+              style = richTextStyle,
+              modifier = Modifier.padding(8.dp),
+              onLinkClicked = {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+              }
             )
           }
         }
