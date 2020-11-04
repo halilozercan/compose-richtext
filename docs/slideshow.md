@@ -6,6 +6,14 @@ although a few pre-fab scaffolds are provided for common slide layouts.
 
 ![slideshow demo](img/slideshow-demo.gif)
 
+## Gradle
+
+```groovy
+dependencies {
+  implementation "com.zachklipp.compose-richtext:slideshow:${richtext_version}"
+}
+```
+
 ## Setting up a slideshow
 
 There is a single, simple entry point to this library, that takes a vararg of composable functions

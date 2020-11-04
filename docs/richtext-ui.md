@@ -3,6 +3,14 @@
 A library of composables for formatting text using higher-level concepts than are supported by
 compose foundation, such as "bullet lists" and "headings".
 
+## Gradle
+
+```groovy
+dependencies {
+  implementation "com.zachklipp.compose-richtext:richtext-ui:${richtext_version}"
+}
+```
+
 ## Example
 
 Open the `Demo.kt` file in the `richtext-ui` module to play with this.

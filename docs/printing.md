@@ -2,6 +2,16 @@
 
 A library for using Compose to generated printed documents, using Android's printing services.
 
+## Gradle
+
+```groovy
+dependencies {
+  implementation "com.zachklipp.compose-richtext:printing:${richtext_version}"
+}
+```
+
+## Usage
+
 There are multiple entry points into this library. See their kdoc for usage and parameter
 documentation, and take a look at the samples for example code.
 
