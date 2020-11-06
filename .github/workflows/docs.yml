@@ -1,9 +1,9 @@
 name: Doc Site
 
 on:
-  repository_dispatch:
+  release:
     # Only build docs when a new release is created, so the API docs don't get out of date.
-    types: [ release ]
+    types: [ published ]
   push:
     branches:
       # Build the branch that introduced this config, for testing.
