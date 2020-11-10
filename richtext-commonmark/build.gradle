@@ -8,8 +8,6 @@ dependencies {
   compileOnly deps.compose.tooling
 
   api project(":richtext-ui")
-  api deps.compose.foundation
-  api deps.compose.text
 
   implementation deps.accompanist
   implementation deps.commonmark.core
