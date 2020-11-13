@@ -102,19 +102,11 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       }
     }
     is AstBulletList -> {
-      WithStyle(
-          style = RichTextStyle(
-              listStyle = ListStyle.Default.copy(
-                  unorderedMarkers = UnorderedMarkers.text("${astNode.bulletMarker}")
-              )
-          )
-      ) {
-        FormattedList(
-            listType = ListType.Unordered,
-            items = astNode.childrenSequence().toList()
-        ) { astListItem ->
-          visitChildren(astListItem)
-        }
+      FormattedList(
+          listType = ListType.Unordered,
+          items = astNode.childrenSequence().toList()
+      ) { astListItem ->
+        visitChildren(astListItem)
       }
     }
     is AstFencedCodeBlock -> {
