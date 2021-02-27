@@ -10,19 +10,19 @@ import android.view.ViewTreeObserver.OnDrawListener
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
@@ -104,10 +104,10 @@ internal suspend fun composeToPdf(
   }
 
   val renderingView = createWindowComposeView(activity) {
-    Providers(
+    CompositionLocalProvider(
       // Render the page with the page density, not the screen density.
-      DensityAmbient provides printerMetrics.renderDensity,
-      children = { content(printerMetrics) }
+      LocalDensity provides printerMetrics.renderDensity,
+      content = { content(printerMetrics) }
     )
   }
   // Hide the rendering window.

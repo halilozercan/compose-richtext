@@ -1,44 +1,47 @@
+@file:OptIn(UiToolingDataApi::class)
 package com.zachklipp.richtext.ui.printing
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.InternalComposeApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.currentComposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.ParentDataModifier
-import androidx.compose.ui.drawWithContent
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.layout.ExperimentalSubcomposeLayoutApi
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.globalPosition
+import androidx.compose.ui.layout.ParentDataModifier
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.onGloballyPositioned
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.data.Group
+import androidx.compose.ui.tooling.data.NodeGroup
+import androidx.compose.ui.tooling.data.UiToolingDataApi
+import androidx.compose.ui.tooling.data.asTree
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.IntBounds
+import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toRect
-import androidx.ui.tooling.Group
-import androidx.ui.tooling.NodeGroup
-import androidx.ui.tooling.asTree
-import androidx.ui.tooling.preview.Preview
 
 @Preview(showBackground = true)
 @Composable private fun PagedPreview() {
@@ -50,7 +53,7 @@ import androidx.ui.tooling.preview.Preview
   ) {
     Column {
       for (i in 0 until 100) {
-        Text("$i", fontSize = 32.sp)
+        Text("$i", style = TextStyle(fontSize = 32.sp))
       }
     }
   }
@@ -67,7 +70,7 @@ import androidx.ui.tooling.preview.Preview
   ) {
     Column {
       for (i in 0 until 100) {
-        Text("$i", fontSize = 32.sp)
+        Text("$i", style = TextStyle(fontSize = 32.sp))
       }
     }
   }
@@ -99,7 +102,7 @@ public data class PageBreakpoint(
 public fun Modifier.keepOnPageWithNext(): Modifier = this.then(KeepWithNextModifier)
 
 private object KeepWithNextModifier : Modifier.Element, ParentDataModifier {
-  override fun Density.modifyParentData(parentData: Any?): Any? = this
+  override fun Density.modifyParentData(parentData: Any?): Any = this
 }
 
 /**
@@ -247,10 +250,10 @@ public interface PageLayoutResult {
       onBreakpoints = { globalBreakpoints ->
         coordinates?.let { coords ->
           val localBreakpoints = globalBreakpoints.map { breakpointGlobalBounds ->
-            val localRect = breakpointGlobalBounds.toRect().translate(-coords.globalPosition)
+            val localRect = breakpointGlobalBounds.translate(-coords.positionInWindow().round())
             PageBreakpoint(
-              xAnchorPx = Pair(localRect.left.toInt(), localRect.right.toInt()),
-              yPx = localRect.bottom.toInt(),
+              xAnchorPx = Pair(localRect.left, localRect.right),
+              yPx = localRect.bottom,
               forceBreak = false
             )
           }
@@ -352,16 +355,16 @@ private fun DrawScope.drawBreakpoints(
  * @param onBreakpoints Callback that will be invoked with a list of all bottom y-coordinates of all
  * composables in the current composition (not just children of [content]). Coordinates are global.
  */
-@OptIn(ExperimentalSubcomposeLayoutApi::class)
+@OptIn(InternalComposeApi::class)
 @Composable private fun MeasureBreakpoints(
-  onBreakpoints: (List<IntBounds>) -> Unit,
+  onBreakpoints: (List<IntRect>) -> Unit,
   content: @Composable () -> Unit
 ) {
   val rootNodeMarker = remember { Modifier.layoutId(Unit) }
 
   // Lays children out stacked vertically and measured with unbounded height, but with reported
   // height constrained to incoming constraints, like ScrollableColumn (but not scrollable).
-  Layout(modifier = rootNodeMarker, children = content) { measurables, constraints ->
+  Layout(modifier = rootNodeMarker, content = content) { measurables, constraints ->
     // We need to measure with unbounded height, but still report an appropriate (constrained)
     // height, so we don't get centered.
     val childConstraints = constraints.copy(maxHeight = Int.MAX_VALUE)
@@ -385,10 +388,10 @@ private fun DrawScope.drawBreakpoints(
   // We need to wait for the positions to settle before reading the slot table.
   // The coroutine started by launchInComposition won't start right away, it will wait until the
   // frame is committed, and then dispatch, so this provides the necessary delay.
-  LaunchedTask {
+  LaunchedEffect(Unit) {
     // Read the slot table on the main thread, but calculate everything else in the background.
-    val rootGroup = composer.slotTable.asTree()
-    val breakpoints = mutableListOf<IntBounds>()
+    val rootGroup = composer.compositionData.asTree()
+    val breakpoints = mutableListOf<IntRect>()
     calculateBreakpoints(rootGroup, rootModifier = rootNodeMarker, breakpoints)
     onBreakpoints(breakpoints)
   }
@@ -402,7 +405,7 @@ private fun DrawScope.drawBreakpoints(
 private fun calculateBreakpoints(
   group: Group,
   rootModifier: Modifier,
-  breakpoints: MutableList<IntBounds>
+  breakpoints: MutableList<IntRect>
 ) {
   if (group.modifierInfo.any { it.modifier === rootModifier }) {
     group.getNodeBounds().forEach {
@@ -418,7 +421,7 @@ private fun calculateBreakpoints(
 
 private fun calculateBreakpoints(
   nodeBounds: NodeBounds,
-  breakpoints: MutableList<IntBounds>
+  breakpoints: MutableList<IntRect>
 ) {
   // Algorithm:
   // 1. Sort by bottom bound.
@@ -452,7 +455,7 @@ private val NodeBounds.leaves: Sequence<NodeBounds>
 
 @Immutable
 private data class NodeBounds(
-  val bounds: IntBounds,
+  val bounds: IntRect,
   val group: NodeGroup,
   val children: Sequence<NodeBounds>
 )

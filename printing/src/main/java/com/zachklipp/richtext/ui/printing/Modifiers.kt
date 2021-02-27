@@ -1,10 +1,10 @@
 package com.zachklipp.richtext.ui.printing
 
-import androidx.compose.ui.LayoutModifier
-import androidx.compose.ui.Measurable
-import androidx.compose.ui.MeasureScope
-import androidx.compose.ui.MeasureScope.MeasureResult
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.LayoutModifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
@@ -28,7 +28,7 @@ public fun Modifier.responsivePadding(vararg minDimensionsToPadding: Pair<Dp, Dp
     ): MeasureResult {
       val minDimension = min(constraints.maxWidth, constraints.maxHeight).toDp()
       val breakpoint = minDimensionsToPadding.reversed().last { it.first >= minDimension }
-      val padding = breakpoint.second.toIntPx()
+      val padding = breakpoint.second.roundToPx()
       val paddedConstraints = constraints.offset(-padding * 2, -padding * 2)
       val placeable = measurable.measure(paddedConstraints)
       val width = constraints.constrainWidth(placeable.width + padding)

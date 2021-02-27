@@ -2,30 +2,30 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.DisableSelection
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Providers
-import androidx.compose.runtime.ambientOf
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.platform.LayoutDirectionAmbient
-import androidx.compose.ui.selection.DisableSelection
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
 import kotlin.math.max
@@ -156,13 +156,13 @@ internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
   unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
 
-private val ListLevelAmbient = ambientOf { 0 }
+private val ListLevelAmbient = compositionLocalOf { 0 }
 
 /**
  * Composes [children] with their [ListLevelAmbient] reset back to 0.
  */
 @Composable internal fun RestartListLevel(children: @Composable () -> Unit) {
-  Providers(ListLevelAmbient provides 0) {
+  CompositionLocalProvider(ListLevelAmbient provides 0) {
     children()
   }
 }
@@ -192,7 +192,7 @@ private val ListLevelAmbient = ambientOf { 0 }
   drawItem: @Composable RichTextScope.(T) -> Unit
 ) {
   val listStyle = currentRichTextStyle.resolveDefaults().listStyle!!
-  val density = DensityAmbient.current
+  val density = LocalDensity.current
   val markerIndent = with(density) { listStyle.markerIndent!!.toDp() }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
   val currentLevel = ListLevelAmbient.current
@@ -208,7 +208,7 @@ private val ListLevelAmbient = ambientOf { 0 }
     },
     itemForIndex = { index ->
       RichText {
-        Providers(ListLevelAmbient provides currentLevel + 1) {
+        CompositionLocalProvider(ListLevelAmbient provides currentLevel + 1) {
           drawItem(items[index])
         }
       }
@@ -222,7 +222,7 @@ private val ListLevelAmbient = ambientOf { 0 }
   prefixForIndex: @Composable (index: Int) -> Unit,
   itemForIndex: @Composable (index: Int) -> Unit
 ) {
-  Layout(children = {
+  Layout(content = {
     // List markers aren't selectable.
     DisableSelection {
       // Draw the markers first.
@@ -273,12 +273,14 @@ private val ListLevelAmbient = ambientOf { 0 }
         val prefix = prefixPlaceables[i]
         val item = itemPlaceables[i]
         val rowHeight = max(prefix.height, item.height)
+        val size = IntSize(
+          width = widestPrefix.width - prefix.width,
+          height = rowHeight - prefix.height
+        )
         val prefixOffset = Alignment.TopEnd.align(
-          IntSize(
-            width = widestPrefix.width - prefix.width,
-            height = rowHeight - prefix.height
-          ),
-          layoutDirection
+          size = size,
+          space = size,
+          layoutDirection = layoutDirection
         )
 
         prefix.place(prefixOffset.x, y + prefixOffset.y)
@@ -313,7 +315,7 @@ private val ListLevelAmbient = ambientOf { 0 }
   listType: ListType,
   layoutDirection: LayoutDirection
 ) {
-  Providers(LayoutDirectionAmbient provides layoutDirection) {
+  CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
     Box(Modifier.background(color = Color.White)) {
       RichTextScope.FormattedList(
         listType = listType,

@@ -3,8 +3,8 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Providers
 
 /**
  * Scope object for composables that can draw rich text.
@@ -15,9 +15,8 @@ public object RichTextScope
 /**
  * The current [RichTextStyle].
  */
-@Composable
 public val RichTextScope.currentRichTextStyle: RichTextStyle
-  get() = RichTextStyleAmbient.current
+  @Composable get() = LocalRichTextStyle.current
 
 /**
  * Sets the [RichTextStyle] for its [children].
@@ -30,8 +29,8 @@ public fun RichTextScope.WithStyle(
   if (style == null) {
     children()
   } else {
-    val mergedStyle = RichTextStyleAmbient.current.merge(style)
-    Providers(RichTextStyleAmbient provides mergedStyle) {
+    val mergedStyle = LocalRichTextStyle.current.merge(style)
+    CompositionLocalProvider(LocalRichTextStyle provides mergedStyle) {
       children()
     }
   }

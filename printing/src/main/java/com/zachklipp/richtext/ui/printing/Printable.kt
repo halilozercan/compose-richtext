@@ -6,39 +6,40 @@ import android.content.ContextWrapper
 import android.print.PrintManager
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
-import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.staticAmbientOf
-import androidx.compose.ui.LayoutModifier
-import androidx.compose.ui.Measurable
-import androidx.compose.ui.MeasureScope
-import androidx.compose.ui.MeasureScope.MeasureResult
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.composed
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.layout.LayoutModifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.IntOffset
 import com.zachklipp.richtext.ui.printing.PrintableController.PrintableComposable
 
 /**
  * True if the composable is currently being rendered to a PDF canvas for printing.
  */
-private val PrintingAmbient = staticAmbientOf { false }
+private val LocalPrinting = staticCompositionLocalOf { false }
 
 /**
  * Returns true if a [Printable] is being used to print the composition somewhere up in the tree.
  */
-@Composable public val isBeingPrinted: Boolean get() = PrintingAmbient.current
+public val isBeingPrinted: Boolean
+  @Composable get() = LocalPrinting.current
 
 /**
  * Returns a [Modifier] that will hide the composable it's applied to when printing.
  */
 public fun Modifier.hideWhenPrinting(): Modifier = composed {
-  val printing = PrintingAmbient.current
+  val printing = LocalPrinting.current
   object : LayoutModifier {
     override fun MeasureScope.measure(
       measurable: Measurable,
@@ -46,7 +47,7 @@ public fun Modifier.hideWhenPrinting(): Modifier = composed {
     ): MeasureResult {
       val placeable = if (!printing) measurable.measure(constraints) else null
       return layout(placeable?.width ?: 0, placeable?.height ?: 0) {
-        placeable?.placeRelative(Offset.Zero)
+        placeable?.placeRelative(IntOffset.Zero)
       }
     }
   }
@@ -108,7 +109,7 @@ public abstract class PrintableController {
  * print jobs.
  */
 @Composable public fun rememberPrintableController(): PrintableController {
-  val context = ContextAmbient.current
+  val context = LocalContext.current
   val coroutineScope = rememberCoroutineScope()
   return remember {
     val activity = context.findComponentActivity()
@@ -128,7 +129,7 @@ public abstract class PrintableController {
             activity, documentName, modifier, pageDpi, printBreakpoints,
             mainContext = coroutineScope.coroutineContext
         ) {
-          Providers(PrintingAmbient provides true, children = content)
+          CompositionLocalProvider(LocalPrinting provides true, content = content)
         }
         printManager.print(jobName, adapter, null)
       }
@@ -158,15 +159,13 @@ public abstract class PrintableController {
   printBreakpoints: Boolean = false,
   content: @Composable () -> Unit
 ) {
-  // Don't pass any keys because the PrintableComposable depends on all the parameters, so it always
-  // needs to be recreated when this function is recomposed.
-  onCommit {
+  DisposableEffect(controller, modifier, pageDpi, printBreakpoints, content as Any) {
     val printable = PrintableComposable(modifier, pageDpi, printBreakpoints, content)
     controller.registerComposable(printable)
     onDispose { controller.unregisterComposable(printable) }
   }
 
-  WithConstraints {
+  BoxWithConstraints {
     Box(modifier) { content() }
   }
 }

@@ -3,15 +3,15 @@ package com.zachklipp.richtext.markdown
 import android.os.Build
 import android.text.Html
 import android.widget.TextView
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
-import androidx.compose.runtime.ambientOf
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.UriHandlerAmbient
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.viewinterop.AndroidView
 import com.zachklipp.richtext.markdown.extensions.AstTableRoot
 import com.zachklipp.richtext.ui.BlockQuote
@@ -19,13 +19,10 @@ import com.zachklipp.richtext.ui.CodeBlock
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.Heading
 import com.zachklipp.richtext.ui.HorizontalRule
-import com.zachklipp.richtext.ui.ListStyle
 import com.zachklipp.richtext.ui.ListType
 import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.RichTextStyle
-import com.zachklipp.richtext.ui.UnorderedMarkers
-import com.zachklipp.richtext.ui.WithStyle
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.Text
 import com.zachklipp.richtext.ui.string.richTextString
@@ -53,13 +50,13 @@ public fun Markdown(
   ) {
     // Can't use UriHandlerAmbient.current::openUri here,
     // see https://issuetracker.google.com/issues/172366483
-    val realLinkClickedHandler = onLinkClicked ?: UriHandlerAmbient.current.let {
+    val realLinkClickedHandler = onLinkClicked ?: LocalUriHandler.current.let {
       remember {
         { url -> it.openUri(url) }
       }
     }
 
-    Providers(AmbientOnLinkClicked provides realLinkClickedHandler) {
+    CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
       val markdownAst = parsedMarkdownAst(text = content)
       RecursiveRenderMarkdownAst(astNode = markdownAst)
     }
@@ -124,7 +121,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       Text(text = richTextString {
         appendInlineContent(content = InlineContent {
           AndroidView(
-            viewBlock = { context ->
+            factory = { context ->
               // TODO: pass current styling to legacy TextView
               TextView(context)
             },
@@ -186,10 +183,7 @@ internal fun parsedMarkdownAst(text: String): AstNode? {
       ).build()
   }
 
-  val rootASTNode by produceState<AstNode?>(
-    initialValue = null,
-    source = text
-  ) {
+  val rootASTNode by produceState<AstNode?>(null, text) {
     value = convert(parser.parse(text))
   }
 
@@ -213,5 +207,5 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
  * to children that render links. Although being explicit is preferred, recursive calls to
  * [visitChildren] increases verbosity with each extra argument.
  */
-internal val AmbientOnLinkClicked =
-  ambientOf<(String) -> Unit> { error("OnLinkClicked is not provided") }
+internal val LocalOnLinkClicked =
+  compositionLocalOf<(String) -> Unit> { error("OnLinkClicked is not provided") }

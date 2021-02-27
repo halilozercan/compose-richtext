@@ -2,26 +2,26 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.BlockQuoteGutter.BarGutter
 
 internal val DefaultBlockQuoteGutter = BarGutter()
@@ -43,8 +43,8 @@ public interface BlockQuoteGutter {
     val color: (contentColor: Color) -> Color = { it.copy(alpha = .25f) }
   ) : BlockQuoteGutter {
     @Composable override fun drawGutter() {
-      with(DensityAmbient.current) {
-        val color = color(AmbientContentColor.current)
+      with(LocalDensity.current) {
+        val color = color(LocalContentColor.current)
         val modifier = remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
           Modifier
@@ -67,11 +67,11 @@ public interface BlockQuoteGutter {
  */
 @Composable public fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
-  val spacing = with(DensityAmbient.current) {
+  val spacing = with(LocalDensity.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp() / 2
   }
 
-  Layout(children = {
+  Layout(content = {
     gutter.drawGutter()
     RichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),
@@ -121,7 +121,7 @@ public interface BlockQuoteGutter {
   backgroundColor: Color,
   contentColor: Color
 ) {
-  Providers(AmbientContentColor provides contentColor) {
+  CompositionLocalProvider(LocalContentColor provides contentColor) {
     Box(Modifier.background(backgroundColor)) {
       RichTextScope.BlockQuote {
         Text("Some text.")

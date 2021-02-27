@@ -2,26 +2,26 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.AmbientTextStyle
-import androidx.compose.foundation.ProvideTextStyle
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.drawBehind
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import kotlin.math.max
 
 /**
@@ -108,8 +108,8 @@ public fun RichTextScope.Table(
         rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
-  val headerStyle = AmbientTextStyle.current.merge(tableStyle.headerTextStyle)
-  val cellPadding = with(DensityAmbient.current) {
+  val headerStyle = LocalTextStyle.current.merge(tableStyle.headerTextStyle)
+  val cellPadding = with(LocalDensity.current) {
     tableStyle.cellPadding!!.toDp()
   }
   val cellModifier = Modifier

@@ -7,6 +7,12 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   api deps.compose.foundation
   implementation deps.compose.tooling
+  // For slot table analysis.
+  implementation deps.compose.tooling_data
+  implementation deps.androidx.activity
+
+  // TODO Migrate off this.
+  implementation deps.compose.material
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {

@@ -2,30 +2,27 @@
 
 package com.zachklipp.richtext.sample
 
-import androidx.compose.foundation.ProvideTextStyle
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceAround
+import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.ExperimentalLayout
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.InternalLayoutApi
-import androidx.compose.foundation.layout.MainAxisAlignment.SpaceBetween
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.SizeMode.Expand
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
@@ -35,26 +32,26 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.UriHandlerAmbient
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle.Italic
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration.Companion.Underline
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.ListType.Unordered
 import com.zachklipp.richtext.ui.RichText
@@ -71,7 +68,7 @@ import kotlin.math.max
 /** Dimension used for margins/spacing on "large" screens or paper. */
 private val LargeGap = 96.dp
 
-@Preview(showDecoration = true)
+@Preview(showSystemUi = true)
 @Composable private fun DocumentPhonePreview() {
   DocumentSample()
 }
@@ -99,12 +96,12 @@ private val LargeGap = 96.dp
             "(123) 456-7890\n" +
                 "no_reply@example.com"
           ) {
-            val uriHandler = UriHandlerAmbient.current
+            val uriHandler = LocalUriHandler.current
             TextButton(onClick = { uriHandler.openUri("tel:1234567890") }) {
-              Icon(Icons.Outlined.Phone)
+              Icon(Icons.Outlined.Phone, contentDescription = "Call")
             }
             TextButton(onClick = { uriHandler.openUri("mailto:no_reply@example.com") }) {
-              Icon(Icons.Outlined.Email)
+              Icon(Icons.Outlined.Email, contentDescription = "Email")
             }
           }
         }
@@ -184,7 +181,7 @@ private val LargeGap = 96.dp
   printableController: PrintableController,
   content: @Composable () -> Unit
 ) {
-  ScrollableColumn {
+  Column(Modifier.verticalScroll(rememberScrollState())) {
     Printable(
       printableController,
       pageDpi = 96,
@@ -214,13 +211,12 @@ private val LargeGap = 96.dp
   )
 }
 
-@OptIn(ExperimentalLayout::class)
 @Composable private fun ContactInfo(
   address: String,
   contact: String,
   contactButtons: @Composable () -> Unit
 ) {
-  FlowRow(mainAxisSize = Expand, mainAxisAlignment = SpaceBetween) {
+  Row(Modifier.fillMaxWidth(), horizontalArrangement = SpaceBetween) {
     Column {
       Text(address, fontSize = 13.sp)
       Spacer(Modifier.height(3.dp))
@@ -239,7 +235,6 @@ private val LargeGap = 96.dp
  * other composables.
  */
 // For Arrangement.Vertical.
-@OptIn(InternalLayoutApi::class)
 @Composable private fun Section(
   title: String,
   verticalArrangement: Arrangement.Vertical = Arrangement.Top,
@@ -259,7 +254,7 @@ private val LargeGap = 96.dp
     )
     ProvideTextStyle(
       value = TextStyle(fontFamily = FontFamily.Serif),
-      children = content
+      content = content
     )
   }
 }
@@ -299,7 +294,6 @@ private val LargeGap = 96.dp
   }
 }
 
-@OptIn(ExperimentalLayout::class)
 @Composable private fun LargeBlurb(
   organization: String,
   location: String = "",
@@ -309,7 +303,7 @@ private val LargeGap = 96.dp
 ) {
   Column(Modifier.padding(top = 16.dp, bottom = 12.dp)) {
     Text(
-      annotatedString {
+      buildAnnotatedString {
         withStyle(SpanStyle(fontSize = 20.sp)) {
           withStyle(SpanStyle(fontWeight = Bold)) {
             append(organization.withHardSpaces())
@@ -367,7 +361,7 @@ private val LargeGap = 96.dp
       )
     }
   } else {
-    val uriHandler = UriHandlerAmbient.current
+    val uriHandler = LocalUriHandler.current
     Text(
       text,
       textDecoration = Underline,
@@ -381,7 +375,7 @@ private val LargeGap = 96.dp
   uri: String,
   onPrintClicked: () -> Unit
 ) {
-  val uriHandler = UriHandlerAmbient.current
+  val uriHandler = LocalUriHandler.current
 
   Row(
     modifier = Modifier
@@ -392,7 +386,7 @@ private val LargeGap = 96.dp
     horizontalArrangement = SpaceAround
   ) {
     Text(
-      annotatedString {
+      buildAnnotatedString {
         val displayUri = uri.indexOf("://").takeIf { it > -1 }
           ?.let { uri.substring(it + 3) }
           ?: uri
@@ -428,7 +422,7 @@ private val LargeGap = 96.dp
       modifier = Modifier.hideWhenPrinting(),
       onClick = onPrintClicked
     ) {
-      Icon(Icons.Outlined.Print, Modifier.size(16.dp))
+      Icon(Icons.Outlined.Print, contentDescription = "Print", Modifier.size(16.dp))
     }
   }
 }
@@ -451,13 +445,13 @@ private val LargeGap = 96.dp
   sidebar: @Composable ColumnScope.() -> Unit,
 ) {
   Layout(
-    children = {
-      Column(children = body)
-      Column(children = sidebar)
+    content = {
+      Column(content = body)
+      Column(content = sidebar)
     }
   ) { measurables, constraints ->
     val widthWithoutSpace =
-      constraints.constrainWidth(constraints.maxWidth - columnSpacing.toIntPx())
+      constraints.constrainWidth(constraints.maxWidth - columnSpacing.roundToPx())
     val bodySideBySideWidth = (widthWithoutSpace * bodyWidthFraction)
     val sidebarSideBySideWidth = (widthWithoutSpace * (1 - bodyWidthFraction))
     val isSideBySide = bodySideBySideWidth >= minColWidth.toPx() &&
@@ -466,15 +460,15 @@ private val LargeGap = 96.dp
     // TODO Handle height constraints, handle non-zero min width.
     val bodyConstraints = if (isSideBySide) {
       // Remove the sidebar width.
-      constraints.offset(horizontal = -(columnSpacing.toIntPx() + sidebarSideBySideWidth.toInt()))
+      constraints.offset(horizontal = -(columnSpacing.roundToPx() + sidebarSideBySideWidth.toInt()))
     } else {
-      constraints.offset(vertical = -(verticalSpacing / 2).toIntPx())
+      constraints.offset(vertical = -(verticalSpacing / 2).roundToPx())
     }
     val sidebarConstraints = if (isSideBySide) {
       // Remove the body width.
-      constraints.offset(horizontal = -(columnSpacing.toIntPx() + bodySideBySideWidth.toInt()))
+      constraints.offset(horizontal = -(columnSpacing.roundToPx() + bodySideBySideWidth.toInt()))
     } else {
-      constraints.offset(vertical = -(verticalSpacing / 2).toIntPx())
+      constraints.offset(vertical = -(verticalSpacing / 2).roundToPx())
     }
 
     val (bodyMeasurable, sidebarMeasurable) = measurables
@@ -484,7 +478,7 @@ private val LargeGap = 96.dp
     val width = constraints.constrainWidth(
       if (isSideBySide) {
         // Force full width.
-        bodySideBySideWidth.toInt() + columnSpacing.toIntPx() + sidebarSideBySideWidth.toInt()
+        bodySideBySideWidth.toInt() + columnSpacing.roundToPx() + sidebarSideBySideWidth.toInt()
       } else {
         max(bodyPlaceable.width, sidebarPlaceable.width)
       }
@@ -500,9 +494,9 @@ private val LargeGap = 96.dp
     layout(width, height) {
       bodyPlaceable.placeRelative(0, 0)
       if (isSideBySide) {
-        sidebarPlaceable.place(bodySideBySideWidth.toInt() + columnSpacing.toIntPx(), 0)
+        sidebarPlaceable.place(bodySideBySideWidth.toInt() + columnSpacing.roundToPx(), 0)
       } else {
-        sidebarPlaceable.place(0, bodyPlaceable.height + verticalSpacing.toIntPx())
+        sidebarPlaceable.place(0, bodyPlaceable.height + verticalSpacing.roundToPx())
       }
     }
   }

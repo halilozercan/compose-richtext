@@ -13,13 +13,14 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.ProvideTextStyle
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation.Vertical
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -29,35 +30,36 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Slider
-import androidx.compose.runtime.CommitScope
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.DisposableEffectResult
+import androidx.compose.runtime.DisposableEffectScope
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.LayoutModifier
-import androidx.compose.ui.Measurable
-import androidx.compose.ui.MeasureScope
-import androidx.compose.ui.MeasureScope.MeasureResult
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawShadow
-import androidx.compose.ui.gesture.scrollorientationlocking.Orientation.Vertical
-import androidx.compose.ui.gesture.tapGestureFilter
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutModifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.node.Ref
-import androidx.compose.ui.onSizeChanged
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.platform.ViewAmbient
-import androidx.compose.ui.selection.Selection
-import androidx.compose.ui.selection.SelectionContainer
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
@@ -98,9 +100,10 @@ public class SlideshowController {
 ) {
   if (slides.isEmpty()) return
   val state = remember { SlidesContainerState(slides, controller) }
+  val dragState = rememberDraggableState(onDelta = { /* Noop */ })
 
-  val rootView = ViewAmbient.current
-  onCommit {
+  val rootView = LocalView.current
+  DisposableEffect(rootView) {
     configureFullScreenWindow(rootView)
   }
 
@@ -111,19 +114,19 @@ public class SlideshowController {
       // Show the slide scrubber when dragging up.
       .draggable(
         orientation = Vertical,
+        state = dragState,
         onDragStopped = { velocity ->
           // Show or hide the scrubber depending on the direction of the drag.
           controller.showingScrubber = velocity < 0
-        },
-        onDrag = { /* Noop */ }
+        }
       )
       // Fill the entire window.
       .fillMaxSize()
       // Always draw a black background for letterboxing.
       .background(Color.Black)
   ) {
-    Providers(
-      AmbientContentColor provides theme.contentColor,
+    CompositionLocalProvider(
+      LocalContentColor provides theme.contentColor,
       SlideshowThemeAmbient provides theme,
     ) {
       ProvideTextStyle(theme.baseTextStyle) {
@@ -139,16 +142,13 @@ public class SlideshowController {
         ) { slide ->
           if (slide < slides.size) {
             // Make slide text selectable.
-            var selection by remember { mutableStateOf<Selection?>(null) }
             SelectionContainer(
               Modifier
                 // Be as big as possible with the correct aspect ratio.
                 .aspectRatio(theme.aspectRatio)
                 // Center slide content that doesn't expand. This is a more visually pleasing
                 // default than putting it at the top-left.
-                .wrapContentSize(),
-              selection = selection,
-              onSelectionChange = { selection = it }
+                .wrapContentSize()
             ) {
               val slideScope = remember { state.createSlideScopeForSlide(slide) }
               slides[slide].invoke(slideScope)
@@ -184,7 +184,7 @@ public class SlideshowController {
   }
   val theme = SlideshowThemeAmbient.current
 
-  WithConstraints(Modifier.fillMaxWidth()) {
+  BoxWithConstraints(Modifier.fillMaxWidth()) {
     val outerconstraints = constraints
     Column {
       Box(
@@ -194,18 +194,18 @@ public class SlideshowController {
           .then(HorizontalFractionalAlignment(scrubberSlide / (slides.size - 1).toFloat()))
           .aspectRatio(theme.aspectRatio)
           .border(.5.dp, Color.LightGray)
-          .drawShadow(16.dp)
+          .shadow(16.dp)
           .background(theme.backgroundColor)
           .wrapContentSize()
       ) {
-        WithConstraints {
+        BoxWithConstraints {
           // Calculate the amount to change density to make it look like the preview is a shrunk-
           // down version of the full screen.
           val innerConstraints = constraints
-          val outerDensity = DensityAmbient.current.density
+          val outerDensity = LocalDensity.current.density
           val scaleFactor = innerConstraints.maxWidth / outerconstraints.maxWidth.toFloat()
           val innerDensity = outerDensity * scaleFactor
-          Providers(DensityAmbient provides Density(innerDensity)) {
+          CompositionLocalProvider(LocalDensity provides Density(innerDensity)) {
             val previewSlide = scrubberSlide.roundToInt().coerceAtMost(slides.size - 1)
             slides[previewSlide].invoke(object : SlideScope {
               override val slideNumber: Int get() = previewSlide
@@ -234,7 +234,7 @@ public class SlideshowController {
           onValueChange = { scrubberSlide = it },
           valueRange = 0f..(slides.size - 1).toFloat(),
           steps = slides.size - 2,
-          onValueChangeEnd = {
+          onValueChangeFinished = {
             controller.currentSlide = scrubberSlide.roundToInt()
             controller.showingScrubber = false
           }
@@ -259,8 +259,10 @@ private fun Modifier.splitClickable(
   }
 
   onSizeChanged { sizeRef.value = it }
-    .tapGestureFilter { offset ->
-      onClick(offset.x < splitPoint)
+    .pointerInput(Unit) {
+      detectTapGestures { offset ->
+        onClick(offset.x < splitPoint)
+      }
     }
 }
 
@@ -277,8 +279,7 @@ private fun Modifier.splitClickable(
   )
 }
 
-@Suppress("DEPRECATION")
-private fun CommitScope.configureFullScreenWindow(view: View) {
+private fun DisposableEffectScope.configureFullScreenWindow(view: View): DisposableEffectResult {
   tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
@@ -292,7 +293,7 @@ private fun CommitScope.configureFullScreenWindow(view: View) {
   view.systemUiVisibility =
     SYSTEM_UI_FLAG_FULLSCREEN or SYSTEM_UI_FLAG_HIDE_NAVIGATION or SYSTEM_UI_FLAG_IMMERSIVE_STICKY
   activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-  onDispose {
+  return onDispose {
     view.systemUiVisibility = originalSystemUiVisibility
     originalOrientation?.let { activity.requestedOrientation = it }
   }
@@ -340,7 +341,7 @@ private class SlidesContainerState(
     override val navigatedForward: Boolean = this@SlidesContainerState.navigatedForward
 
     @Composable override fun interceptNavigation(handler: NavigationInterceptor) {
-      onCommit(handler) {
+      DisposableEffect(handler) {
         navigationInterceptorsBySlide.getOrPut(slide, ::mutableListOf) += handler
         onDispose {
           navigationInterceptorsBySlide.getValue(slide) -= handler

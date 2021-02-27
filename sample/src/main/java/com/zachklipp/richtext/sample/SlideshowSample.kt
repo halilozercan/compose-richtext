@@ -8,18 +8,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.RichText
@@ -135,7 +135,7 @@ import com.zachklipp.richtext.ui.slideshow.TitleSlide
           enter = fadeIn(),
           exit = fadeOut(),
         ) {
-          Text(annotatedString {
+          Text(buildAnnotatedString {
             append("◦ 3rd paragraph.\n")
             withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
               append("  This is the most important stuff!")

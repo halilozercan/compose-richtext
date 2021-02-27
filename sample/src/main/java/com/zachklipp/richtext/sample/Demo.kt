@@ -2,18 +2,18 @@
 
 package com.zachklipp.richtext.sample
 
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.CodeBlock
 import com.zachklipp.richtext.ui.FormattedList
@@ -36,7 +36,7 @@ import com.zachklipp.richtext.ui.Table
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnBlack() {
-  Providers(AmbientContentColor provides Color.White) {
+  CompositionLocalProvider(LocalContentColor provides Color.White) {
     Box(Modifier.background(color = Color.Black)) {
       RichTextDemo()
     }

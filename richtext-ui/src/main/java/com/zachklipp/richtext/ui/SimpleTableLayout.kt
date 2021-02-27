@@ -4,10 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ExperimentalSubcomposeLayoutApi
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.enforce
+import androidx.compose.ui.unit.constrain
 import kotlin.math.roundToInt
 
 /**
@@ -28,7 +27,7 @@ internal data class TableLayoutResult(
  * @param cellSpacing The space in between each cell, and between each outer cell and the edge of
  * the table.
  */
-@OptIn(ExperimentalStdlibApi::class, ExperimentalSubcomposeLayoutApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
 internal fun SimpleTableLayout(
   columns: Int,
@@ -37,7 +36,7 @@ internal fun SimpleTableLayout(
   cellSpacing: Float,
   modifier: Modifier
 ) {
-  SubcomposeLayout<Boolean>(modifier = modifier) { constraints ->
+  SubcomposeLayout(modifier = modifier) { constraints ->
     val measurables = subcompose(false) {
       rows.forEach { row ->
         check(row.size == columns)
@@ -62,7 +61,7 @@ internal fun SimpleTableLayout(
     //   // Divide the height by the number of rows, then leave room for the padding.
     //   (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
     // }
-    val cellConstraints = constraints.enforce(Constraints(maxWidth = cellWidth.roundToInt()))
+    val cellConstraints = constraints.constrain(Constraints(maxWidth = cellWidth.roundToInt()))
 
     val rowPlaceables = rowMeasurables.map { cellMeasurables ->
       cellMeasurables.map { cell ->

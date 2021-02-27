@@ -1,11 +1,11 @@
 package com.zachklipp.richtext.ui.slideshow
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 
 /**
@@ -45,7 +45,7 @@ public fun SlideScope.NavigableContentContainer(
   state.startRecordingModifiers()
   children(state)
   state.stopRecordingModifiers()
-  onCommit {
+  SideEffect {
     state.onChildrenCommitted()
   }
 }
@@ -100,7 +100,7 @@ private class NavigableContentState(private val slideScope: SlideScope) : Naviga
 
     // When the content is initially committed, start tracking the visibility, and then stop
     // tracking it if it is removed from the composition.
-    onActive {
+    DisposableEffect(Unit) {
       childVisibilities += visibleState
       onDispose {
         childVisibilities -= visibleState

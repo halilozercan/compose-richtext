@@ -1,41 +1,32 @@
 package com.zachklipp.richtext.sample
 
-import android.content.ContextWrapper
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLifecycleObserver
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onCommit
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.TransformOrigin
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.drawLayer
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Lifecycle.State.DESTROYED
-import androidx.lifecycle.Lifecycle.State.STARTED
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.ui.tooling.preview.Preview
 
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
@@ -55,14 +46,14 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 
   Crossfade(currentSampleIndex) { index ->
     index?.let {
-      BackPressedHandler(onBackPressed = { currentSampleIndex = null })
+      BackHandler(onBack = { currentSampleIndex = null })
       Samples[it].second()
     }
       ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
   }
 }
 
-@OptIn(ExperimentalLayout::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
   MaterialTheme(colors = darkColors()) {
     Scaffold(
@@ -70,12 +61,14 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
         TopAppBar(title = { Text("Samples") })
       }
     ) {
-      LazyColumnForIndexed(Samples) { index, (title, sampleContent) ->
-        ListItem(
-          Modifier.clickable(onClick = { onSampleClicked(index) }),
-          icon = { SamplePreview(sampleContent) }
-        ) {
-          Text(title)
+      LazyColumn {
+        itemsIndexed(Samples) { index, (title, sampleContent) ->
+          ListItem(
+            Modifier.clickable(onClick = { onSampleClicked(index) }),
+            icon = { SamplePreview(sampleContent) }
+          ) {
+            Text(title)
+          }
         }
       }
     }
@@ -85,11 +78,11 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 @Composable private fun SamplePreview(content: @Composable () -> Unit) {
   ScreenPreview(
     Modifier
-      .preferredHeight(50.dp)
+      .height(50.dp)
       .aspectRatio(1f)
       .clipToBounds()
       // "Zoom in" to the top-start corner to make the preview more legible.
-      .drawLayer(
+      .graphicsLayer(
         scaleX = 1.5f, scaleY = 1.5f,
         transformOrigin = TransformOrigin(0f, 0f)
       ),
@@ -97,40 +90,5 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
     MaterialTheme(colors = lightColors()) {
       Surface(content = content)
     }
-  }
-}
-
-@Composable private fun BackPressedHandler(onBackPressed: () -> Unit) {
-  val context = ContextAmbient.current
-  val backPressedDispatcher = remember {
-    generateSequence(context) { (it as? ContextWrapper)?.baseContext }
-      .filterIsInstance<OnBackPressedDispatcherOwner>()
-      .firstOrNull()
-      ?.onBackPressedDispatcher
-  } ?: return
-  val compositionLifecycleOwner: LifecycleOwner = remember(onBackPressed) {
-    object : LifecycleOwner, CompositionLifecycleObserver {
-      val registry = LifecycleRegistry(this)
-      override fun getLifecycle(): Lifecycle = registry
-
-      override fun onEnter() {
-        super.onEnter()
-        registry.currentState = STARTED
-      }
-
-      override fun onLeave() {
-        registry.currentState = DESTROYED
-        super.onLeave()
-      }
-    }
-  }
-
-  onCommit(backPressedDispatcher, compositionLifecycleOwner, onBackPressed) {
-    val callback = object : OnBackPressedCallback(true) {
-      override fun handleOnBackPressed() {
-        onBackPressed()
-      }
-    }
-    backPressedDispatcher.addCallback(compositionLifecycleOwner, callback)
   }
 }

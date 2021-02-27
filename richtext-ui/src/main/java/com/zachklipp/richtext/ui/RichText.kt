@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.LocalDensity
 
 /**
  * Draws some rich text. Entry point to the compose-richtext library.
@@ -22,7 +22,7 @@ public fun RichText(
     RestartListLevel {
       WithStyle(style) {
         val resolvedStyle = currentRichTextStyle.resolveDefaults()
-        val blockSpacing = with(DensityAmbient.current) {
+        val blockSpacing = with(LocalDensity.current) {
           resolvedStyle.paragraphSpacing!!.toDp()
         }
 

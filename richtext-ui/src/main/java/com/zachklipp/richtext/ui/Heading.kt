@@ -2,27 +2,26 @@
 
 package com.zachklipp.richtext.ui
 
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.AmbientTextStyle
-import androidx.compose.foundation.ProvideTextStyle
-import androidx.compose.foundation.Text
+import androidx.annotation.IntRange
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Unspecified
-import androidx.compose.ui.graphics.useOrElse
-import androidx.compose.ui.platform.LayoutDirectionAmbient
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle.Italic
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.resolveDefaults
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.annotation.IntRange
-import androidx.ui.tooling.preview.Preview
 
 /**
  * Function that computes the [TextStyle] for the given header level, given the current [TextStyle]
@@ -73,7 +72,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
  * @param level The non-negative rank of the header, with 0 being the most important.
  */
 @Composable public fun RichTextScope.Heading(
-  @IntRange(0, Long.MAX_VALUE) level: Int,
+  @IntRange(from = 0L, to = Long.MAX_VALUE) level: Int,
   text: String
 ) {
   Heading(level) {
@@ -102,10 +101,10 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   // However, [resolveDefaults] uses a static default color which is [Color.Black].
   // To fix this issue, we are specifying the text color according to [Text] documentation
   // before calling [resolveDefaults].
-  val incomingStyle = AmbientTextStyle.current.let {
-    it.copy(color = it.color.useOrElse { AmbientContentColor.current })
+  val incomingStyle = LocalTextStyle.current.let {
+    it.copy(color = it.color.takeOrElse { LocalContentColor.current })
   }
-  val currentTextStyle = resolveDefaults(incomingStyle, LayoutDirectionAmbient.current)
+  val currentTextStyle = resolveDefaults(incomingStyle, LocalLayoutDirection.current)
 
   val headingTextStyle = headingStyleFunction(level, currentTextStyle)
   val mergedTextStyle = currentTextStyle.merge(headingTextStyle)
@@ -127,7 +126,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   backgroundColor: Color,
   contentColor: Color
 ) {
-  Providers(AmbientContentColor provides contentColor) {
+  CompositionLocalProvider(LocalContentColor provides contentColor) {
     Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {

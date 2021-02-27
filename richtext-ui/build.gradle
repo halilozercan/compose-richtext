@@ -7,6 +7,9 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   compileOnly deps.compose.tooling
 
+  api deps.androidx.annotations
   api deps.compose.foundation
-  api deps.compose.text
+
+  // TODO Migrate off this.
+  implementation deps.compose.material
 }

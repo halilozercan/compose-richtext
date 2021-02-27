@@ -1,23 +1,25 @@
 package com.zachklipp.richtext.ui.string
 
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Layout
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.gesture.tapGestureFilter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.node.Ref
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import androidx.ui.tooling.preview.Preview
+import com.zachklipp.richtext.ui.LocalRichTextStyle
 import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
-import com.zachklipp.richtext.ui.RichTextStyleAmbient
 import com.zachklipp.richtext.ui.string.RichTextString.Format
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Bold
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Link
@@ -48,21 +50,23 @@ public fun RichTextScope.Text(
   modifier: Modifier = Modifier,
   onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
-  val style = RichTextStyleAmbient.current.stringStyle
-  val contentColor = AmbientContentColor.current
+  val style = LocalRichTextStyle.current.stringStyle
+  val contentColor = LocalContentColor.current
   val annotated = remember(text, style, contentColor) {
     val resolvedStyle = (style ?: RichTextStringStyle.Default).resolveDefaults()
     text.toAnnotatedString(resolvedStyle, contentColor)
   }
   val layoutResult = remember<MutableState<TextLayoutResult?>> { mutableStateOf(null) }
-  val pressIndicator = Modifier.tapGestureFilter { position ->
-    layoutResult.value?.let { layoutResult ->
-      val offset = layoutResult.getOffsetForPosition(position)
-      annotated.getStringAnnotations(Format.FormatAnnotationScope, offset, offset)
-        .asSequence()
-        .mapNotNull { Format.findTag(it.item, text.formatObjects) as? Link }
-        .firstOrNull()
-        ?.let { link -> link.onClick() }
+  val pressIndicator = Modifier.pointerInput(Unit) {
+    detectTapGestures { position ->
+      layoutResult.value?.let { layoutResult ->
+        val offset = layoutResult.getOffsetForPosition(position)
+        annotated.getStringAnnotations(Format.FormatAnnotationScope, offset, offset)
+          .asSequence()
+          .mapNotNull { Format.findTag(it.item, text.formatObjects) as? Link }
+          .firstOrNull()
+          ?.let { link -> link.onClick() }
+      }
     }
   }
 
@@ -77,7 +81,7 @@ public fun RichTextScope.Text(
     forceTextRelayout = {
       // Modifying the actual string will cause Text to realize it needs to relayout.
       // We use a special unicode character that doesn't render so there's no visual effect.
-      hack = hack.copy(text = hack.text + ZERO_WIDTH_CHAR)
+      hack += AnnotatedString(ZERO_WIDTH_CHAR)
     }
   )
 
@@ -88,7 +92,7 @@ public fun RichTextScope.Text(
   // TODO Can this be done less hackily with SubcomposeLayout?
   Layout(
     modifier = modifier.then(pressIndicator),
-    children = {
+    content = {
       Text(
         text = hack,
         onTextLayout = { result ->

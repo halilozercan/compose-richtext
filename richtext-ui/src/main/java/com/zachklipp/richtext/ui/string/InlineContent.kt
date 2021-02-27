@@ -9,8 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
-import androidx.compose.ui.Layout
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign.AboveBaseline
 import androidx.compose.ui.unit.Constraints
@@ -40,7 +40,7 @@ public class InlineContent(
   textConstraints: () -> Constraints,
   forceTextRelayout: () -> Unit
 ): Map<String, InlineTextContent> {
-  val density = DensityAmbient.current
+  val density = LocalDensity.current
 
   // The content must fit inside the text's max bounds, but can be as small as it wants.
   val contentConstraints = fun(): Constraints = textConstraints().let {
@@ -86,11 +86,13 @@ public class InlineContent(
     )
 
     return InlineTextContent(placeholder) { alternateText ->
-      Layout(children = { content.content(this, alternateText) }) { measurables, _ ->
+      Layout(content = { content.content(this, alternateText) }) { measurables, _ ->
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.
-        val contentPlaceable = measurables.single().measure(contentConstraints())
+        val contentPlaceable = measurables.singleOrNull()?.measure(contentConstraints())
+          ?: return@Layout layout(0, 0) {}
+
         if (contentPlaceable.width != size?.width
           || contentPlaceable.height != size?.height
         ) {

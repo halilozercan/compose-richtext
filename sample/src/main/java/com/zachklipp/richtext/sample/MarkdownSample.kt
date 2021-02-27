@@ -1,17 +1,19 @@
 package com.zachklipp.richtext.sample
 
 import android.widget.Toast
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
@@ -20,11 +22,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
-import androidx.compose.ui.selection.Selection
-import androidx.compose.ui.selection.SelectionContainer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.ui.tooling.preview.Preview
 import com.zachklipp.richtext.markdown.Markdown
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.resolveDefaults
@@ -39,7 +39,7 @@ import com.zachklipp.richtext.ui.resolveDefaults
   var isDarkModeEnabled by remember { mutableStateOf(false) }
 
   val colors = if (isDarkModeEnabled) darkColors() else lightColors()
-  val context = ContextAmbient.current
+  val context = LocalContext.current
 
   MaterialTheme(colors = colors) {
     Surface {
@@ -67,9 +67,8 @@ import com.zachklipp.richtext.ui.resolveDefaults
           }
         }
 
-        var selection: Selection? by remember { mutableStateOf(null) }
-        SelectionContainer(selection = selection, onSelectionChange = { selection = it }) {
-          ScrollableColumn {
+        SelectionContainer {
+          Column(Modifier.verticalScroll(rememberScrollState())) {
             Markdown(
               content = sampleMarkdown,
               style = richTextStyle,

@@ -9,24 +9,24 @@ import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLifecycleObserver
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventPass.Initial
 import androidx.compose.ui.input.pointer.PointerInputFilter
 import androidx.compose.ui.input.pointer.PointerInputModifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.platform.ContextAmbient
-import androidx.compose.ui.platform.DensityAmbient
-import androidx.compose.ui.platform.ViewAmbient
-import androidx.compose.ui.selection.DisableSelection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Density
@@ -46,33 +46,33 @@ import androidx.compose.ui.unit.IntSize
   content: @Composable () -> Unit
 ) {
   val aspectRatio = screenSize.width.toFloat() / screenSize.height.toFloat()
-  WithConstraints(
+  BoxWithConstraints(
     modifier
       .aspectRatio(aspectRatio)
       // Disable touch input.
       .then(PassthroughTouchToParentModifier)
-      .semantics(mergeAllDescendants = true) {
+      .semantics(mergeDescendants = true) {
         // TODO Block semantics. Is this enough?
         disabled()
       }
   ) {
-    val actualDensity = DensityAmbient.current.density
+    val actualDensity = LocalDensity.current.density
     // Can use width or height to do the calculation, since the aspect ratio is enforced.
     val previewDensityScale = constraints.maxWidth / screenSize.width.toFloat()
     val previewDensity = actualDensity * previewDensityScale
 
     // Provide a fake host view, since the preview doesn't really belong to this host view.
-    val context = ContextAmbient.current
+    val context = LocalContext.current
     val previewView = remember {
       val previewContext = context.applicationContext
       View(previewContext)
     }
 
     DisableSelection {
-      Providers(
-        DensityAmbient provides Density(previewDensity),
-        ViewAmbient provides previewView,
-        children = content
+      CompositionLocalProvider(
+        LocalDensity provides Density(previewDensity),
+        LocalView provides previewView,
+        content = content
       )
     }
   }
@@ -87,12 +87,12 @@ import androidx.compose.ui.unit.IntSize
  * fake size of a phone display in portrait orientation is returned instead.
  */
 @Composable private fun rememberDefaultDisplaySize(): IntSize {
-  val context = ContextAmbient.current
+  val context = LocalContext.current
   val state = remember { DisplaySizeCalculator(context) }
   return state.displaySize.value
 }
 
-private class DisplaySizeCalculator(context: Context) : CompositionLifecycleObserver,
+private class DisplaySizeCalculator(context: Context) : RememberObserver,
   DisplayListener {
   private val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
   private val displayManager = context.getSystemService(DISPLAY_SERVICE) as DisplayManager
@@ -100,12 +100,16 @@ private class DisplaySizeCalculator(context: Context) : CompositionLifecycleObse
 
   val displaySize = mutableStateOf(getDisplaySize())
 
-  override fun onEnter() {
+  override fun onAbandoned() {
+    // Noop
+  }
+
+  override fun onRemembered() {
     // Update the preview on device rotation, for example.
     displayManager.registerDisplayListener(this, Handler())
   }
 
-  override fun onLeave() {
+  override fun onForgotten() {
     displayManager.unregisterDisplayListener(this)
   }
 

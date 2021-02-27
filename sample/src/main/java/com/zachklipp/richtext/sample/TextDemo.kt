@@ -1,40 +1,38 @@
 package com.zachklipp.richtext.sample
 
-import androidx.compose.animation.animatedColor
-import androidx.compose.animation.animatedFloat
-import androidx.compose.animation.core.AnimationConstants
+import androidx.compose.animation.Animatable
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawOpacity
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap.Round
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.RichTextString.Builder
@@ -51,11 +49,12 @@ import com.zachklipp.richtext.ui.string.Text
 import com.zachklipp.richtext.ui.string.richTextString
 import com.zachklipp.richtext.ui.string.withFormat
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable fun TextPreview() {
-  val context = ContextAmbient.current
+  val context = LocalContext.current
   var toggleLink by remember { mutableStateOf(false) }
   val text = remember(context, toggleLink) {
     richTextString {
@@ -102,17 +101,15 @@ import java.util.Locale
 }
 
 private val spinningCross = InlineContent {
-  val angle = animatedFloat(0f)
-  val color = animatedColor(Color.Red)
-  onActive {
-    val angleAnim = repeatable<Float>(
-      iterations = AnimationConstants.Infinite,
+  val angle = remember { Animatable(0f) }
+  val color = remember { Animatable(Color.Red) }
+  LaunchedEffect(Unit) {
+    val angleAnim = infiniteRepeatable<Float>(
       animation = tween(durationMillis = 1000, easing = LinearEasing)
     )
-    angle.animateTo(360f, angleAnim)
+    launch { angle.animateTo(360f, angleAnim) }
 
-    val colorAnim = repeatable<Color>(
-      iterations = AnimationConstants.Infinite,
+    val colorAnim = infiniteRepeatable<Color>(
       animation = keyframes {
         durationMillis = 2500
         Color.Blue at 500
@@ -121,7 +118,7 @@ private val spinningCross = InlineContent {
         Color.Magenta at 2000
       }
     )
-    color.animateTo(Color.Yellow, colorAnim)
+    launch { color.animateTo(Color.Yellow, colorAnim) }
   }
 
   Canvas(modifier = Modifier
@@ -149,8 +146,8 @@ private val spinningCross = InlineContent {
 }
 
 val slowLoadingImage = InlineContent {
-  var loaded by savedInstanceState { false }
-  LaunchedTask(loaded) {
+  var loaded by rememberSaveable { mutableStateOf(false) }
+  LaunchedEffect(loaded) {
     if (!loaded) {
       delay(3000)
       loaded = true
@@ -161,8 +158,8 @@ val slowLoadingImage = InlineContent {
     LoadingSpinner()
   } else {
     Box(Modifier.clickable(onClick = { loaded = false })) {
-      val size = animatedFloat(16f)
-      onActive { size.animateTo(100f) }
+      val size = remember { Animatable(16f) }
+      LaunchedEffect(Unit) { size.animateTo(100f) }
       Picture(Modifier.size(size.value.sp.toDp()))
       Text(
         "click to refresh",
@@ -177,10 +174,9 @@ val slowLoadingImage = InlineContent {
 }
 
 @Composable private fun LoadingSpinner() {
-  val alpha = animatedFloat(initVal = 1f)
-  onActive {
-    val anim = repeatable<Float>(
-      iterations = AnimationConstants.Infinite,
+  val alpha = remember { Animatable(1f) }
+  LaunchedEffect(Unit) {
+    val anim = infiniteRepeatable<Float>(
       animation = keyframes {
         durationMillis = 500
         0f at 250
@@ -193,7 +189,7 @@ val slowLoadingImage = InlineContent {
     fontSize = 3.em,
     modifier = Modifier
       .wrapContentSize(Alignment.Center)
-      .drawOpacity(alpha.value)
+      .graphicsLayer(alpha = alpha.value)
   )
 }
 

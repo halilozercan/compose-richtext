@@ -1,8 +1,12 @@
 package com.zachklipp.richtext.markdown
 
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.zachklipp.richtext.markdown.extensions.AstStrikethrough
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.FormattedList
@@ -39,7 +43,7 @@ import com.zachklipp.richtext.ui.string.Text as InlineRichText
  */
 @Composable
 internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
-  val onLinkClicked = AmbientOnLinkClicked.current
+  val onLinkClicked = LocalOnLinkClicked.current
   // Refer to notes at the top this file.
   // Assume that only RichText nodes reside below this level.
   val richText = remember(astNode, onLinkClicked) {
@@ -85,6 +89,7 @@ private fun computeRichTextString(
           richTextStringBuilder.appendInlineContent(content = InlineContent {
             CoilImage(
               data = currentNode.destination,
+              contentDescription = currentNode.title,
               loading = {
                 Text("Loading Image...")
               },

@@ -7,11 +7,10 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.length
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
@@ -113,7 +112,7 @@ public data class RichTextString internal constructor(
     style: RichTextStringStyle,
     contentColor: Color
   ): AnnotatedString =
-    annotatedString {
+    buildAnnotatedString {
       append(taggedString)
 
       // Get all of our format annotations.

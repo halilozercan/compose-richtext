@@ -1,8 +1,8 @@
 package com.zachklipp.richtext.ui.slideshow
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.ProvidableAmbient
-import androidx.compose.runtime.staticAmbientOf
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,5 +45,5 @@ public data class SlideshowTheme(
   val aspectRatio: Float = 16 / 9f
 )
 
-public val SlideshowThemeAmbient: ProvidableAmbient<SlideshowTheme> =
-  staticAmbientOf { SlideshowTheme() }
+public val SlideshowThemeAmbient: ProvidableCompositionLocal<SlideshowTheme> =
+  staticCompositionLocalOf { SlideshowTheme() }
