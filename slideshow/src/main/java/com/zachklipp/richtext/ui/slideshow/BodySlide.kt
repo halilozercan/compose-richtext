@@ -30,14 +30,16 @@ import androidx.ui.tooling.preview.Preview
 ) {
   val theme = SlideshowThemeAmbient.current
   Column(
-      Modifier.fillMaxSize().padding(theme.gap),
-      verticalArrangement = spacedBy(theme.gap)
+    Modifier
+      .fillMaxSize()
+      .padding(theme.gap),
+    verticalArrangement = spacedBy(theme.gap)
   ) {
     ProvideTextStyle(theme.headerStyle, header)
     Column(
-        Modifier
-            .fillMaxWidth()
-            .weight(1f, fill = true)
+      Modifier
+        .fillMaxWidth()
+        .weight(1f, fill = true)
     ) { body() }
     ProvideTextStyle(theme.footerStyle, footer)
   }
@@ -56,24 +58,26 @@ import androidx.ui.tooling.preview.Preview
  */
 @Composable public fun SlideScope.SlideNumberFooter() {
   Text(
-      slideNumber.toString(),
-      Modifier.fillMaxWidth().wrapContentWidth(Alignment.End)
+    slideNumber.toString(),
+    Modifier
+      .fillMaxWidth()
+      .wrapContentWidth(Alignment.End)
   )
 }
 
 @Preview
 @Composable private fun BodySlidePreview() {
   PreviewSlideScope.BodySlide(
-      header = {
-        Text("Header")
-      },
-      body = {
-        Text("Content 1")
-        Text("Content 2")
-        Text("Content 3")
-      },
-      footer = {
-        Text("Footer")
-      }
+    header = {
+      Text("Header")
+    },
+    body = {
+      Text("Content 1")
+      Text("Content 2")
+      Text("Content 3")
+    },
+    footer = {
+      Text("Footer")
+    }
   )
 }

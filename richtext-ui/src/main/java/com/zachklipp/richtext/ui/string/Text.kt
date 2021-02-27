@@ -59,10 +59,10 @@ public fun RichTextScope.Text(
     layoutResult.value?.let { layoutResult ->
       val offset = layoutResult.getOffsetForPosition(position)
       annotated.getStringAnnotations(Format.FormatAnnotationScope, offset, offset)
-          .asSequence()
-          .mapNotNull { Format.findTag(it.item, text.formatObjects) as? Link }
-          .firstOrNull()
-          ?.let { link -> link.onClick() }
+        .asSequence()
+        .mapNotNull { Format.findTag(it.item, text.formatObjects) as? Link }
+        .firstOrNull()
+        ?.let { link -> link.onClick() }
     }
   }
 
@@ -72,13 +72,13 @@ public fun RichTextScope.Text(
   // The constraints function won't be called until the content is actually composed and EM is
   // measured, which won't happen until the text is composed.
   val inlineTextContents = ManageInlineTextContents(
-      inlineContents = inlineContents,
-      textConstraints = { constraintsRef.value!! },
-      forceTextRelayout = {
-        // Modifying the actual string will cause Text to realize it needs to relayout.
-        // We use a special unicode character that doesn't render so there's no visual effect.
-        hack = hack.copy(text = hack.text + ZERO_WIDTH_CHAR)
-      }
+    inlineContents = inlineContents,
+    textConstraints = { constraintsRef.value!! },
+    forceTextRelayout = {
+      // Modifying the actual string will cause Text to realize it needs to relayout.
+      // We use a special unicode character that doesn't render so there's no visual effect.
+      hack = hack.copy(text = hack.text + ZERO_WIDTH_CHAR)
+    }
   )
 
   // This is a giant hack to work around inline content limitations:
@@ -87,17 +87,17 @@ public fun RichTextScope.Text(
   // 2. Text doesn't re-layout the text when the placeholders change.
   // TODO Can this be done less hackily with SubcomposeLayout?
   Layout(
-      modifier = modifier.then(pressIndicator),
-      children = {
-        Text(
-            text = hack,
-            onTextLayout = { result ->
-              layoutResult.value = result
-              onTextLayout(result)
-            },
-            inlineContent = inlineTextContents
-        )
-      }
+    modifier = modifier.then(pressIndicator),
+    children = {
+      Text(
+        text = hack,
+        onTextLayout = { result ->
+          layoutResult.value = result
+          onTextLayout(result)
+        },
+        inlineContent = inlineTextContents
+      )
+    }
   ) { measurables, constraints ->
     // Update the inline content before measuring text, so content will get its constraints before
     // being measured.

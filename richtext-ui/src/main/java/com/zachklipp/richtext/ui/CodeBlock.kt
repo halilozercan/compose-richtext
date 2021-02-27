@@ -42,15 +42,15 @@ public data class CodeBlockStyle(
 }
 
 private val DefaultCodeBlockTextStyle = TextStyle(
-    fontFamily = FontFamily.Monospace
+  fontFamily = FontFamily.Monospace
 )
 internal val DefaultCodeBlockBackground: Color = Color.LightGray.copy(alpha = .5f)
 private val DefaultCodeBlockPadding: TextUnit = 16.sp
 
 internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
-    textStyle = textStyle ?: DefaultCodeBlockTextStyle,
-    background = background ?: DefaultCodeBlockBackground,
-    padding = padding ?: DefaultCodeBlockPadding
+  textStyle = textStyle ?: DefaultCodeBlockTextStyle,
+  background = background ?: DefaultCodeBlockBackground,
+  padding = padding ?: DefaultCodeBlockPadding
 )
 
 /**
@@ -104,7 +104,7 @@ private fun CodeBlockPreview(
     Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
         RichTextScope.CodeBlock(
-            """
+          """
               data class Hello(
                 val name: String
               )

@@ -43,8 +43,10 @@ import androidx.ui.tooling.preview.Preview
 @Preview(showBackground = true)
 @Composable private fun PagedPreview() {
   Paged(
-      modifier = Modifier.height(100.dp).width(100.dp),
-      drawBreakpoints = true
+    modifier = Modifier
+      .height(100.dp)
+      .width(100.dp),
+    drawBreakpoints = true
   ) {
     Column {
       for (i in 0 until 100) {
@@ -57,9 +59,11 @@ import androidx.ui.tooling.preview.Preview
 @Preview(showBackground = true)
 @Composable private fun PagedPreviewPage2() {
   PagedImpl(
-      modifier = Modifier.height(100.dp).width(100.dp),
-      drawBreakpoints = true,
-      pageOffsetPx = 20
+    modifier = Modifier
+      .height(100.dp)
+      .width(100.dp),
+    drawBreakpoints = true,
+    pageOffsetPx = 20
   ) {
     Column {
       for (i in 0 until 100) {
@@ -174,16 +178,16 @@ public interface PageLayoutResult {
   } ?: 0
 
   PagedImpl(
-      modifier = modifier,
-      pageOffsetPx = pageOffsetPx,
-      pageModifier = pageModifier,
-      clipLastBreakpoint = clipLastBreakpoint,
-      drawBreakpoints = drawBreakpoints,
-      onPageLayoutResult = {
-        layoutResult = it
-        onPageLayout?.invoke(it.pageOffsetsPx.size)
-      },
-      content = content
+    modifier = modifier,
+    pageOffsetPx = pageOffsetPx,
+    pageModifier = pageModifier,
+    clipLastBreakpoint = clipLastBreakpoint,
+    drawBreakpoints = drawBreakpoints,
+    onPageLayoutResult = {
+      layoutResult = it
+      onPageLayout?.invoke(it.pageOffsetsPx.size)
+    },
+    content = content
   )
 }
 
@@ -216,15 +220,16 @@ public interface PageLayoutResult {
 
   var coordinates: LayoutCoordinates? by remember { mutableStateOf(null) }
   var pageLayoutResult: PageLayoutResult? by remember { mutableStateOf(null) }
-  var measureModifier = modifier.onGloballyPositioned { coordinates = it }
-      .then(pageModifier)
+  var measureModifier = modifier
+    .onGloballyPositioned { coordinates = it }
+    .then(pageModifier)
 
   measureModifier = measureModifier.drawWithContent {
     val bottomClipAbsolute = pageLayoutResult?.takeIf { clipLastBreakpoint }
-        ?.nextPageOffsetPx(pageOffsetPx)
+      ?.nextPageOffsetPx(pageOffsetPx)
     val bottomClip = bottomClipAbsolute
-        ?.let { it - pageOffsetPx }
-        ?: size.height.toInt()
+      ?.let { it - pageOffsetPx }
+      ?: size.height.toInt()
 
     clipRect(bottom = bottomClip.toFloat()) {
       translate(top = -pageOffsetPx.toFloat()) {
@@ -239,22 +244,22 @@ public interface PageLayoutResult {
 
   Box(measureModifier) {
     MeasureBreakpoints(
-        onBreakpoints = { globalBreakpoints ->
-          coordinates?.let { coords ->
-            val localBreakpoints = globalBreakpoints.map { breakpointGlobalBounds ->
-              val localRect = breakpointGlobalBounds.toRect().translate(-coords.globalPosition)
-              PageBreakpoint(
-                  xAnchorPx = Pair(localRect.left.toInt(), localRect.right.toInt()),
-                  yPx = localRect.bottom.toInt(),
-                  forceBreak = false
-              )
-            }
-
-            pageLayoutResult = PageLayoutResultImpl(coords.size, localBreakpoints)
-                .also { onPageLayoutResult?.invoke(it) }
+      onBreakpoints = { globalBreakpoints ->
+        coordinates?.let { coords ->
+          val localBreakpoints = globalBreakpoints.map { breakpointGlobalBounds ->
+            val localRect = breakpointGlobalBounds.toRect().translate(-coords.globalPosition)
+            PageBreakpoint(
+              xAnchorPx = Pair(localRect.left.toInt(), localRect.right.toInt()),
+              yPx = localRect.bottom.toInt(),
+              forceBreak = false
+            )
           }
-        },
-        content
+
+          pageLayoutResult = PageLayoutResultImpl(coords.size, localBreakpoints)
+            .also { onPageLayoutResult?.invoke(it) }
+        }
+      },
+      content
     )
   }
 }
@@ -306,7 +311,7 @@ private data class PageLayoutResultImpl(
     // TODO This has O(n!) time complexity, can optimize if we can tell nextPageOffsetPx where to
     //  start from on each iteration.
     return generateSequence(0) { nextPageOffsetPx(it) }
-        .toList()
+      .toList()
   }
 }
 
@@ -319,26 +324,26 @@ private fun DrawScope.drawBreakpoints(
     val x1 = breakpoint.xAnchorPx.first.toFloat()
     val x2 = breakpoint.xAnchorPx.second.toFloat()
     drawLine(
-        color = Color.Red,
-        strokeWidth = 1f,
-        alpha = .3f,
-        start = Offset(0f, y),
-        end = Offset(size.width, y)
+      color = Color.Red,
+      strokeWidth = 1f,
+      alpha = .3f,
+      start = Offset(0f, y),
+      end = Offset(size.width, y)
     )
     drawLine(
-        color = Color.Red,
-        strokeWidth = 1f,
-        start = Offset(x1, y),
-        end = Offset(x2, y)
+      color = Color.Red,
+      strokeWidth = 1f,
+      start = Offset(x1, y),
+      end = Offset(x2, y)
     )
   }
 
   bottomClipAbsolute?.let {
     drawLine(
-        color = Color.Red,
-        strokeWidth = 1.5f,
-        start = Offset(0f, it.toFloat()),
-        end = Offset(size.width, it.toFloat())
+      color = Color.Red,
+      strokeWidth = 1.5f,
+      start = Offset(0f, it.toFloat()),
+      end = Offset(size.width, it.toFloat())
     )
   }
 }
@@ -454,10 +459,10 @@ private data class NodeBounds(
 
 private fun Group.getNodeBounds(): Sequence<NodeBounds> {
   val children = children.asSequence()
-      .flatMap { it.getNodeBounds() }
-      // TODO Filtering out keep-with-next nodes prevents page breaks after them, but also prevents
-      //  them from being included in overlap calculation. Figure out a better way.
-      .filterNot { it.group.keepWithNext }
+    .flatMap { it.getNodeBounds() }
+    // TODO Filtering out keep-with-next nodes prevents page breaks after them, but also prevents
+    //  them from being included in overlap calculation. Figure out a better way.
+    .filterNot { it.group.keepWithNext }
 
   return if (this is NodeGroup) {
     sequenceOf(NodeBounds(box, this, children))

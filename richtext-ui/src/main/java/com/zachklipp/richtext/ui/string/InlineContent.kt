@@ -49,10 +49,10 @@ public class InlineContent(
 
   return inlineContents.mapValues { (_, content) ->
     ReifyInlineContent(
-        content,
-        contentConstraints,
-        density,
-        forceTextRelayout
+      content,
+      contentConstraints,
+      density,
+      forceTextRelayout
     )
   }
 }
@@ -71,8 +71,8 @@ public class InlineContent(
 ): InlineTextContent {
   var size by remember {
     mutableStateOf(
-        content.initialSize?.invoke(density),
-        structuralEqualityPolicy()
+      content.initialSize?.invoke(density),
+      structuralEqualityPolicy()
     )
   }
 
@@ -80,9 +80,9 @@ public class InlineContent(
     // If size is null, content hasn't been measured yet, so just draw with zero width for now.
     // Set the height to 1 em so we can calculate how many pixels in an EM.
     val placeholder = Placeholder(
-        width = size?.width?.toSp() ?: 0.sp,
-        height = size?.height?.toSp() ?: 1.sp,
-        placeholderVerticalAlign = AboveBaseline
+      width = size?.width?.toSp() ?: 0.sp,
+      height = size?.height?.toSp() ?: 1.sp,
+      placeholderVerticalAlign = AboveBaseline
     )
 
     return InlineTextContent(placeholder) { alternateText ->
@@ -92,7 +92,7 @@ public class InlineContent(
         // placeholder.
         val contentPlaceable = measurables.single().measure(contentConstraints())
         if (contentPlaceable.width != size?.width
-            || contentPlaceable.height != size?.height
+          || contentPlaceable.height != size?.height
         ) {
           size = IntSize(contentPlaceable.width, contentPlaceable.height)
           forceTextRelayout()

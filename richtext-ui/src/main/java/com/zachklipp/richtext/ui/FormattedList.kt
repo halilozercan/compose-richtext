@@ -136,24 +136,24 @@ public data class ListStyle(
 private val DefaultMarkerIndent = 8.sp
 private val DefaultContentsIndent = 4.sp
 private val DefaultOrderedMarkers = OrderedMarkers.text(
-    { "${it + 1}." },
-    {
-      ('a'..'z').drop(it % 26)
-          .first() + "."
-    },
-    { "${it + 1})" },
-    {
-      ('a'..'z').drop(it % 26)
-          .first() + ")"
-    }
+  { "${it + 1}." },
+  {
+    ('a'..'z').drop(it % 26)
+      .first() + "."
+  },
+  { "${it + 1})" },
+  {
+    ('a'..'z').drop(it % 26)
+      .first() + ")"
+  }
 )
 private val DefaultUnorderedMarkers = UnorderedMarkers.text("•", "◦", "▸", "▹")
 
 internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
-    markerIndent = markerIndent ?: DefaultMarkerIndent,
-    contentsIndent = contentsIndent ?: DefaultContentsIndent,
-    orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
-    unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
+  markerIndent = markerIndent ?: DefaultMarkerIndent,
+  contentsIndent = contentsIndent ?: DefaultContentsIndent,
+  orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
+  unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
 
 private val ListLevelAmbient = ambientOf { 0 }
@@ -198,21 +198,21 @@ private val ListLevelAmbient = ambientOf { 0 }
   val currentLevel = ListLevelAmbient.current
 
   PrefixListLayout(
-      count = items.size,
-      prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
-      prefixForIndex = { index ->
-        when (listType) {
-          Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
-          Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
-        }
-      },
-      itemForIndex = { index ->
-        RichText {
-          Providers(ListLevelAmbient provides currentLevel + 1) {
-            drawItem(items[index])
-          }
+    count = items.size,
+    prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
+    prefixForIndex = { index ->
+      when (listType) {
+        Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
+        Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
+      }
+    },
+    itemForIndex = { index ->
+      RichText {
+        Providers(ListLevelAmbient provides currentLevel + 1) {
+          drawItem(items[index])
         }
       }
+    }
   )
 }
 
@@ -242,25 +242,25 @@ private val ListLevelAmbient = ambientOf { 0 }
   }) { measurables, constraints ->
     check(measurables.size == count * 2)
     val prefixMeasureables = measurables.asSequence()
-        .take(count)
+      .take(count)
     val itemMeasurables = measurables.asSequence()
-        .drop(count)
+      .drop(count)
 
     // Measure the prefixes first.
     val prefixPlaceables = prefixMeasureables.map { marker ->
       marker.measure(Constraints())
     }
-        .toList()
+      .toList()
     val widestPrefix = prefixPlaceables.maxByOrNull { it.width }!!
 
     // Then measure the items, offset to the right to allow space for the prefixes and gap.
     val itemConstraints = constraints.copy(
-        maxWidth = (constraints.maxWidth - widestPrefix.width).coerceAtLeast(0)
+      maxWidth = (constraints.maxWidth - widestPrefix.width).coerceAtLeast(0)
     )
     val itemPlaceables = itemMeasurables.map { item ->
       item.measure(itemConstraints)
     }
-        .toList()
+      .toList()
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
@@ -274,11 +274,11 @@ private val ListLevelAmbient = ambientOf { 0 }
         val item = itemPlaceables[i]
         val rowHeight = max(prefix.height, item.height)
         val prefixOffset = Alignment.TopEnd.align(
-            IntSize(
-                width = widestPrefix.width - prefix.width,
-                height = rowHeight - prefix.height
-            ),
-            layoutDirection
+          IntSize(
+            width = widestPrefix.width - prefix.width,
+            height = rowHeight - prefix.height
+          ),
+          layoutDirection
         )
 
         prefix.place(prefixOffset.x, y + prefixOffset.y)
@@ -316,20 +316,20 @@ private val ListLevelAmbient = ambientOf { 0 }
   Providers(LayoutDirectionAmbient provides layoutDirection) {
     Box(Modifier.background(color = Color.White)) {
       RichTextScope.FormattedList(
-          listType = listType,
-          items = listOf(
-              "Foo",
-              "Bar",
-              "Baz",
-              "Foo",
-              "Bar",
-              "Baz",
-              "Foo",
-              "Bar",
-              "Foo\nBar\nBaz",
-              "Foo"
-          ).withIndex()
-              .toList()
+        listType = listType,
+        items = listOf(
+          "Foo",
+          "Bar",
+          "Baz",
+          "Foo",
+          "Bar",
+          "Baz",
+          "Foo",
+          "Bar",
+          "Foo\nBar\nBaz",
+          "Foo"
+        ).withIndex()
+          .toList()
       ) { (index, text) ->
         Text(text)
         if (index == 0) {

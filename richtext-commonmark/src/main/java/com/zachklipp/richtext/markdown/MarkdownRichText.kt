@@ -58,11 +58,11 @@ private fun computeRichTextString(
   // Modified pre-order traversal with pushFormat, popFormat support.
   val iteratorStack = LinkedList<AstNodeTraversalEntry>().apply {
     addFirst(
-        AstNodeTraversalEntry(
-            astNode = astNode,
-            isVisited = false,
-            formatIndex = null
-        )
+      AstNodeTraversalEntry(
+        astNode = astNode,
+        isVisited = false,
+        formatIndex = null
+      )
     )
   }
 
@@ -79,24 +79,24 @@ private fun computeRichTextString(
         }
         is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
         is AstStrikethrough -> richTextStringBuilder.pushFormat(
-            RichTextString.Format.Strikethrough
+          RichTextString.Format.Strikethrough
         )
         is AstImage -> {
           richTextStringBuilder.appendInlineContent(content = InlineContent {
             CoilImage(
-                data = currentNode.destination,
-                loading = {
-                  Text("Loading Image...")
-                },
-                error = {
-                  Text("Image failed to load")
-                }
+              data = currentNode.destination,
+              loading = {
+                Text("Loading Image...")
+              },
+              error = {
+                Text("Image failed to load")
+              }
             )
           })
           null
         }
         is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
-            onClick = { onLinkClicked(currentNode.destination) }
+          onClick = { onLinkClicked(currentNode.destination) }
         ))
         is AstSoftLineBreak -> {
           richTextStringBuilder.append(" ")
@@ -112,29 +112,29 @@ private fun computeRichTextString(
           null
         }
         is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
-            RichTextString.Format.Link(
-                onClick = { onLinkClicked(currentNode.destination) }
-            ))
+          RichTextString.Format.Link(
+            onClick = { onLinkClicked(currentNode.destination) }
+          ))
         else -> null
       }
 
       iteratorStack.addFirst(
-          AstNodeTraversalEntry(
-              astNode = currentNode,
-              isVisited = true,
-              formatIndex = newFormatIndex
-          )
+        AstNodeTraversalEntry(
+          astNode = currentNode,
+          isVisited = true,
+          formatIndex = newFormatIndex
+        )
       )
 
       // Do not visit children of terminals such as Text, Image, etc.
       if (!currentNode.isRichTextTerminal()) {
         currentNode.childrenSequence(reverse = true).forEach {
           iteratorStack.addFirst(
-              AstNodeTraversalEntry(
-                  astNode = it,
-                  isVisited = false,
-                  formatIndex = null
-              )
+            AstNodeTraversalEntry(
+              astNode = it,
+              isVisited = false,
+              formatIndex = null
+            )
           )
         }
       }

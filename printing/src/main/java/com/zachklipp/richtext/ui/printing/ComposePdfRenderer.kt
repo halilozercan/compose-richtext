@@ -85,29 +85,29 @@ internal suspend fun composeToPdf(
   val wm = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
   val printerMetrics = PrinterMetrics(
-      screenDensity = Density(activity),
-      pageDpi = pageDpi,
-      pageWidth = pdfDocument.pageWidth.pts,
-      pageHeight = pdfDocument.pageHeight.pts
+    screenDensity = Density(activity),
+    pageDpi = pageDpi,
+    pageWidth = pdfDocument.pageWidth.pts,
+    pageHeight = pdfDocument.pageHeight.pts
   )
 
   val windowParams = with(printerMetrics) {
     LayoutParams(
-        pageWidth.value,
-        pageHeight.value,
-        LayoutParams.TYPE_APPLICATION_SUB_PANEL,
-        LayoutParams.FLAG_NOT_FOCUSABLE or
-            LayoutParams.FLAG_NOT_TOUCHABLE or
-            LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-        PixelFormat.RGBA_8888
+      pageWidth.value,
+      pageHeight.value,
+      LayoutParams.TYPE_APPLICATION_SUB_PANEL,
+      LayoutParams.FLAG_NOT_FOCUSABLE or
+          LayoutParams.FLAG_NOT_TOUCHABLE or
+          LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+      PixelFormat.RGBA_8888
     )
   }
 
   val renderingView = createWindowComposeView(activity) {
     Providers(
-        // Render the page with the page density, not the screen density.
-        DensityAmbient provides printerMetrics.renderDensity,
-        children = { content(printerMetrics) }
+      // Render the page with the page density, not the screen density.
+      DensityAmbient provides printerMetrics.renderDensity,
+      children = { content(printerMetrics) }
     )
   }
   // Hide the rendering window.
@@ -116,13 +116,13 @@ internal suspend fun composeToPdf(
   // Adding views to the window manager creates windows, and attaches the views to them.
   wm.addView(renderingView, windowParams)
   wm.addView(
-      progressView,
-      LayoutParams().apply {
-        copyFrom(windowParams)
-        format = PixelFormat.OPAQUE
-        flags = flags or LayoutParams.FLAG_DIM_BEHIND
-        dimAmount = .5f
-      })
+    progressView,
+    LayoutParams().apply {
+      copyFrom(windowParams)
+      format = PixelFormat.OPAQUE
+      flags = flags or LayoutParams.FLAG_DIM_BEHIND
+      dimAmount = .5f
+    })
 
 
   coroutineScope {
@@ -152,9 +152,10 @@ internal suspend fun composeToPdf(
   val backgroundColor = if (isDarkTheme) Black else White
   val textColor = if (isDarkTheme) White else Black
   Box(
-      Modifier.background(backgroundColor)
-          .fillMaxSize()
-          .wrapContentSize()
+    Modifier
+      .background(backgroundColor)
+      .fillMaxSize()
+      .wrapContentSize()
   ) {
     Text("Rendering PDF…", color = textColor)
   }

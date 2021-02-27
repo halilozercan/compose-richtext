@@ -47,12 +47,13 @@ public interface BlockQuoteGutter {
         val color = color(AmbientContentColor.current)
         val modifier = remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
-          Modifier.padding(
+          Modifier
+            .padding(
               start = startMargin.toDp(),
               end = endMargin.toDp()
-          )
-              .width(barWidth.toDp())
-              .background(color, RoundedCornerShape(50))
+            )
+            .width(barWidth.toDp())
+            .background(color, RoundedCornerShape(50))
         }
 
         Box(modifier = modifier)
@@ -73,8 +74,8 @@ public interface BlockQuoteGutter {
   Layout(children = {
     gutter.drawGutter()
     RichText(
-        modifier = Modifier.padding(top = spacing, bottom = spacing),
-        children = children
+      modifier = Modifier.padding(top = spacing, bottom = spacing),
+      children = children
     )
   }) { measurables, constraints ->
     val gutterMeasurable = measurables[0]
@@ -95,9 +96,9 @@ public interface BlockQuoteGutter {
     // Measure the gutter to fit in its min intrinsic width and exactly the
     // height of the contents.
     val gutterConstraints = constraints.copy(
-        maxWidth = gutterWidth,
-        minHeight = layoutHeight,
-        maxHeight = layoutHeight
+      maxWidth = gutterWidth,
+      minHeight = layoutHeight,
+      maxHeight = layoutHeight
     )
     val gutterPlaceable = gutterMeasurable.measure(gutterConstraints)
 

@@ -47,13 +47,14 @@ import androidx.compose.ui.unit.IntSize
 ) {
   val aspectRatio = screenSize.width.toFloat() / screenSize.height.toFloat()
   WithConstraints(
-      modifier.aspectRatio(aspectRatio)
-          // Disable touch input.
-          .then(PassthroughTouchToParentModifier)
-          .semantics(mergeAllDescendants = true) {
-            // TODO Block semantics. Is this enough?
-            disabled()
-          }
+    modifier
+      .aspectRatio(aspectRatio)
+      // Disable touch input.
+      .then(PassthroughTouchToParentModifier)
+      .semantics(mergeAllDescendants = true) {
+        // TODO Block semantics. Is this enough?
+        disabled()
+      }
   ) {
     val actualDensity = DensityAmbient.current.density
     // Can use width or height to do the calculation, since the aspect ratio is enforced.
@@ -69,9 +70,9 @@ import androidx.compose.ui.unit.IntSize
 
     DisableSelection {
       Providers(
-          DensityAmbient provides Density(previewDensity),
-          ViewAmbient provides previewView,
-          children = content
+        DensityAmbient provides Density(previewDensity),
+        ViewAmbient provides previewView,
+        children = content
       )
     }
   }
@@ -92,7 +93,7 @@ import androidx.compose.ui.unit.IntSize
 }
 
 private class DisplaySizeCalculator(context: Context) : CompositionLifecycleObserver,
-    DisplayListener {
+  DisplayListener {
   private val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
   private val displayManager = context.getSystemService(DISPLAY_SERVICE) as DisplayManager
   private val display = windowManager.defaultDisplay

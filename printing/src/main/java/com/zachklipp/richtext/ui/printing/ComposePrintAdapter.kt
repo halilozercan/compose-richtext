@@ -64,8 +64,8 @@ public class ComposePrintAdapter(
     // Don't bother trying to calculate the page count. The print manager will automatically get
     // the count from the initial preview.
     return PrintDocumentInfo.Builder(documentName)
-        .setContentType(CONTENT_TYPE_DOCUMENT)
-        .build()
+      .setContentType(CONTENT_TYPE_DOCUMENT)
+      .build()
   }
 
   override suspend fun onWrite(
@@ -80,11 +80,11 @@ public class ComposePrintAdapter(
       // This is the actual composable that will be rendered to the PDF.
       // Paged tries to ensure that we don't cut off leaf composables in the middle.
       Paged(
-          pageIndex = currentPageIndex,
-          pageModifier = pageModifier,
-          drawBreakpoints = printBreakpoints,
-          onPageLayout = { pageCountDeferred.complete(it) },
-          content = content
+        pageIndex = currentPageIndex,
+        pageModifier = pageModifier,
+        drawBreakpoints = printBreakpoints,
+        onPageLayout = { pageCountDeferred.complete(it) },
+        content = content
       )
     }) {
       // We need to know the total page count before we can start iterating. This waits for the
@@ -92,22 +92,22 @@ public class ComposePrintAdapter(
       val pageCount = pageCountDeferred.await()
 
       (0 until pageCount).asSequence()
-          .filter { page -> pages.any { page in it.start..it.end } }
-          .forEach { pageNumber ->
-            val page = pdfDocument.startPage(pageNumber)
+        .filter { page -> pages.any { page in it.start..it.end } }
+        .forEach { pageNumber ->
+          val page = pdfDocument.startPage(pageNumber)
 
-            // Update the Paged to "flip" to the page.
-            currentPageIndex = pageNumber
+          // Update the Paged to "flip" to the page.
+          currentPageIndex = pageNumber
 
-            // Render the page to the PDF. This function will automatically wait for the next frame to
-            // finish drawing. It also does not do any IO, so we don't need to switch dispatchers.
-            composePage(page)
-            pdfDocument.finishPage(page)
+          // Render the page to the PDF. This function will automatically wait for the next frame to
+          // finish drawing. It also does not do any IO, so we don't need to switch dispatchers.
+          composePage(page)
+          pdfDocument.finishPage(page)
 
-            // We're on the main thread, so be a good citizen.
-            // Also ensures we handle cancellation in a timely fashion.
-            yield()
-          }
+          // We're on the main thread, so be a good citizen.
+          // Also ensures we handle cancellation in a timely fashion.
+          yield()
+        }
     }
 
     // The PDF currently only exists in memory, so to dump it to the printing system we use a

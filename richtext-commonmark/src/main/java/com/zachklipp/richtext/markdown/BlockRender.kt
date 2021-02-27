@@ -12,31 +12,31 @@ import com.zachklipp.richtext.ui.Table
 @Composable
 internal fun RichTextScope.renderTable(node: AstTableRoot) {
   Table(
-      headerRow = {
-        node.filterChildrenIsInstance<AstTableHeader>()
-            .firstOrNull()
-            ?.filterChildrenIsInstance<AstTableRow>()
-            ?.firstOrNull()
-            ?.filterChildrenIsInstance<AstTableCell>()
-            ?.forEach { tableCell ->
+    headerRow = {
+      node.filterChildrenIsInstance<AstTableHeader>()
+        .firstOrNull()
+        ?.filterChildrenIsInstance<AstTableRow>()
+        ?.firstOrNull()
+        ?.filterChildrenIsInstance<AstTableCell>()
+        ?.forEach { tableCell ->
+          cell {
+            MarkdownRichText(tableCell)
+          }
+        }
+    }
+  ) {
+    node.filterChildrenIsInstance<AstTableBody>()
+      .firstOrNull()
+      ?.filterChildrenIsInstance<AstTableRow>()
+      ?.forEach { tableRow ->
+        row {
+          tableRow.filterChildrenIsInstance<AstTableCell>()
+            .forEach { tableCell ->
               cell {
                 MarkdownRichText(tableCell)
               }
             }
-      }
-  ) {
-    node.filterChildrenIsInstance<AstTableBody>()
-        .firstOrNull()
-        ?.filterChildrenIsInstance<AstTableRow>()
-        ?.forEach { tableRow ->
-          row {
-            tableRow.filterChildrenIsInstance<AstTableCell>()
-                .forEach { tableCell ->
-                  cell {
-                    MarkdownRichText(tableCell)
-                  }
-                }
-          }
         }
+      }
   }
 }

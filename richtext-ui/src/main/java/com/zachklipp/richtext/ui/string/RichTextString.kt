@@ -51,27 +51,27 @@ public data class RichTextStringStyle(
   internal fun merge(otherStyle: RichTextStringStyle?): RichTextStringStyle {
     if (otherStyle == null) return this
     return RichTextStringStyle(
-        boldStyle = boldStyle.merge(otherStyle.boldStyle),
-        italicStyle = italicStyle.merge(otherStyle.italicStyle),
-        underlineStyle = underlineStyle.merge(otherStyle.underlineStyle),
-        strikethroughStyle = strikethroughStyle.merge(otherStyle.strikethroughStyle),
-        subscriptStyle = subscriptStyle.merge(otherStyle.subscriptStyle),
-        superscriptStyle = superscriptStyle.merge(otherStyle.superscriptStyle),
-        codeStyle = codeStyle.merge(otherStyle.codeStyle),
-        linkStyle = linkStyle.merge(otherStyle.linkStyle)
+      boldStyle = boldStyle.merge(otherStyle.boldStyle),
+      italicStyle = italicStyle.merge(otherStyle.italicStyle),
+      underlineStyle = underlineStyle.merge(otherStyle.underlineStyle),
+      strikethroughStyle = strikethroughStyle.merge(otherStyle.strikethroughStyle),
+      subscriptStyle = subscriptStyle.merge(otherStyle.subscriptStyle),
+      superscriptStyle = superscriptStyle.merge(otherStyle.superscriptStyle),
+      codeStyle = codeStyle.merge(otherStyle.codeStyle),
+      linkStyle = linkStyle.merge(otherStyle.linkStyle)
     )
   }
 
   internal fun resolveDefaults(): RichTextStringStyle =
     RichTextStringStyle(
-        boldStyle = boldStyle ?: Bold.DefaultStyle,
-        italicStyle = italicStyle ?: Italic.DefaultStyle,
-        underlineStyle = underlineStyle ?: Underline.DefaultStyle,
-        strikethroughStyle = strikethroughStyle ?: Strikethrough.DefaultStyle,
-        subscriptStyle = subscriptStyle ?: Subscript.DefaultStyle,
-        superscriptStyle = superscriptStyle ?: Superscript.DefaultStyle,
-        codeStyle = codeStyle ?: Code.DefaultStyle,
-        linkStyle = linkStyle ?: Link.DefaultStyle
+      boldStyle = boldStyle ?: Bold.DefaultStyle,
+      italicStyle = italicStyle ?: Italic.DefaultStyle,
+      underlineStyle = underlineStyle ?: Underline.DefaultStyle,
+      strikethroughStyle = strikethroughStyle ?: Strikethrough.DefaultStyle,
+      subscriptStyle = subscriptStyle ?: Subscript.DefaultStyle,
+      superscriptStyle = superscriptStyle ?: Superscript.DefaultStyle,
+      codeStyle = codeStyle ?: Code.DefaultStyle,
+      linkStyle = linkStyle ?: Link.DefaultStyle
     )
 
   public companion object {
@@ -122,22 +122,22 @@ public data class RichTextString internal constructor(
       tags.forEach { range ->
         val format = Format.findTag(range.item, formatObjects) ?: return@forEach
         format.getStyle(style, contentColor)
-            ?.let { spanStyle -> addStyle(spanStyle, range.start, range.end) }
+          ?.let { spanStyle -> addStyle(spanStyle, range.start, range.end) }
       }
     }
 
   internal fun getInlineContents(): Map<String, InlineContent> =
     formatObjects.asSequence()
-        .mapNotNull { (tag, format) ->
-          tag.removePrefix("inline:")
-              // If no prefix was found then we ignore it.
-              .takeUnless { it === tag }
-              ?.let {
-                @Suppress("UNCHECKED_CAST")
-                Pair(it, format as InlineContent)
-              }
-        }
-        .toMap()
+      .mapNotNull { (tag, format) ->
+        tag.removePrefix("inline:")
+          // If no prefix was found then we ignore it.
+          .takeUnless { it === tag }
+          ?.let {
+            @Suppress("UNCHECKED_CAST")
+            Pair(it, format as InlineContent)
+          }
+      }
+      .toMap()
 
   public sealed class Format(private val simpleTag: String? = null) {
 
@@ -235,8 +235,8 @@ public data class RichTextString internal constructor(
 
       internal companion object {
         val DefaultStyle = SpanStyle(
-            textDecoration = TextDecoration.Underline,
-            color = Color.Blue
+          textDecoration = TextDecoration.Underline,
+          color = Color.Blue
         )
       }
     }

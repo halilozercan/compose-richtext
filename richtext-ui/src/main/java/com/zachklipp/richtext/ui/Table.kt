@@ -112,7 +112,8 @@ public fun RichTextScope.Table(
   val cellPadding = with(DensityAmbient.current) {
     tableStyle.cellPadding!!.toDp()
   }
-  val cellModifier = Modifier.clipToBounds()
+  val cellModifier = Modifier
+      .clipToBounds()
       .padding(cellPadding)
 
   val styledRows = remember(header, rows, cellModifier) {
@@ -199,7 +200,9 @@ private fun TablePreviewFixedWidth() {
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
   RichTextScope.Table(
-      modifier = modifier.background(Color.White).padding(4.dp),
+      modifier = modifier
+          .background(Color.White)
+          .padding(4.dp),
       headerRow = {
         cell { Text("Column 1") }
         cell { Text("Column 2") }

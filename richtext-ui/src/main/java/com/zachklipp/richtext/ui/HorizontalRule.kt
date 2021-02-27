@@ -20,9 +20,10 @@ import androidx.compose.ui.unit.dp
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp()
   }
   Box(
-      Modifier.padding(top = spacing, bottom = spacing)
-          .fillMaxWidth()
-          .height(1.dp)
-          .background(color)
+    Modifier
+      .padding(top = spacing, bottom = spacing)
+      .fillMaxWidth()
+      .height(1.dp)
+      .background(color)
   )
 }

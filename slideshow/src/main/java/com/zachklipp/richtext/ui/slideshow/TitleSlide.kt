@@ -33,7 +33,7 @@ import androidx.ui.tooling.preview.Preview
 @Preview
 @Composable private fun TitlePreview() {
   PreviewSlideScope.TitleSlide(
-      title = { Text("Title") },
-      subtitle = { Text("Subtitle") }
+    title = { Text("Title") },
+    subtitle = { Text("Subtitle") }
   )
 }

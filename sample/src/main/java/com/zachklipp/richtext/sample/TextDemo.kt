@@ -124,7 +124,9 @@ private val spinningCross = InlineContent {
     color.animateTo(Color.Yellow, colorAnim)
   }
 
-  Canvas(modifier = Modifier.size(12.sp.toDp(), 12.sp.toDp()).padding(2.dp)) {
+  Canvas(modifier = Modifier
+    .size(12.sp.toDp(), 12.sp.toDp())
+    .padding(2.dp)) {
     withTransform({ rotate(angle.value, center) }) {
       val strokeWidth = 3.dp.toPx()
       val strokeCap = Round
@@ -164,7 +166,9 @@ val slowLoadingImage = InlineContent {
       Picture(Modifier.size(size.value.sp.toDp()))
       Text(
         "click to refresh",
-        modifier = Modifier.padding(3.dp).align(Alignment.Center),
+        modifier = Modifier
+          .padding(3.dp)
+          .align(Alignment.Center),
         fontSize = 8.sp,
         style = TextStyle(background = Color.LightGray)
       )
@@ -187,7 +191,8 @@ val slowLoadingImage = InlineContent {
   Text(
     "⏳",
     fontSize = 3.em,
-    modifier = Modifier.wrapContentSize(Alignment.Center)
+    modifier = Modifier
+      .wrapContentSize(Alignment.Center)
       .drawOpacity(alpha.value)
   )
 }

@@ -48,8 +48,8 @@ public fun Markdown(
   onLinkClicked: ((String) -> Unit)? = null
 ) {
   RichText(
-      modifier = modifier,
-      style = style
+    modifier = modifier,
+    style = style
   ) {
     // Can't use UriHandlerAmbient.current::openUri here,
     // see https://issuetracker.google.com/issues/172366483
@@ -103,8 +103,8 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     }
     is AstBulletList -> {
       FormattedList(
-          listType = ListType.Unordered,
-          items = astNode.childrenSequence().toList()
+        listType = ListType.Unordered,
+        items = astNode.childrenSequence().toList()
       ) { astListItem ->
         visitChildren(astListItem)
       }
@@ -124,18 +124,18 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       Text(text = richTextString {
         appendInlineContent(content = InlineContent {
           AndroidView(
-              viewBlock = { context ->
-                // TODO: pass current styling to legacy TextView
-                TextView(context)
-              },
-              update = {
-                it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                  Html.fromHtml(astNode.literal, 0)
-                } else {
-                  @Suppress("DEPRECATION")
-                  Html.fromHtml(astNode.literal)
-                }
+            viewBlock = { context ->
+              // TODO: pass current styling to legacy TextView
+              TextView(context)
+            },
+            update = {
+              it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(astNode.literal, 0)
+              } else {
+                @Suppress("DEPRECATION")
+                Html.fromHtml(astNode.literal)
               }
+            }
           )
         })
       })
@@ -145,8 +145,8 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     }
     is AstOrderedList -> {
       FormattedList(
-          listType = ListType.Ordered,
-          items = astNode.childrenSequence().toList()
+        listType = ListType.Ordered,
+        items = astNode.childrenSequence().toList()
       ) { astListItem ->
         visitChildren(astListItem)
       }
@@ -178,17 +178,17 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
 internal fun parsedMarkdownAst(text: String): AstNode? {
   val parser = remember {
     Parser.builder()
-        .extensions(
-            listOf(
-                TablesExtension.create(),
-                StrikethroughExtension.create()
-            )
-        ).build()
+      .extensions(
+        listOf(
+          TablesExtension.create(),
+          StrikethroughExtension.create()
+        )
+      ).build()
   }
 
   val rootASTNode by produceState<AstNode?>(
-      initialValue = null,
-      source = text
+    initialValue = null,
+    source = text
   ) {
     value = convert(parser.parse(text))
   }

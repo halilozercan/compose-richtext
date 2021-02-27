@@ -38,11 +38,11 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.ui.tooling.preview.Preview
 
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
-    "RichText Demo" to @Composable { RichTextSample() },
-    "Markdown Demo" to @Composable { MarkdownSample() },
-    "Pagination" to @Composable { PagedSample() },
-    "Printable Document" to @Composable { DocumentSample() },
-    "Slideshow" to @Composable { SlideshowSample() },
+  "RichText Demo" to @Composable { RichTextSample() },
+  "Markdown Demo" to @Composable { MarkdownSample() },
+  "Pagination" to @Composable { PagedSample() },
+  "Printable Document" to @Composable { DocumentSample() },
+  "Slideshow" to @Composable { SlideshowSample() },
 )
 
 @Preview(showBackground = true)
@@ -58,7 +58,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
       BackPressedHandler(onBackPressed = { currentSampleIndex = null })
       Samples[it].second()
     }
-        ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
+      ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
   }
 }
 
@@ -66,14 +66,14 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 @Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
   MaterialTheme(colors = darkColors()) {
     Scaffold(
-        topBar = {
-          TopAppBar(title = { Text("Samples") })
-        }
+      topBar = {
+        TopAppBar(title = { Text("Samples") })
+      }
     ) {
       LazyColumnForIndexed(Samples) { index, (title, sampleContent) ->
         ListItem(
-            Modifier.clickable(onClick = { onSampleClicked(index) }),
-            icon = { SamplePreview(sampleContent) }
+          Modifier.clickable(onClick = { onSampleClicked(index) }),
+          icon = { SamplePreview(sampleContent) }
         ) {
           Text(title)
         }
@@ -84,14 +84,15 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 
 @Composable private fun SamplePreview(content: @Composable () -> Unit) {
   ScreenPreview(
-      Modifier.preferredHeight(50.dp)
-          .aspectRatio(1f)
-          .clipToBounds()
-          // "Zoom in" to the top-start corner to make the preview more legible.
-          .drawLayer(
-              scaleX = 1.5f, scaleY = 1.5f,
-              transformOrigin = TransformOrigin(0f, 0f)
-          ),
+    Modifier
+      .preferredHeight(50.dp)
+      .aspectRatio(1f)
+      .clipToBounds()
+      // "Zoom in" to the top-start corner to make the preview more legible.
+      .drawLayer(
+        scaleX = 1.5f, scaleY = 1.5f,
+        transformOrigin = TransformOrigin(0f, 0f)
+      ),
   ) {
     MaterialTheme(colors = lightColors()) {
       Surface(content = content)
@@ -103,9 +104,9 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   val context = ContextAmbient.current
   val backPressedDispatcher = remember {
     generateSequence(context) { (it as? ContextWrapper)?.baseContext }
-        .filterIsInstance<OnBackPressedDispatcherOwner>()
-        .firstOrNull()
-        ?.onBackPressedDispatcher
+      .filterIsInstance<OnBackPressedDispatcherOwner>()
+      .firstOrNull()
+      ?.onBackPressedDispatcher
   } ?: return
   val compositionLifecycleOwner: LifecycleOwner = remember(onBackPressed) {
     object : LifecycleOwner, CompositionLifecycleObserver {

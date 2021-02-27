@@ -18,7 +18,8 @@ import kotlin.coroutines.CoroutineContext
  * A [PrintDocumentAdapter] that exposes [onLayout] and [onWrite] functions as suspend functions
  * that will automatically invoke the correct callback methods.
  */
-public abstract class CoroutinePrintDocumentAdapter(context: CoroutineContext) : PrintDocumentAdapter() {
+public abstract class CoroutinePrintDocumentAdapter(context: CoroutineContext) :
+  PrintDocumentAdapter() {
 
   private val printAdapterScope = CoroutineScope(context + Job(parent = context[Job]))
 

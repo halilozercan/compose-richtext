@@ -89,87 +89,87 @@ private val LargeGap = 96.dp
   DocumentScreenContainer(printableController) {
     Column {
       ResponsiveSidebarLayout(
-          body = { Title("Your Name") },
-          columnSpacing = LargeGap,
-          verticalSpacing = 16.dp,
-          sidebar = {
-            ContactInfo(
-                "123 Your Street\n" +
-                    "Your City, ST 12345",
-                "(123) 456-7890\n" +
-                    "no_reply@example.com"
-            ) {
-              val uriHandler = UriHandlerAmbient.current
-              TextButton(onClick = { uriHandler.openUri("tel:1234567890") }) {
-                Icon(Icons.Outlined.Phone)
-              }
-              TextButton(onClick = { uriHandler.openUri("mailto:no_reply@example.com") }) {
-                Icon(Icons.Outlined.Email)
-              }
+        body = { Title("Your Name") },
+        columnSpacing = LargeGap,
+        verticalSpacing = 16.dp,
+        sidebar = {
+          ContactInfo(
+            "123 Your Street\n" +
+                "Your City, ST 12345",
+            "(123) 456-7890\n" +
+                "no_reply@example.com"
+          ) {
+            val uriHandler = UriHandlerAmbient.current
+            TextButton(onClick = { uriHandler.openUri("tel:1234567890") }) {
+              Icon(Icons.Outlined.Phone)
+            }
+            TextButton(onClick = { uriHandler.openUri("mailto:no_reply@example.com") }) {
+              Icon(Icons.Outlined.Email)
             }
           }
+        }
       )
       Spacer(Modifier.size(12.dp))
 
       ResponsiveSidebarLayout(
-          body = {
-            Section("Experience") {
-              LargeBlurb(
-                  "Company", "Location", "Job Title",
-                  "MONTH 20XX – PRESENT",
-                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh."
-              )
-              BulletBlurb(
-                  "Company", "Location", "Job Title",
-                  "MONTH 20XX – PRESENT",
-                  "Lorem ipsum dolor sit amet",
-                  "Consectetuer adipiscing elit",
-                  "Sed diam nonummy nibh."
-              )
-              LargeBlurb(
-                  "Company", "Location", "Job Title",
-                  "MONTH 20XX – PRESENT",
-                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh."
-              )
-            }
-
-            Section("Education") {
-              LargeBlurb(
-                  "School Name", "Location", "Degree",
-                  "MONTH 20XX – MONTH 20XX",
-                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh."
-              )
-            }
-          },
-          columnSpacing = LargeGap,
-          sidebar = {
-            Section("Skills", verticalArrangement = spacedBy(8.dp)) {
-              Text("Lorem ipsum dolor sit amet.")
-              Text("Consectetuer adipiscing elit.")
-              Text("Sed diam nonummy nibh euismod tincidunt.")
-              Text("Laoreet dolore magna aliquam erat volutpat.")
-            }
-
-            Section("Awards", verticalArrangement = spacedBy(8.dp)) {
-              LinkBlurb(
-                  "Lorem ipsum dolor sit amet Consectetuer adipiscing elit, Sed diam nonummy",
-                  "https://example.com"
-              )
-            }
+        body = {
+          Section("Experience") {
+            LargeBlurb(
+              "Company", "Location", "Job Title",
+              "MONTH 20XX – PRESENT",
+              "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh."
+            )
+            BulletBlurb(
+              "Company", "Location", "Job Title",
+              "MONTH 20XX – PRESENT",
+              "Lorem ipsum dolor sit amet",
+              "Consectetuer adipiscing elit",
+              "Sed diam nonummy nibh."
+            )
+            LargeBlurb(
+              "Company", "Location", "Job Title",
+              "MONTH 20XX – PRESENT",
+              "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh."
+            )
           }
+
+          Section("Education") {
+            LargeBlurb(
+              "School Name", "Location", "Degree",
+              "MONTH 20XX – MONTH 20XX",
+              "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh."
+            )
+          }
+        },
+        columnSpacing = LargeGap,
+        sidebar = {
+          Section("Skills", verticalArrangement = spacedBy(8.dp)) {
+            Text("Lorem ipsum dolor sit amet.")
+            Text("Consectetuer adipiscing elit.")
+            Text("Sed diam nonummy nibh euismod tincidunt.")
+            Text("Laoreet dolore magna aliquam erat volutpat.")
+          }
+
+          Section("Awards", verticalArrangement = spacedBy(8.dp)) {
+            LinkBlurb(
+              "Lorem ipsum dolor sit amet Consectetuer adipiscing elit, Sed diam nonummy",
+              "https://example.com"
+            )
+          }
+        }
       )
 
       val sourceUrl = "https://github.com/zach-klippenstein/compose-richtext"
       Footer(
-          if (isBeingPrinted) {
-            "This document was built and printed with Compose. It is also available as an app."
-          } else {
-            "This document was built with Compose."
-          } + "\nThe source code is available at $sourceUrl",
-          sourceUrl,
-          onPrintClicked = {
-            printableController.print("Compose Document")
-          }
+        if (isBeingPrinted) {
+          "This document was built and printed with Compose. It is also available as an app."
+        } else {
+          "This document was built with Compose."
+        } + "\nThe source code is available at $sourceUrl",
+        sourceUrl,
+        onPrintClicked = {
+          printableController.print("Compose Document")
+        }
       )
     }
   }
@@ -186,18 +186,18 @@ private val LargeGap = 96.dp
 ) {
   ScrollableColumn {
     Printable(
-        printableController,
-        pageDpi = 96,
-        modifier = Modifier.responsivePadding(
-            600.dp to 32.dp,
-            Dp.Infinity to LargeGap
-        )
+      printableController,
+      pageDpi = 96,
+      modifier = Modifier.responsivePadding(
+        600.dp to 32.dp,
+        Dp.Infinity to LargeGap
+      )
     ) {
       MaterialTheme(
-          colors = lightColors(
-              primary = Color.Black,
-              secondary = Color(0x20, 0x79, 0xc7)
-          )
+        colors = lightColors(
+          primary = Color.Black,
+          secondary = Color(0x20, 0x79, 0xc7)
+        )
       ) {
         content()
       }
@@ -207,10 +207,10 @@ private val LargeGap = 96.dp
 
 @Composable private fun Title(text: String) {
   Text(
-      text,
-      style = MaterialTheme.typography.h3,
-      fontFamily = FontFamily.Serif,
-      fontWeight = Bold
+    text,
+    style = MaterialTheme.typography.h3,
+    fontFamily = FontFamily.Serif,
+    fontWeight = Bold
   )
 }
 
@@ -249,17 +249,17 @@ private val LargeGap = 96.dp
 
   Column(verticalArrangement = verticalArrangement) {
     Text(
-        uppercaseTitle,
-        color = Color(0x20, 0x79, 0xc7),
-        fontWeight = Bold,
-        style = MaterialTheme.typography.caption,
-        modifier = Modifier
-            .keepOnPageWithNext()
-            .padding(top = 32.dp, bottom = 8.dp)
+      uppercaseTitle,
+      color = Color(0x20, 0x79, 0xc7),
+      fontWeight = Bold,
+      style = MaterialTheme.typography.caption,
+      modifier = Modifier
+        .keepOnPageWithNext()
+        .padding(top = 32.dp, bottom = 8.dp)
     )
     ProvideTextStyle(
-        value = TextStyle(fontFamily = FontFamily.Serif),
-        children = content
+      value = TextStyle(fontFamily = FontFamily.Serif),
+      children = content
     )
   }
 }
@@ -309,37 +309,37 @@ private val LargeGap = 96.dp
 ) {
   Column(Modifier.padding(top = 16.dp, bottom = 12.dp)) {
     Text(
-        annotatedString {
-          withStyle(SpanStyle(fontSize = 20.sp)) {
-            withStyle(SpanStyle(fontWeight = Bold)) {
-              append(organization.withHardSpaces())
-              if (location.isNotBlank()) {
-                append(",")
-              }
-            }
-
+      annotatedString {
+        withStyle(SpanStyle(fontSize = 20.sp)) {
+          withStyle(SpanStyle(fontWeight = Bold)) {
+            append(organization.withHardSpaces())
             if (location.isNotBlank()) {
-              append(" ${location.withHardSpaces()}")
-            }
-            append(" — ")
-            withStyle(SpanStyle(fontStyle = Italic)) {
-              append(title.withHardSpaces())
+              append(",")
             }
           }
-        },
-        modifier = Modifier.keepOnPageWithNext()
+
+          if (location.isNotBlank()) {
+            append(" ${location.withHardSpaces()}")
+          }
+          append(" — ")
+          withStyle(SpanStyle(fontStyle = Italic)) {
+            append(title.withHardSpaces())
+          }
+        }
+      },
+      modifier = Modifier.keepOnPageWithNext()
     )
 
     if (duration.isNotBlank()) {
       Text(
-          modifier = Modifier
-              .keepOnPageWithNext()
-              .padding(top = 4.dp, bottom = 6.dp),
-          fontFamily = FontFamily.SansSerif,
-          color = Color.Gray,
-          fontSize = 10.sp,
-          lineHeight = 3.sp,
-          text = duration
+        modifier = Modifier
+          .keepOnPageWithNext()
+          .padding(top = 4.dp, bottom = 6.dp),
+        fontFamily = FontFamily.SansSerif,
+        color = Color.Gray,
+        fontSize = 10.sp,
+        lineHeight = 3.sp,
+        text = duration
       )
     }
 
@@ -359,19 +359,19 @@ private val LargeGap = 96.dp
     Column {
       Text(text)
       Text(
-          url.substringAfter("://"),
-          fontFamily = FontFamily.SansSerif,
-          color = Color.Gray,
-          fontSize = 12.sp,
-          modifier = Modifier.padding(bottom = 8.dp)
+        url.substringAfter("://"),
+        fontFamily = FontFamily.SansSerif,
+        color = Color.Gray,
+        fontSize = 12.sp,
+        modifier = Modifier.padding(bottom = 8.dp)
       )
     }
   } else {
     val uriHandler = UriHandlerAmbient.current
     Text(
-        text,
-        textDecoration = Underline,
-        modifier = Modifier.clickable(onClick = { uriHandler.openUri(url) })
+      text,
+      textDecoration = Underline,
+      modifier = Modifier.clickable(onClick = { uriHandler.openUri(url) })
     )
   }
 }
@@ -384,46 +384,49 @@ private val LargeGap = 96.dp
   val uriHandler = UriHandlerAmbient.current
 
   Row(
-      modifier = Modifier
-          .padding(top = 16.dp)
-          .fillMaxWidth()
-          .wrapContentWidth(),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = SpaceAround
+    modifier = Modifier
+      .padding(top = 16.dp)
+      .fillMaxWidth()
+      .wrapContentWidth(),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = SpaceAround
   ) {
     Text(
-        annotatedString {
-          val displayUri = uri.indexOf("://").takeIf { it > -1 }
-              ?.let { uri.substring(it + 3) }
-              ?: uri
-          val displayText = text.replace(uri, displayUri)
+      annotatedString {
+        val displayUri = uri.indexOf("://").takeIf { it > -1 }
+          ?.let { uri.substring(it + 3) }
+          ?: uri
+        val displayText = text.replace(uri, displayUri)
 
-          append(displayText)
+        append(displayText)
 
-          // Make the URI look clickable if it appears in the display text, and we're in interactive
-          // mode.
-          if (!isBeingPrinted) {
-            val uriIndex = displayText.indexOf(displayUri)
-            if (uriIndex > -1) {
-              addStyle(
-                  SpanStyle(textDecoration = Underline),
-                  uriIndex, uriIndex + displayUri.length
-              )
-            }
+        // Make the URI look clickable if it appears in the display text, and we're in interactive
+        // mode.
+        if (!isBeingPrinted) {
+          val uriIndex = displayText.indexOf(displayUri)
+          if (uriIndex > -1) {
+            addStyle(
+              SpanStyle(textDecoration = Underline),
+              uriIndex, uriIndex + displayUri.length
+            )
           }
-        },
-        modifier = Modifier
-            .clickable(onClick = { uriHandler.openUri(uri) })
-            .weight(1f)
-            .padding(vertical = 16.dp),
-        textAlign = TextAlign.Center,
-        fontSize = 9.sp,
-        color = Color.Gray
+        }
+      },
+      modifier = Modifier
+        .clickable(onClick = { uriHandler.openUri(uri) })
+        .weight(1f)
+        .padding(vertical = 16.dp),
+      textAlign = TextAlign.Center,
+      fontSize = 9.sp,
+      color = Color.Gray
     )
-    Spacer(Modifier.size(4.dp).hideWhenPrinting())
+    Spacer(
+      Modifier
+        .size(4.dp)
+        .hideWhenPrinting())
     OutlinedButton(
-        modifier = Modifier.hideWhenPrinting(),
-        onClick = onPrintClicked
+      modifier = Modifier.hideWhenPrinting(),
+      onClick = onPrintClicked
     ) {
       Icon(Icons.Outlined.Print, Modifier.size(16.dp))
     }
@@ -448,10 +451,10 @@ private val LargeGap = 96.dp
   sidebar: @Composable ColumnScope.() -> Unit,
 ) {
   Layout(
-      children = {
-        Column(children = body)
-        Column(children = sidebar)
-      }
+    children = {
+      Column(children = body)
+      Column(children = sidebar)
+    }
   ) { measurables, constraints ->
     val widthWithoutSpace =
       constraints.constrainWidth(constraints.maxWidth - columnSpacing.toIntPx())
@@ -479,19 +482,19 @@ private val LargeGap = 96.dp
     val sidebarPlaceable = sidebarMeasurable.measure(sidebarConstraints)
 
     val width = constraints.constrainWidth(
-        if (isSideBySide) {
-          // Force full width.
-          bodySideBySideWidth.toInt() + columnSpacing.toIntPx() + sidebarSideBySideWidth.toInt()
-        } else {
-          max(bodyPlaceable.width, sidebarPlaceable.width)
-        }
+      if (isSideBySide) {
+        // Force full width.
+        bodySideBySideWidth.toInt() + columnSpacing.toIntPx() + sidebarSideBySideWidth.toInt()
+      } else {
+        max(bodyPlaceable.width, sidebarPlaceable.width)
+      }
     )
     val height = constraints.constrainHeight(
-        if (isSideBySide) {
-          max(bodyPlaceable.height, sidebarPlaceable.height)
-        } else {
-          bodyPlaceable.height + sidebarPlaceable.height
-        }
+      if (isSideBySide) {
+        max(bodyPlaceable.height, sidebarPlaceable.height)
+      } else {
+        bodyPlaceable.height + sidebarPlaceable.height
+      }
     )
 
     layout(width, height) {
