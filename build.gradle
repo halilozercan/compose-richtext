@@ -95,12 +95,12 @@ buildscript {
     classpath deps.kotlin.gradlePlugin
     classpath deps.ktlint
     classpath deps.mavenPublish
-    classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.4.10.2"
+    classpath "org.jetbrains.dokka:dokka-gradle-plugin:1.4.20"
   }
 }
 
 plugins {
-  id('org.jetbrains.dokka') version '1.4.10.2'
+  id('org.jetbrains.dokka') version '1.4.20'
 }
 
 repositories {
