@@ -3,15 +3,14 @@ public abstract interface class com/zachklipp/richtext/ui/BlockQuoteGutter {
 }
 
 public final class com/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter : com/zachklipp/richtext/ui/BlockQuoteGutter {
-	public fun <init> ()V
 	public synthetic fun <init> (JJJLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JJJLkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-XSAIIZE ()J
 	public final fun component2-XSAIIZE ()J
 	public final fun component3-XSAIIZE ()J
 	public final fun component4 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy-kBY0Dtg (JJJLkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
-	public static synthetic fun copy-kBY0Dtg$default (Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;JJJLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
+	public final fun copy-mDbLjjM (JJJLkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
+	public static synthetic fun copy-mDbLjjM$default (Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;JJJLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
 	public fun drawGutter (Landroidx/compose/runtime/Composer;I)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBarWidth-XSAIIZE ()J
@@ -40,14 +39,13 @@ public final class com/zachklipp/richtext/ui/CodeBlockKt {
 
 public final class com/zachklipp/richtext/ui/CodeBlockStyle {
 	public static final field Companion Lcom/zachklipp/richtext/ui/CodeBlockStyle$Companion;
-	public fun <init> ()V
 	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Landroidx/compose/ui/text/TextStyle;
 	public final fun component2-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public final fun component3-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
-	public final fun copy-HTrtAO0 (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;)Lcom/zachklipp/richtext/ui/CodeBlockStyle;
-	public static synthetic fun copy-HTrtAO0$default (Lcom/zachklipp/richtext/ui/CodeBlockStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+	public final fun copy-pvDJ3Jw (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;)Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+	public static synthetic fun copy-pvDJ3Jw$default (Lcom/zachklipp/richtext/ui/CodeBlockStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/unit/TextUnit;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/CodeBlockStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBackground-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public final fun getPadding-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
@@ -58,6 +56,41 @@ public final class com/zachklipp/richtext/ui/CodeBlockStyle {
 
 public final class com/zachklipp/richtext/ui/CodeBlockStyle$Companion {
 	public final fun getDefault ()Lcom/zachklipp/richtext/ui/CodeBlockStyle;
+}
+
+public final class com/zachklipp/richtext/ui/ComposableSingletons$BlockQuoteKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$BlockQuoteKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function3;
+	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-2$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/zachklipp/richtext/ui/ComposableSingletons$FormattedListKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$FormattedListKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function4;
+	public fun <init> ()V
+	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function4;
+}
+
+public final class com/zachklipp/richtext/ui/ComposableSingletons$TableKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$TableKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function3;
+	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+	public static field lambda-3 Lkotlin/jvm/functions/Function3;
+	public static field lambda-4 Lkotlin/jvm/functions/Function3;
+	public static field lambda-5 Lkotlin/jvm/functions/Function3;
+	public static field lambda-6 Lkotlin/jvm/functions/Function3;
+	public static field lambda-7 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-2$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-3$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-4$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-5$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-6$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda-7$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
 }
 
 public final class com/zachklipp/richtext/ui/FormattedListKt {
@@ -76,15 +109,14 @@ public final class com/zachklipp/richtext/ui/HorizontalRuleKt {
 
 public final class com/zachklipp/richtext/ui/ListStyle {
 	public static final field Companion Lcom/zachklipp/richtext/ui/ListStyle$Companion;
-	public fun <init> ()V
 	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
 	public final fun component2-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
 	public final fun component3 ()Lcom/zachklipp/richtext/ui/OrderedMarkers;
 	public final fun component4 ()Lcom/zachklipp/richtext/ui/UnorderedMarkers;
-	public final fun copy-xBlEmKg (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;)Lcom/zachklipp/richtext/ui/ListStyle;
-	public static synthetic fun copy-xBlEmKg$default (Lcom/zachklipp/richtext/ui/ListStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/ListStyle;
+	public final fun copy-iXsHpI0 (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;)Lcom/zachklipp/richtext/ui/ListStyle;
+	public static synthetic fun copy-iXsHpI0$default (Lcom/zachklipp/richtext/ui/ListStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/ListStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContentsIndent-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
 	public final fun getMarkerIndent-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
@@ -101,8 +133,8 @@ public final class com/zachklipp/richtext/ui/ListStyle$Companion {
 public final class com/zachklipp/richtext/ui/ListType : java/lang/Enum {
 	public static final field Ordered Lcom/zachklipp/richtext/ui/ListType;
 	public static final field Unordered Lcom/zachklipp/richtext/ui/ListType;
-	public static final fun valueOf (Ljava/lang/String;)Lcom/zachklipp/richtext/ui/ListType;
-	public static final fun values ()[Lcom/zachklipp/richtext/ui/ListType;
+	public static fun valueOf (Ljava/lang/String;)Lcom/zachklipp/richtext/ui/ListType;
+	public static fun values ()[Lcom/zachklipp/richtext/ui/ListType;
 }
 
 public abstract interface class com/zachklipp/richtext/ui/OrderedMarkers {
@@ -130,7 +162,6 @@ public final class com/zachklipp/richtext/ui/RichTextScopeKt {
 
 public final class com/zachklipp/richtext/ui/RichTextStyle {
 	public static final field Companion Lcom/zachklipp/richtext/ui/RichTextStyle$Companion;
-	public fun <init> ()V
 	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
@@ -140,8 +171,8 @@ public final class com/zachklipp/richtext/ui/RichTextStyle {
 	public final fun component5 ()Lcom/zachklipp/richtext/ui/CodeBlockStyle;
 	public final fun component6 ()Lcom/zachklipp/richtext/ui/TableStyle;
 	public final fun component7 ()Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;
-	public final fun copy-9TGyfEQ (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
-	public static synthetic fun copy-9TGyfEQ$default (Lcom/zachklipp/richtext/ui/RichTextStyle;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/RichTextStyle;
+	public final fun copy-rSDT1DU (Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
+	public static synthetic fun copy-rSDT1DU$default (Lcom/zachklipp/richtext/ui/RichTextStyle;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function2;Lcom/zachklipp/richtext/ui/ListStyle;Lcom/zachklipp/richtext/ui/BlockQuoteGutter;Lcom/zachklipp/richtext/ui/CodeBlockStyle;Lcom/zachklipp/richtext/ui/TableStyle;Lcom/zachklipp/richtext/ui/string/RichTextStringStyle;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/RichTextStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlockQuoteGutter ()Lcom/zachklipp/richtext/ui/BlockQuoteGutter;
 	public final fun getCodeBlockStyle ()Lcom/zachklipp/richtext/ui/CodeBlockStyle;
@@ -177,15 +208,14 @@ public final class com/zachklipp/richtext/ui/TableKt {
 
 public final class com/zachklipp/richtext/ui/TableStyle {
 	public static final field Companion Lcom/zachklipp/richtext/ui/TableStyle$Companion;
-	public fun <init> ()V
 	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Landroidx/compose/ui/text/TextStyle;
 	public final fun component2-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
 	public final fun component3-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public final fun component4 ()Ljava/lang/Float;
-	public final fun copy-9o9B-1o (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;)Lcom/zachklipp/richtext/ui/TableStyle;
-	public static synthetic fun copy-9o9B-1o$default (Lcom/zachklipp/richtext/ui/TableStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/TableStyle;
+	public final fun copy-gowntrk (Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;)Lcom/zachklipp/richtext/ui/TableStyle;
+	public static synthetic fun copy-gowntrk$default (Lcom/zachklipp/richtext/ui/TableStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/graphics/Color;Ljava/lang/Float;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/TableStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBorderColor-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public final fun getBorderStrokeWidth ()Ljava/lang/Float;
@@ -210,7 +240,15 @@ public final class com/zachklipp/richtext/ui/UnorderedMarkers$Companion {
 	public final fun text ([Ljava/lang/String;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
 }
 
+public final class com/zachklipp/richtext/ui/string/ComposableSingletons$TextKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/ComposableSingletons$TextKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function3;
+	public fun <init> ()V
+	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
+}
+
 public final class com/zachklipp/richtext/ui/string/InlineContent {
+	public static final field $stable I
 	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
@@ -227,6 +265,7 @@ public final class com/zachklipp/richtext/ui/string/RichTextString {
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Builder {
+	public static final field $stable I
 	public fun <init> ()V
 	public fun <init> (I)V
 	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -243,23 +282,28 @@ public final class com/zachklipp/richtext/ui/string/RichTextString$Builder {
 }
 
 public abstract class com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Companion;
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Bold : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Bold;
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Code : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Code;
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Italic : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Italic;
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Link : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Link$Companion;
 	public fun <init> (Lkotlin/jvm/functions/Function0;)V
 	public final fun component1 ()Lkotlin/jvm/functions/Function0;
@@ -272,18 +316,22 @@ public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Link :
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Strikethrough : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Strikethrough;
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Subscript : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Subscript;
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Superscript : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Superscript;
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString$Format$Underline : com/zachklipp/richtext/ui/string/RichTextString$Format {
+	public static final field $stable I
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Underline;
 }
 

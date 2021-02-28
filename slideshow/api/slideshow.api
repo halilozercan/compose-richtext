@@ -11,6 +11,26 @@ public final class com/zachklipp/richtext/ui/slideshow/BodySlideKt {
 	public static final fun SlideNumberFooter (Lcom/zachklipp/richtext/ui/slideshow/SlideScope;Landroidx/compose/runtime/Composer;I)V
 }
 
+public final class com/zachklipp/richtext/ui/slideshow/ComposableSingletons$BodySlideKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/slideshow/ComposableSingletons$BodySlideKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function2;
+	public static field lambda-3 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$slideshow_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$slideshow_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-3$slideshow_release ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/zachklipp/richtext/ui/slideshow/ComposableSingletons$TitleSlideKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/slideshow/ComposableSingletons$TitleSlideKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$slideshow_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$slideshow_release ()Lkotlin/jvm/functions/Function2;
+}
+
 public final class com/zachklipp/richtext/ui/slideshow/NavigableContentKt {
 	public static final fun NavigableContentContainer (Lcom/zachklipp/richtext/ui/slideshow/SlideScope;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
 }
@@ -26,6 +46,7 @@ public abstract interface class com/zachklipp/richtext/ui/slideshow/SlideScope {
 }
 
 public final class com/zachklipp/richtext/ui/slideshow/SlideshowController {
+	public static final field $stable I
 	public fun <init> ()V
 	public final fun getCurrentSlide ()I
 	public final fun getShowingScrubber ()Z
@@ -39,7 +60,6 @@ public final class com/zachklipp/richtext/ui/slideshow/SlideshowKt {
 }
 
 public final class com/zachklipp/richtext/ui/slideshow/SlideshowTheme {
-	public fun <init> ()V
 	public synthetic fun <init> (JJLandroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;FFILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (JJLandroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;FFLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-0d7_KjU ()J
@@ -51,8 +71,8 @@ public final class com/zachklipp/richtext/ui/slideshow/SlideshowTheme {
 	public final fun component7 ()Landroidx/compose/ui/text/TextStyle;
 	public final fun component8-D9Ej5fM ()F
 	public final fun component9 ()F
-	public final fun copy-lah4kgw (JJLandroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;FF)Lcom/zachklipp/richtext/ui/slideshow/SlideshowTheme;
-	public static synthetic fun copy-lah4kgw$default (Lcom/zachklipp/richtext/ui/slideshow/SlideshowTheme;JJLandroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;FFILjava/lang/Object;)Lcom/zachklipp/richtext/ui/slideshow/SlideshowTheme;
+	public final fun copy-U3OnZMk (JJLandroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;FF)Lcom/zachklipp/richtext/ui/slideshow/SlideshowTheme;
+	public static synthetic fun copy-U3OnZMk$default (Lcom/zachklipp/richtext/ui/slideshow/SlideshowTheme;JJLandroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;Landroidx/compose/ui/text/TextStyle;FFILjava/lang/Object;)Lcom/zachklipp/richtext/ui/slideshow/SlideshowTheme;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAspectRatio ()F
 	public final fun getBackgroundColor-0d7_KjU ()J
@@ -68,7 +88,7 @@ public final class com/zachklipp/richtext/ui/slideshow/SlideshowTheme {
 }
 
 public final class com/zachklipp/richtext/ui/slideshow/SlideshowThemeKt {
-	public static final fun getSlideshowThemeAmbient ()Landroidx/compose/runtime/ProvidableAmbient;
+	public static final fun getSlideshowThemeAmbient ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 }
 
 public final class com/zachklipp/richtext/ui/slideshow/TitleSlideKt {

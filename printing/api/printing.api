@@ -5,7 +5,24 @@ public final class com/zachklipp/richtext/printing/BuildConfig {
 	public fun <init> ()V
 }
 
+public final class com/zachklipp/richtext/ui/printing/ComposableSingletons$ComposePdfRendererKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/printing/ComposableSingletons$ComposePdfRendererKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$printing_release ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/zachklipp/richtext/ui/printing/ComposableSingletons$PagedKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/printing/ComposableSingletons$PagedKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$printing_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$printing_release ()Lkotlin/jvm/functions/Function2;
+}
+
 public final class com/zachklipp/richtext/ui/printing/ComposePrintAdapter : com/zachklipp/richtext/ui/printing/CoroutinePrintDocumentAdapter {
+	public static final field $stable I
 	public fun <init> (Landroidx/activity/ComponentActivity;Ljava/lang/String;Landroidx/compose/ui/Modifier;IZLkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function2;)V
 	public synthetic fun <init> (Landroidx/activity/ComponentActivity;Ljava/lang/String;Landroidx/compose/ui/Modifier;IZLkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun onLayout (Landroid/print/PrintAttributes;Landroid/print/PrintAttributes;Landroid/os/Bundle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -13,6 +30,7 @@ public final class com/zachklipp/richtext/ui/printing/ComposePrintAdapter : com/
 }
 
 public abstract class com/zachklipp/richtext/ui/printing/CoroutinePrintDocumentAdapter : android/print/PrintDocumentAdapter {
+	public static final field $stable I
 	public fun <init> (Lkotlin/coroutines/CoroutineContext;)V
 	public fun onFinish ()V
 	public abstract fun onLayout (Landroid/print/PrintAttributes;Landroid/print/PrintAttributes;Landroid/os/Bundle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -53,6 +71,7 @@ public final class com/zachklipp/richtext/ui/printing/PagedKt {
 }
 
 public abstract class com/zachklipp/richtext/ui/printing/PrintableController {
+	public static final field $stable I
 	public fun <init> ()V
 	protected abstract fun doPrint (Ljava/lang/String;Ljava/lang/String;Landroidx/compose/ui/Modifier;IZLkotlin/jvm/functions/Function2;)V
 	public final fun print (Ljava/lang/String;Ljava/lang/String;)V
