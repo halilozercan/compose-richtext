@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.DisableSelection
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -48,7 +47,7 @@ public enum class ListType {
  * These are typically some sort of ordinal text.
  */
 public interface OrderedMarkers {
-  @Composable public fun drawMarker(
+  @Composable public fun RichTextScope.drawMarker(
     level: Int,
     index: Int
   )
@@ -60,7 +59,7 @@ public interface OrderedMarkers {
      */
     public fun text(vararg markers: (index: Int) -> String): OrderedMarkers =
       OrderedMarkers { level, index ->
-        Text(markers[level % markers.size](index))
+        BasicText(markers[level % markers.size](index))
       }
 
     /**
@@ -68,9 +67,9 @@ public interface OrderedMarkers {
      * the index.
      */
     public operator fun invoke(
-      drawMarker: @Composable (level: Int, index: Int) -> Unit
+      drawMarker: @Composable RichTextScope.(level: Int, index: Int) -> Unit
     ): OrderedMarkers = object : OrderedMarkers {
-      @Composable override fun drawMarker(
+      @Composable override fun RichTextScope.drawMarker(
         level: Int,
         index: Int
       ) {
@@ -86,7 +85,7 @@ public interface OrderedMarkers {
  * These are typically some sort of bullet point.
  */
 public interface UnorderedMarkers {
-  @Composable public fun drawMarker(level: Int)
+  @Composable public fun RichTextScope.drawMarker(level: Int)
 
   public companion object {
     /**
@@ -94,7 +93,7 @@ public interface UnorderedMarkers {
      * indentation level.
      */
     public fun text(vararg markers: String): UnorderedMarkers = UnorderedMarkers {
-      Text(markers[it % markers.size])
+      BasicText(markers[it % markers.size])
     }
 
     /**
@@ -108,9 +107,11 @@ public interface UnorderedMarkers {
     /**
      * Creates an [UnorderedMarkers] from an arbitrary composable given the indentation level.
      */
-    public operator fun invoke(drawMarker: @Composable (level: Int) -> Unit): UnorderedMarkers =
+    public operator fun invoke(
+      drawMarker: @Composable RichTextScope.(level: Int) -> Unit
+    ): UnorderedMarkers =
       object : UnorderedMarkers {
-        @Composable override fun drawMarker(level: Int) = drawMarker(level)
+        @Composable override fun RichTextScope.drawMarker(level: Int) = drawMarker(level)
       }
   }
 }
@@ -156,13 +157,13 @@ internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
   unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
 
-private val ListLevelAmbient = compositionLocalOf { 0 }
+private val LocalListLevel = compositionLocalOf { 0 }
 
 /**
- * Composes [children] with their [ListLevelAmbient] reset back to 0.
+ * Composes [children] with their [LocalListLevel] reset back to 0.
  */
 @Composable internal fun RestartListLevel(children: @Composable () -> Unit) {
-  CompositionLocalProvider(ListLevelAmbient provides 0) {
+  CompositionLocalProvider(LocalListLevel provides 0) {
     children()
   }
 }
@@ -195,20 +196,20 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
   val density = LocalDensity.current
   val markerIndent = with(density) { listStyle.markerIndent!!.toDp() }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
-  val currentLevel = ListLevelAmbient.current
+  val currentLevel = LocalListLevel.current
 
   PrefixListLayout(
     count = items.size,
     prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
     prefixForIndex = { index ->
       when (listType) {
-        Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
-        Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
+        Ordered -> with(listStyle.orderedMarkers!!) { drawMarker(currentLevel, index) }
+        Unordered -> with(listStyle.unorderedMarkers!!) { drawMarker(currentLevel) }
       }
     },
     itemForIndex = { index ->
-      RichText {
-        CompositionLocalProvider(ListLevelAmbient provides currentLevel + 1) {
+      BasicRichText {
+        CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
       }
@@ -216,11 +217,11 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
   )
 }
 
-@Composable private fun PrefixListLayout(
+@Composable private fun RichTextScope.PrefixListLayout(
   count: Int,
   prefixPadding: PaddingValues,
-  prefixForIndex: @Composable (index: Int) -> Unit,
-  itemForIndex: @Composable (index: Int) -> Unit
+  prefixForIndex: @Composable RichTextScope.(index: Int) -> Unit,
+  itemForIndex: @Composable RichTextScope.(index: Int) -> Unit
 ) {
   Layout(content = {
     // List markers aren't selectable.
@@ -333,14 +334,14 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
         ).withIndex()
           .toList()
       ) { (index, text) ->
-        Text(text)
+        BasicText(text)
         if (index == 0) {
           FormattedList(listType, @Composable() {
-            Text("indented $text")
+            BasicText("indented $text")
             FormattedList(listType, @Composable() {
-              Text("indented $text")
+              BasicText("indented $text")
               FormattedList(listType, @Composable() {
-                Text("indented $text")
+                BasicText("indented $text")
               })
             })
           })

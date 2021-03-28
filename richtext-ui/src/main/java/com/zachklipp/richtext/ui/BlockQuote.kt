@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -73,7 +71,7 @@ public interface BlockQuoteGutter {
 
   Layout(content = {
     gutter.drawGutter()
-    RichText(
+    BasicRichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),
       children = children
     )
@@ -110,24 +108,24 @@ public interface BlockQuoteGutter {
 }
 
 @Preview @Composable private fun BlockQuotePreviewOnWhite() {
-  BlockQuotePreview(backgroundColor = Color.White, contentColor = Color.Black)
+  BlockQuotePreview(backgroundColor = Color.White, textColor = Color.Black)
 }
 
 @Preview @Composable private fun BlockQuotePreviewOnBlack() {
-  BlockQuotePreview(backgroundColor = Color.Black, contentColor = Color.White)
+  BlockQuotePreview(backgroundColor = Color.Black, textColor = Color.White)
 }
 
 @Composable private fun BlockQuotePreview(
   backgroundColor: Color,
-  contentColor: Color
+  textColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  CompositionLocalProvider(LocalContentColor provides textColor) {
     Box(Modifier.background(backgroundColor)) {
       RichTextScope.BlockQuote {
-        Text("Some text.")
-        Text("Another paragraph.")
+        BasicText("Some text.")
+        BasicText("Another paragraph.")
         BlockQuote {
-          Text("Nested block quote.")
+          BasicText("Nested block quote.")
         }
       }
     }

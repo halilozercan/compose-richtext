@@ -4,23 +4,31 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.darkColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FormatAlignCenter
+import androidx.compose.material.icons.filled.FormatAlignLeft
+import androidx.compose.material.icons.filled.FormatAlignRight
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +44,7 @@ import com.zachklipp.richtext.ui.resolveDefaults
 @Composable fun RichTextSample() {
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
+  var alignment by remember { mutableStateOf(Alignment.Start) }
 
   val colors = if (isDarkModeEnabled) darkColors() else lightColors()
 
@@ -57,17 +66,29 @@ import com.zachklipp.richtext.ui.resolveDefaults
 
                 )
               Text("Dark Mode")
+
+              Spacer(modifier = Modifier.weight(1f))
+
+              IconButton(onClick = { alignment = Alignment.Start }) {
+                Icon(Icons.Default.FormatAlignLeft, contentDescription = "Align Start")
+              }
+              IconButton(onClick = { alignment = Alignment.CenterHorizontally }) {
+                Icon(Icons.Default.FormatAlignCenter, contentDescription = "Align Center")
+              }
+              IconButton(onClick = { alignment = Alignment.End }) {
+                Icon(Icons.Default.FormatAlignRight, contentDescription = "Align End")
+              }
             }
             RichTextStyleConfig(
               richTextStyle = richTextStyle,
-              onChanged = { richTextStyle = it }
+              onChanged = { richTextStyle = it },
             )
           }
         }
 
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
-            RichTextDemo(style = richTextStyle)
+            RichTextDemo(style = richTextStyle, alignment = alignment)
           }
         }
       }

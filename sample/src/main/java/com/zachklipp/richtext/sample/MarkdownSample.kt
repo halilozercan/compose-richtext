@@ -17,16 +17,20 @@ import androidx.compose.material.Text
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zachklipp.richtext.markdown.Markdown
 import com.zachklipp.richtext.ui.RichTextStyle
+import com.zachklipp.richtext.ui.material.RichText
 import com.zachklipp.richtext.ui.resolveDefaults
 
 @Preview
@@ -40,6 +44,14 @@ import com.zachklipp.richtext.ui.resolveDefaults
 
   val colors = if (isDarkModeEnabled) darkColors() else lightColors()
   val context = LocalContext.current
+
+  val sampleUriHandler = remember(context) {
+    object: UriHandler {
+      override fun openUri(uri: String) {
+        Toast.makeText(context, uri, Toast.LENGTH_SHORT).show()
+      }
+    }
+  }
 
   MaterialTheme(colors = colors) {
     Surface {
@@ -69,14 +81,14 @@ import com.zachklipp.richtext.ui.resolveDefaults
 
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
-            Markdown(
-              content = sampleMarkdown,
-              style = richTextStyle,
-              modifier = Modifier.padding(8.dp),
-              onLinkClicked = {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            CompositionLocalProvider(LocalUriHandler provides sampleUriHandler) {
+              RichText(
+                richTextStyle = richTextStyle,
+                modifier = Modifier.padding(8.dp)
+              ) {
+                Markdown(sampleMarkdown)
               }
-            )
+            }
           }
         }
       }

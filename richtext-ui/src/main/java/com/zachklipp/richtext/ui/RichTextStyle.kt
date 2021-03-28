@@ -1,13 +1,21 @@
 package com.zachklipp.richtext.ui
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.string.RichTextStringStyle
 
 internal val LocalRichTextStyle = compositionLocalOf { RichTextStyle.Default }
+internal val LocalBasicTextStyle = compositionLocalOf { TextStyle.Default }
+internal val LocalContentColor = compositionLocalOf { DefaultContentColor }
+
 internal val DefaultParagraphSpacing: TextUnit = 8.sp
+internal val DefaultContentColor: Color = Color.Black
 
 /**
  * Configures all formatting attributes for drawing rich text.
@@ -29,7 +37,8 @@ public data class RichTextStyle(
   val blockQuoteGutter: BlockQuoteGutter? = null,
   val codeBlockStyle: CodeBlockStyle? = null,
   val tableStyle: TableStyle? = null,
-  val stringStyle: RichTextStringStyle? = null
+  val stringStyle: RichTextStringStyle? = null,
+  val horizontalRuleStyle: HorizontalRuleStyle? = null
 ) {
   public companion object {
     public val Default: RichTextStyle = RichTextStyle()
@@ -43,7 +52,8 @@ public fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = Rich
     blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
     codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
     tableStyle = otherStyle?.tableStyle ?: tableStyle,
-    stringStyle = stringStyle?.merge(otherStyle?.stringStyle)
+    stringStyle = stringStyle?.merge(otherStyle?.stringStyle) ?: otherStyle?.stringStyle,
+    horizontalRuleStyle = otherStyle?.horizontalRuleStyle ?: horizontalRuleStyle
 )
 
 public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
@@ -53,5 +63,13 @@ public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
     blockQuoteGutter = blockQuoteGutter ?: DefaultBlockQuoteGutter,
     codeBlockStyle = (codeBlockStyle ?: CodeBlockStyle.Default).resolveDefaults(),
     tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults(),
-    stringStyle = (stringStyle ?: RichTextStringStyle.Default).resolveDefaults()
+    stringStyle = (stringStyle ?: RichTextStringStyle.Default).resolveDefaults(),
+    horizontalRuleStyle = (horizontalRuleStyle ?: HorizontalRuleStyle.Default).resolveDefaults()
 )
+
+@Composable
+internal fun ProvideBasicTextStyle(value: TextStyle?, content: @Composable () -> Unit) {
+  val basicTextStyle = LocalBasicTextStyle.current
+  val mergedStyle = basicTextStyle.merge(value)
+  CompositionLocalProvider(LocalBasicTextStyle provides mergedStyle, content = content)
+}

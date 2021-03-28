@@ -1,22 +1,17 @@
 package com.zachklipp.richtext.markdown
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalUriHandler
 import com.zachklipp.richtext.markdown.extensions.AstStrikethrough
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.RichTextString
+import com.zachklipp.richtext.ui.string.Text
 import com.zachklipp.richtext.ui.string.withFormat
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.util.*
-import com.zachklipp.richtext.ui.string.Text as InlineRichText
 
 /**
  * Only render the text content that exists below [astNode]. All the content blocks
@@ -43,23 +38,28 @@ import com.zachklipp.richtext.ui.string.Text as InlineRichText
  */
 @Composable
 internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
-  val onLinkClicked = LocalOnLinkClicked.current
+  val uriHandler = LocalUriHandler.current
+  val onLinkClicked: (String) -> Unit = remember(uriHandler) {
+    { uriHandler.openUri(it) }
+  }
+  val markdownConfiguration = LocalMarkdownConfiguration.current
   // Refer to notes at the top this file.
   // Assume that only RichText nodes reside below this level.
-  val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, onLinkClicked)
+  val richTextString = remember(astNode, onLinkClicked, markdownConfiguration) {
+    computeRichTextString(astNode, onLinkClicked, markdownConfiguration)
   }
 
-  InlineRichText(text = richText)
+  Text(text = richTextString)
 }
 
 private fun computeRichTextString(
   astNode: AstNode,
-  onLinkClicked: (String) -> Unit
+  onLinkClicked: (String) -> Unit,
+  markdownConfiguration: MarkdownConfiguration
 ): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
 
-  // Modified pre-order traversal with pushFormat, popFormat support.
+  // Pre-order traversal with pushFormat, popFormat support.
   val iteratorStack = LinkedList<AstNodeTraversalEntry>().apply {
     addFirst(
       AstNodeTraversalEntry(
@@ -87,15 +87,9 @@ private fun computeRichTextString(
         )
         is AstImage -> {
           richTextStringBuilder.appendInlineContent(content = InlineContent {
-            CoilImage(
-              data = currentNode.destination,
-              contentDescription = currentNode.title,
-              loading = {
-                Text("Loading Image...")
-              },
-              error = {
-                Text("Image failed to load")
-              }
+            markdownConfiguration.resolveDefaults().inlineImage!!.onDraw(
+              text = currentNode.title,
+              destination = currentNode.destination
             )
           })
           null

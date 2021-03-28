@@ -10,6 +10,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,10 +23,10 @@ import com.zachklipp.richtext.ui.HorizontalRule
 import com.zachklipp.richtext.ui.ListType
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
-import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.Table
+import com.zachklipp.richtext.ui.material.RichText
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {
@@ -45,11 +46,13 @@ import com.zachklipp.richtext.ui.Table
 
 @Composable fun RichTextDemo(
   style: RichTextStyle? = null,
-  header: String = ""
+  header: String = "",
+  alignment: Alignment.Horizontal = Alignment.Start
 ) {
   RichText(
     modifier = Modifier.padding(8.dp),
-    style = style
+    richTextStyle = style,
+    alignment = alignment
   ) {
     Heading(0, "Paragraphs $header")
     Text("Simple paragraph.")

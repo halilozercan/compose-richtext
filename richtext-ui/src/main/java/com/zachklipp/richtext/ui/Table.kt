@@ -4,9 +4,6 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -15,6 +12,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,7 +44,7 @@ public data class TableStyle(
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
-private val DefaultBorderColor = Color.Black
+private val DefaultBorderColor = Color.Unspecified
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
@@ -108,13 +106,13 @@ public fun RichTextScope.Table(
         rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
-  val headerStyle = LocalTextStyle.current.merge(tableStyle.headerTextStyle)
+  val headerStyle = currentBasicTextStyle.merge(tableStyle.headerTextStyle)
   val cellPadding = with(LocalDensity.current) {
     tableStyle.cellPadding!!.toDp()
   }
   val cellModifier = Modifier
-      .clipToBounds()
-      .padding(cellPadding)
+    .clipToBounds()
+    .padding(cellPadding)
 
   val styledRows = remember(header, rows, cellModifier) {
     buildList {
@@ -123,8 +121,11 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            ProvideTextStyle(headerStyle) {
-              RichText(modifier = cellModifier, children = cell)
+            ProvideBasicTextStyle(headerStyle) {
+              BasicRichText(
+                modifier = cellModifier,
+                children = cell
+              )
             }
           }
         })
@@ -134,12 +135,14 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            RichText(modifier = cellModifier, children = cell)
+            BasicRichText(modifier = cellModifier, children = cell)
           }
         }
       }
     }
   }
+
+  val contentColor = LocalContentColor.current
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   SimpleTableLayout(
@@ -150,7 +153,7 @@ public fun RichTextScope.Table(
         Modifier.drawTableBorders(
             rowOffsets = layoutResult.rowOffsets,
             columnOffsets = layoutResult.columnOffsets,
-            borderColor = tableStyle.borderColor!!,
+            borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
             borderStrokeWidth = tableStyle.borderStrokeWidth
         )
       },
@@ -201,15 +204,15 @@ private fun TablePreviewFixedWidth() {
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
   RichTextScope.Table(
       modifier = modifier
-          .background(Color.White)
-          .padding(4.dp),
+        .background(Color.White)
+        .padding(4.dp),
       headerRow = {
-        cell { Text("Column 1") }
-        cell { Text("Column 2") }
+        cell { BasicText("Column 1") }
+        cell { BasicText("Column 2") }
       }
   ) {
     row {
-      cell { Text("Hello") }
+      cell { BasicText("Hello") }
       cell {
         CodeBlock("Foo bar")
       }
@@ -217,10 +220,10 @@ private fun TablePreviewContents(modifier: Modifier = Modifier) {
     row {
       cell {
         BlockQuote {
-          Text("Stuff")
+          BasicText("Stuff")
         }
       }
-      cell { Text("Hello world this is a really long line that is going to wrap hopefully") }
+      cell { BasicText("Hello world this is a really long line that is going to wrap hopefully") }
     }
   }
 }

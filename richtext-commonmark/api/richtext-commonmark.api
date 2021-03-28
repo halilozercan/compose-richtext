@@ -1,8 +1,49 @@
+public final class com/zachklipp/richtext/markdown/AndroidHtmlBlock : com/zachklipp/richtext/markdown/HtmlBlock {
+	public fun <init> ()V
+	public fun <init> (Landroidx/compose/ui/Modifier;)V
+	public synthetic fun <init> (Landroidx/compose/ui/Modifier;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Landroidx/compose/ui/Modifier;
+	public final fun copy (Landroidx/compose/ui/Modifier;)Lcom/zachklipp/richtext/markdown/AndroidHtmlBlock;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/markdown/AndroidHtmlBlock;Landroidx/compose/ui/Modifier;ILjava/lang/Object;)Lcom/zachklipp/richtext/markdown/AndroidHtmlBlock;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getModifier ()Landroidx/compose/ui/Modifier;
+	public fun hashCode ()I
+	public fun onDraw (Ljava/lang/String;Landroidx/compose/runtime/Composer;I)V
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/zachklipp/richtext/markdown/BuildConfig {
 	public static final field BUILD_TYPE Ljava/lang/String;
 	public static final field DEBUG Z
 	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
 	public fun <init> ()V
+}
+
+public final class com/zachklipp/richtext/markdown/CoilInlineImage : com/zachklipp/richtext/markdown/InlineImage {
+	public fun <init> ()V
+	public fun <init> (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public synthetic fun <init> (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Landroidx/compose/ui/Modifier;
+	public final fun component2 ()Lkotlin/jvm/functions/Function2;
+	public final fun component3 ()Lkotlin/jvm/functions/Function2;
+	public final fun copy (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Lcom/zachklipp/richtext/markdown/CoilInlineImage;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/markdown/CoilInlineImage;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lcom/zachklipp/richtext/markdown/CoilInlineImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getError ()Lkotlin/jvm/functions/Function2;
+	public final fun getLoading ()Lkotlin/jvm/functions/Function2;
+	public final fun getModifier ()Landroidx/compose/ui/Modifier;
+	public fun hashCode ()I
+	public fun onDraw (Ljava/lang/String;Ljava/lang/String;Landroidx/compose/runtime/Composer;I)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/markdown/ComposableSingletons$InlineImageKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/markdown/ComposableSingletons$InlineImageKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function2;
+	public static field lambda-2 Lkotlin/jvm/functions/Function2;
+	public fun <init> ()V
+	public final fun getLambda-1$richtext_commonmark_release ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda-2$richtext_commonmark_release ()Lkotlin/jvm/functions/Function2;
 }
 
 public final class com/zachklipp/richtext/markdown/ComposableSingletons$MarkdownKt {
@@ -14,16 +55,40 @@ public final class com/zachklipp/richtext/markdown/ComposableSingletons$Markdown
 	public final fun getLambda-2$richtext_commonmark_release ()Lkotlin/jvm/functions/Function4;
 }
 
-public final class com/zachklipp/richtext/markdown/ComposableSingletons$MarkdownRichTextKt {
-	public static final field INSTANCE Lcom/zachklipp/richtext/markdown/ComposableSingletons$MarkdownRichTextKt;
-	public static field lambda-1 Lkotlin/jvm/functions/Function4;
-	public static field lambda-2 Lkotlin/jvm/functions/Function3;
+public abstract interface class com/zachklipp/richtext/markdown/HtmlBlock {
+	public abstract fun onDraw (Ljava/lang/String;Landroidx/compose/runtime/Composer;I)V
+}
+
+public abstract interface class com/zachklipp/richtext/markdown/InlineImage {
+	public abstract fun onDraw (Ljava/lang/String;Ljava/lang/String;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/zachklipp/richtext/markdown/MarkdownConfiguration {
+	public static final field Companion Lcom/zachklipp/richtext/markdown/MarkdownConfiguration$Companion;
 	public fun <init> ()V
-	public final fun getLambda-1$richtext_commonmark_release ()Lkotlin/jvm/functions/Function4;
-	public final fun getLambda-2$richtext_commonmark_release ()Lkotlin/jvm/functions/Function3;
+	public fun <init> (Lcom/zachklipp/richtext/markdown/InlineImage;Lcom/zachklipp/richtext/markdown/HtmlBlock;)V
+	public synthetic fun <init> (Lcom/zachklipp/richtext/markdown/InlineImage;Lcom/zachklipp/richtext/markdown/HtmlBlock;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/zachklipp/richtext/markdown/InlineImage;
+	public final fun component2 ()Lcom/zachklipp/richtext/markdown/HtmlBlock;
+	public final fun copy (Lcom/zachklipp/richtext/markdown/InlineImage;Lcom/zachklipp/richtext/markdown/HtmlBlock;)Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;Lcom/zachklipp/richtext/markdown/InlineImage;Lcom/zachklipp/richtext/markdown/HtmlBlock;ILjava/lang/Object;)Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHtmlBlock ()Lcom/zachklipp/richtext/markdown/HtmlBlock;
+	public final fun getInlineImage ()Lcom/zachklipp/richtext/markdown/InlineImage;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/markdown/MarkdownConfiguration$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;
+}
+
+public final class com/zachklipp/richtext/markdown/MarkdownConfigurationKt {
+	public static final fun merge (Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;)Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;
+	public static final fun resolveDefaults (Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;)Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;
 }
 
 public final class com/zachklipp/richtext/markdown/MarkdownKt {
-	public static final fun Markdown (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Markdown (Lcom/zachklipp/richtext/ui/RichTextScope;Ljava/lang/String;Lcom/zachklipp/richtext/markdown/MarkdownConfiguration;Landroidx/compose/runtime/Composer;II)V
 }
 
