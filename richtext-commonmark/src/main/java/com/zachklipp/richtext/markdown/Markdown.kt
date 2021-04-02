@@ -1,65 +1,39 @@
 package com.zachklipp.richtext.markdown
 
-import android.os.Build
-import android.text.Html
-import android.widget.TextView
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.viewinterop.AndroidView
 import com.zachklipp.richtext.markdown.extensions.AstTableRoot
+import com.zachklipp.richtext.ui.BasicRichText
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.CodeBlock
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.Heading
 import com.zachklipp.richtext.ui.HorizontalRule
 import com.zachklipp.richtext.ui.ListType
-import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
-import com.zachklipp.richtext.ui.RichTextStyle
-import com.zachklipp.richtext.ui.string.InlineContent
-import com.zachklipp.richtext.ui.string.Text
-import com.zachklipp.richtext.ui.string.richTextString
+import com.zachklipp.richtext.ui.currentBasicTextStyle
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TablesExtension
 import org.commonmark.parser.Parser
 
 /**
- * A composable that renders Markdown content using [RichText].
+ * A composable that renders Markdown content in [BasicRichText].
  *
  * @param content Markdown text. No restriction on length.
- * @param style [RichTextStyle] that will be used to style markdown rendering.
- * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
+ * @param configuration Markdown specific configuration e.g. how to render images
  */
 @Composable
-public fun Markdown(
+public fun RichTextScope.Markdown(
   content: String,
-  modifier: Modifier = Modifier,
-  style: RichTextStyle? = null,
-  onLinkClicked: ((String) -> Unit)? = null
+  configuration: MarkdownConfiguration = MarkdownConfiguration.Default
 ) {
-  RichText(
-    modifier = modifier,
-    style = style
-  ) {
-    // Can't use UriHandlerAmbient.current::openUri here,
-    // see https://issuetracker.google.com/issues/172366483
-    val realLinkClickedHandler = onLinkClicked ?: LocalUriHandler.current.let {
-      remember {
-        { url -> it.openUri(url) }
-      }
-    }
-
-    CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-      val markdownAst = parsedMarkdownAst(text = content)
-      RecursiveRenderMarkdownAst(astNode = markdownAst)
-    }
+  CompositionLocalProvider(LocalMarkdownConfiguration provides configuration) {
+    val markdownAst = parsedMarkdownAst(text = content)
+    RecursiveRenderMarkdownAst(markdownAst)
   }
 }
 
@@ -71,7 +45,7 @@ public fun Markdown(
  *
  * This function basically receives a node from the tree, root or any node, and then
  * recursively travels along the nodes while spitting out or wrapping composables around
- * the content. [RichText] API is highly compatible with this methodology.
+ * the content. [BasicRichText] API is highly compatible with this methodology.
  *
  * However, there are multiple assumptions to increase predictability. Despite the fact
  * that every [AstNode] can have another [AstNode] as a child, it should not be that
@@ -89,7 +63,9 @@ public fun Markdown(
  * @param astNode Root node to start rendering.
  */
 @Composable
-internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
+internal fun RichTextScope.RecursiveRenderMarkdownAst(
+  astNode: AstNode?
+) {
   astNode ?: return
 
   when (astNode) {
@@ -110,7 +86,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       CodeBlock(text = astNode.literal)
     }
     is AstHeading -> {
-      Heading(level = astNode.level) {
+      Heading(level = astNode.level - 1) {
         MarkdownRichText(astNode)
       }
     }
@@ -118,24 +94,9 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       HorizontalRule()
     }
     is AstHtmlBlock -> {
-      Text(text = richTextString {
-        appendInlineContent(content = InlineContent {
-          AndroidView(
-            factory = { context ->
-              // TODO: pass current styling to legacy TextView
-              TextView(context)
-            },
-            update = {
-              it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(astNode.literal, 0)
-              } else {
-                @Suppress("DEPRECATION")
-                Html.fromHtml(astNode.literal)
-              }
-            }
-          )
-        })
-      })
+      LocalMarkdownConfiguration.current.resolveDefaults().htmlBlock!!.onDraw(
+        html = astNode.literal
+      )
     }
     is AstIndentedCodeBlock -> {
       CodeBlock(text = astNode.literal)
@@ -156,10 +117,10 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     // In any case, we should include it here to prevent any
     // non-rendered text problems.
     is AstText -> {
-      Text(astNode.literal)
+      BasicText(astNode.literal, style = currentBasicTextStyle)
     }
     is AstTableRoot -> {
-      renderTable(astNode)
+      MarkdownTable(astNode)
     }
     else -> visitChildren(astNode)
   }
@@ -201,11 +162,3 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
     RecursiveRenderMarkdownAst(astNode = it)
   }
 }
-
-/**
- * An internal ambient to pass through OnLinkClicked function from root [Markdown] composable
- * to children that render links. Although being explicit is preferred, recursive calls to
- * [visitChildren] increases verbosity with each extra argument.
- */
-internal val LocalOnLinkClicked =
-  compositionLocalOf<(String) -> Unit> { error("OnLinkClicked is not provided") }

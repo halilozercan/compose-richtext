@@ -5,11 +5,6 @@ package com.zachklipp.richtext.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -60,7 +55,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  */
 @Composable public fun RichTextScope.CodeBlock(text: String) {
   CodeBlock {
-    Text(text)
+    BasicText(text)
   }
 }
 
@@ -68,18 +63,20 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  * A specially-formatted block of text that typically uses a monospace font with a tinted
  * background.
  */
-@Composable public fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
-  val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
-  val textStyle = LocalTextStyle.current.merge(richTextStyle.textStyle)
-  val background = Modifier.background(color = richTextStyle.background!!)
+@Composable public fun RichTextScope.CodeBlock(
+  children: @Composable RichTextScope.() -> Unit
+) {
+  val codeBlockStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
+  val textStyleForCodeBlock = currentBasicTextStyle.merge(codeBlockStyle.textStyle)
+
   val blockPadding = with(LocalDensity.current) {
-    richTextStyle.padding!!.toDp()
+    codeBlockStyle.padding!!.toDp()
   }
 
-  Box(modifier = background) {
-    // Can't use Box(padding=) because that property doesn't seem affect the intrinsic size.
-    Box(Modifier.padding(blockPadding)) {
-      ProvideTextStyle(textStyle) {
+  ProvideBasicTextStyle(textStyleForCodeBlock) {
+    Box(modifier = Modifier.background(color = codeBlockStyle.background!!)) {
+      // Can't use Box(padding=) because that property doesn't seem affect the intrinsic size.
+      Box(modifier = Modifier.padding(blockPadding)) {
         children()
       }
     }
@@ -88,20 +85,20 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 
 @Preview @Composable
 private fun CodeBlockPreviewOnWhite() {
-  CodeBlockPreview(backgroundColor = Color.White, contentColor = Color.Black)
+  CodeBlockPreview(backgroundColor = Color.White, textColor = Color.Black)
 }
 
 @Preview @Composable
 private fun CodeBlockPreviewOnBlack() {
-  CodeBlockPreview(backgroundColor = Color.Black, contentColor = Color.White)
+  CodeBlockPreview(backgroundColor = Color.Black, textColor = Color.White)
 }
 
 @Composable
 private fun CodeBlockPreview(
   backgroundColor: Color,
-  contentColor: Color
+  textColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  CompositionLocalProvider(LocalContentColor provides textColor) {
     Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
         RichTextScope.CodeBlock(

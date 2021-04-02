@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.ListType.Unordered
-import com.zachklipp.richtext.ui.RichText
+import com.zachklipp.richtext.ui.material.RichText
 import com.zachklipp.richtext.ui.printing.Printable
 import com.zachklipp.richtext.ui.printing.PrintableController
 import com.zachklipp.richtext.ui.printing.hideWhenPrinting

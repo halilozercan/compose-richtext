@@ -2,9 +2,9 @@
 buildscript {
   ext.versions = [
       targetSdk: 29,
-      compose: '1.0.0-beta01',
-      kotlin: '1.4.30',
-      commonmark: '0.15.2'
+      compose: '1.0.0-beta03',
+      kotlin: '1.4.31',
+      commonmark: '0.17.1'
   ]
 
   rootProject.ext.defaultAndroidConfig = {
@@ -32,7 +32,7 @@ buildscript {
   }
 
   ext.deps = [
-      android_gradle_plugin: "com.android.tools.build:gradle:7.0.0-alpha08",
+      android_gradle_plugin: "com.android.tools.build:gradle:7.0.0-alpha12",
 
       androidx: [
           activity: "androidx.activity:activity:1.1.0",
@@ -51,7 +51,7 @@ buildscript {
           viewbinding: "androidx.databinding:viewbinding:3.6.1",
       ],
       compose: [
-          activity: "androidx.activity:activity-compose:1.3.0-alpha03",
+          activity: "androidx.activity:activity-compose:1.3.0-alpha05",
           foundation: "androidx.compose.foundation:foundation:${versions.compose}",
           layout: "androidx.compose.foundation:foundation-layout:${versions.compose}",
           material: "androidx.compose.material:material:${versions.compose}",
@@ -73,11 +73,11 @@ buildscript {
           ]
       ],
       commonmark: [
-          core: "com.atlassian.commonmark:commonmark:${versions.commonmark}",
-          tables: "com.atlassian.commonmark:commonmark-ext-gfm-tables:${versions.commonmark}",
-          strikethrough: "com.atlassian.commonmark:commonmark-ext-gfm-strikethrough:${versions.commonmark}"
+          core: "org.commonmark:commonmark:${versions.commonmark}",
+          tables: "org.commonmark:commonmark-ext-gfm-tables:${versions.commonmark}",
+          strikethrough: "org.commonmark:commonmark-ext-gfm-strikethrough:${versions.commonmark}"
       ],
-      accompanist: "dev.chrisbanes.accompanist:accompanist-coil:0.6.1",
+      accompanist: "com.google.accompanist:accompanist-coil:0.7.0",
       mavenPublish: "com.vanniktech:gradle-maven-publish-plugin:0.13.0",
       ktlint: "org.jlleitschuh.gradle:ktlint-gradle:9.2.0",
   ]

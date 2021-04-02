@@ -13,7 +13,4 @@ dependencies {
   implementation deps.commonmark.core
   implementation deps.commonmark.strikethrough
   implementation deps.commonmark.tables
-
-  // TODO Migrate off this.
-  implementation deps.compose.material
 }

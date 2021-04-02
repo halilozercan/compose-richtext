@@ -1,8 +1,7 @@
 package com.zachklipp.richtext.ui.string
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -17,9 +16,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import com.zachklipp.richtext.ui.BasicRichText
+import com.zachklipp.richtext.ui.LocalContentColor
 import com.zachklipp.richtext.ui.LocalRichTextStyle
-import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
+import com.zachklipp.richtext.ui.currentBasicTextStyle
 import com.zachklipp.richtext.ui.string.RichTextString.Format
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Bold
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Link
@@ -28,7 +29,7 @@ private const val ZERO_WIDTH_CHAR = "\u200B"
 
 @Preview(showBackground = true)
 @Composable private fun TextPreview() {
-  RichText {
+  BasicRichText {
     Text(richTextString {
       append("I'm ")
       withFormat(Bold) {
@@ -43,6 +44,7 @@ private const val ZERO_WIDTH_CHAR = "\u200B"
  *
  * @sample com.zachklipp.richtext.ui.string.TextPreview
  */
+// TODO: A different name that wouldn't collide with Material Text.
 @Suppress("unused")
 @Composable
 public fun RichTextScope.Text(
@@ -93,8 +95,9 @@ public fun RichTextScope.Text(
   Layout(
     modifier = modifier.then(pressIndicator),
     content = {
-      Text(
+      BasicText(
         text = hack,
+        style = currentBasicTextStyle,
         onTextLayout = { result ->
           layoutResult.value = result
           onTextLayout(result)

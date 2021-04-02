@@ -6,15 +6,10 @@ import androidx.annotation.IntRange
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle.Italic
@@ -76,7 +71,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   text: String
 ) {
   Heading(level) {
-    Text(text)
+    BasicText(text)
   }
 }
 
@@ -94,6 +89,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   val richTextStyle = currentRichTextStyle.resolveDefaults()
   val headingStyleFunction = richTextStyle.headingStyle!!
 
+  // Deprecated after removal of Material from base module
   // According to [Text] composable's documentation:
   //   "Additionally, for [color], if [color] is not set, and [style] does not have a color, then
   //   [AmbientContentColor] will be used - this allows this [Text] or element containing this [Text]
@@ -101,32 +97,34 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   // However, [resolveDefaults] uses a static default color which is [Color.Black].
   // To fix this issue, we are specifying the text color according to [Text] documentation
   // before calling [resolveDefaults].
-  val incomingStyle = LocalTextStyle.current.let {
-    it.copy(color = it.color.takeOrElse { LocalContentColor.current })
-  }
+
+  //  val incomingStyle = LocalTextStyle.current.let {
+  //    it.copy(color = it.color.takeOrElse { LocalContentColor.current })
+  //  }
+  val incomingStyle = currentBasicTextStyle
   val currentTextStyle = resolveDefaults(incomingStyle, LocalLayoutDirection.current)
 
   val headingTextStyle = headingStyleFunction(level, currentTextStyle)
   val mergedTextStyle = currentTextStyle.merge(headingTextStyle)
 
-  ProvideTextStyle(mergedTextStyle) {
+  ProvideBasicTextStyle(mergedTextStyle) {
     children()
   }
 }
 
 @Preview @Composable private fun HeadingPreviewOnWhite() {
-  HeadingPreview(backgroundColor = Color.White, contentColor = Color.Black)
+  HeadingPreview(backgroundColor = Color.White, textColor = Color.Black)
 }
 
 @Preview @Composable private fun HeadingPreviewOnBlack() {
-  HeadingPreview(backgroundColor = Color.Black, contentColor = Color.White)
+  HeadingPreview(backgroundColor = Color.Black, textColor = Color.White)
 }
 
 @Composable private fun HeadingPreview(
   backgroundColor: Color,
-  contentColor: Color
+  textColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  CompositionLocalProvider(LocalContentColor provides textColor) {
     Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {

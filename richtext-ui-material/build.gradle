@@ -5,8 +5,13 @@ apply from: rootProject.file('gradle/maven-publish.gradle')
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  compileOnly deps.compose.tooling
-
-  api deps.androidx.annotations
+  api project(":richtext-ui")
   api deps.compose.foundation
+  api deps.compose.material
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    freeCompilerArgs += ["-Xinline-classes"]
+  }
 }
