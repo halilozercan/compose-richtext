@@ -249,8 +249,8 @@ public final class com/zachklipp/richtext/ui/string/ComposableSingletons$TextKt 
 
 public final class com/zachklipp/richtext/ui/string/InlineContent {
 	public static final field $stable I
-	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/text/PlaceholderVerticalAlign;Lkotlin/jvm/functions/Function4;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/text/PlaceholderVerticalAlign;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString {

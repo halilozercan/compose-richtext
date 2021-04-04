@@ -12,6 +12,7 @@ import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.PlaceholderVerticalAlign.AboveBaseline
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
@@ -24,9 +25,12 @@ import androidx.compose.ui.unit.sp
  *
  * @param initialSize Optional function to calculate the initial size of the content. Not specifying
  * this may cause flicker.
+ * @param placeholderVerticalAlign Used to specify how a placeholder is vertically aligned within a
+ * text line.
  */
 public class InlineContent(
   internal val initialSize: (Density.() -> IntSize)? = null,
+  internal val placeholderVerticalAlign: PlaceholderVerticalAlign = AboveBaseline,
   internal val content: @Composable Density.(alternateText: String) -> Unit
 )
 
@@ -82,7 +86,7 @@ public class InlineContent(
     val placeholder = Placeholder(
       width = size?.width?.toSp() ?: 0.sp,
       height = size?.height?.toSp() ?: 1.sp,
-      placeholderVerticalAlign = AboveBaseline
+      placeholderVerticalAlign = content.placeholderVerticalAlign
     )
 
     return InlineTextContent(placeholder) { alternateText ->
