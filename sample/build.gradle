@@ -6,6 +6,7 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   implementation project(':printing')
   implementation project(':richtext-commonmark')
+  implementation project(':richtext-adf')
   implementation project(':richtext-ui')
   implementation project(':slideshow')
   implementation deps.androidx.appcompat

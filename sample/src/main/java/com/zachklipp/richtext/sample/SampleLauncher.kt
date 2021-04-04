@@ -14,7 +14,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.dp
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
   "Markdown Demo" to @Composable { MarkdownSample() },
+  "Adf Demo" to @Composable { AdfSample() },
   "Pagination" to @Composable { PagedSample() },
   "Printable Document" to @Composable { DocumentSample() },
   "Slideshow" to @Composable { SlideshowSample() },
@@ -55,7 +55,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
-  MaterialTheme(colors = darkColors()) {
+  MaterialTheme(colors = lightColors()) {
     Scaffold(
       topBar = {
         TopAppBar(title = { Text("Samples") })

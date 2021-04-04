@@ -43,7 +43,7 @@ public fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = Rich
     blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
     codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
     tableStyle = otherStyle?.tableStyle ?: tableStyle,
-    stringStyle = stringStyle?.merge(otherStyle?.stringStyle)
+    stringStyle = stringStyle?.merge(otherStyle?.stringStyle) ?: otherStyle?.stringStyle
 )
 
 public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(

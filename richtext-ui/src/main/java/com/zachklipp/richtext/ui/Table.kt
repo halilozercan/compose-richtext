@@ -3,6 +3,7 @@
 package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.ProvideTextStyle
@@ -37,6 +38,7 @@ public data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
   val borderColor: Color? = null,
+  val headerBackgroundColor: Color? = null,
   val borderStrokeWidth: Float? = null
 ) {
   public companion object {
@@ -47,12 +49,14 @@ public data class TableStyle(
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Black
+private val DefaultHeaderBackgroundColor = Color.Gray
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
     headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
     cellPadding = cellPadding ?: DefaultCellPadding,
     borderColor = borderColor ?: DefaultBorderColor,
+    headerBackgroundColor = headerBackgroundColor ?: DefaultHeaderBackgroundColor,
     borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
 
@@ -112,6 +116,13 @@ public fun RichTextScope.Table(
   val cellPadding = with(LocalDensity.current) {
     tableStyle.cellPadding!!.toDp()
   }
+
+  val headerCellModifier = Modifier
+      .clipToBounds()
+      .fillMaxSize()
+      .background(tableStyle.headerBackgroundColor!!)
+      .padding(cellPadding)
+
   val cellModifier = Modifier
       .clipToBounds()
       .padding(cellPadding)
@@ -124,7 +135,7 @@ public fun RichTextScope.Table(
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
-              RichText(modifier = cellModifier, children = cell)
+              RichText(modifier = headerCellModifier, children = cell)
             }
           }
         })

@@ -61,7 +61,7 @@ internal fun SimpleTableLayout(
     //   // Divide the height by the number of rows, then leave room for the padding.
     //   (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
     // }
-    val cellConstraints = constraints.constrain(Constraints(maxWidth = cellWidth.roundToInt()))
+    val cellConstraints = Constraints(maxWidth = cellWidth.roundToInt()).constrain(constraints)
 
     val rowPlaceables = rowMeasurables.map { cellMeasurables ->
       cellMeasurables.map { cell ->

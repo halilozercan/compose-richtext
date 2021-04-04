@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply from: rootProject.file('gradle/maven-publish.gradle')
+
+android rootProject.ext.defaultAndroidConfig
+
+dependencies {
+  compileOnly deps.compose.tooling
+
+  api project(":richtext-ui")
+
+  implementation 'com.google.code.gson:gson:2.8.6'
+
+  // TODO Migrate off this.
+  implementation deps.compose.material
+}

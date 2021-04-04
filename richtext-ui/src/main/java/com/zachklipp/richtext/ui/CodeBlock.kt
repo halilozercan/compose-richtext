@@ -4,6 +4,9 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.LocalContentColor
@@ -16,6 +19,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,9 +62,17 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  * A specially-formatted block of text that typically uses a monospace font with a tinted
  * background.
  */
-@Composable public fun RichTextScope.CodeBlock(text: String) {
-  CodeBlock {
-    Text(text)
+@Composable public fun RichTextScope.CodeBlock(
+  text: String,
+  modifier: Modifier = Modifier,
+  onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+  CodeBlock(modifier = modifier) {
+    Text(
+      text,
+      softWrap = false,
+      onTextLayout = onTextLayout
+    )
   }
 }
 
@@ -68,10 +80,13 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  * A specially-formatted block of text that typically uses a monospace font with a tinted
  * background.
  */
-@Composable public fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
+@Composable public fun RichTextScope.CodeBlock(
+  modifier: Modifier = Modifier,
+  children: @Composable RichTextScope.() -> Unit
+) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
   val textStyle = LocalTextStyle.current.merge(richTextStyle.textStyle)
-  val background = Modifier.background(color = richTextStyle.background!!)
+  val background = modifier.background(color = richTextStyle.background!!)
   val blockPadding = with(LocalDensity.current) {
     richTextStyle.padding!!.toDp()
   }
