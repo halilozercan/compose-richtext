@@ -1,12 +1,12 @@
 package com.zachklipp.richtext.markdown
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.Image
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState.Error
+import com.google.accompanist.imageloading.ImageLoadState.Loading
 import com.zachklipp.richtext.markdown.extensions.AstStrikethrough
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.FormattedList
@@ -14,7 +14,6 @@ import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.RichTextString
 import com.zachklipp.richtext.ui.string.withFormat
-import dev.chrisbanes.accompanist.coil.CoilImage
 import java.util.*
 import com.zachklipp.richtext.ui.string.Text as InlineRichText
 
@@ -87,16 +86,12 @@ private fun computeRichTextString(
         )
         is AstImage -> {
           richTextStringBuilder.appendInlineContent(content = InlineContent {
-            CoilImage(
-              data = currentNode.destination,
-              contentDescription = currentNode.title,
-              loading = {
-                Text("Loading Image...")
-              },
-              error = {
-                Text("Image failed to load")
-              }
-            )
+            val painter = rememberCoilPainter(request = currentNode.destination)
+            Image(painter = painter, contentDescription = currentNode.title)
+            when (painter.loadState) {
+              is Loading -> Text("Loading Image...")
+              is Error -> Text("Image failed to load")
+            }
           })
           null
         }
