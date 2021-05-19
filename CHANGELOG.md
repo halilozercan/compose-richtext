@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v0.3.0
+------
+
+_2021-5-18_
+
+* **Compose Beta 7 support!** (#36)
+* Fix several bugs in Table, RichTextStyle and improve InlineContent (#35 – thanks @halilozercan!)
+
 v0.2.0
 ------
 
