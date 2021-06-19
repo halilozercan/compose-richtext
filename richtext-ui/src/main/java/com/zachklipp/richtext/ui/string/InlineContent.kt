@@ -13,7 +13,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
-import androidx.compose.ui.text.PlaceholderVerticalAlign.AboveBaseline
+import androidx.compose.ui.text.PlaceholderVerticalAlign.Companion.AboveBaseline
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
