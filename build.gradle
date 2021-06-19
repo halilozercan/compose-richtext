@@ -86,7 +86,6 @@ buildscript {
     mavenCentral()
     gradlePluginPortal()
     google()
-    jcenter()
   }
 
   dependencies {
@@ -104,8 +103,8 @@ plugins {
 }
 
 repositories {
-  // For Dokka
-  jcenter()
+  // For Dokka, see https://github.com/Kotlin/dokka/releases/tag/v1.4.32
+  maven { url = "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven" }
 }
 
 // See https://stackoverflow.com/questions/25324880/detect-ide-environment-with-gradle
@@ -117,7 +116,6 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter()
   }
 
   tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
