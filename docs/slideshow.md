@@ -27,7 +27,7 @@ Slideshow(
 )
 ```
 
-The `Slideshow` composable will automatically lock your phone to portrait and enter immersive
+The `Slideshow` composable will automatically lock your phone to landscape and enter immersive
 fullscreen while it's composed. You can tap anywhere on the left or right of the screen to navigate.
 Currently the only supported slide transition is crossfade, but it shouldn't be hard to make the
 library more pluggable and support more advanced transition libraries (like
