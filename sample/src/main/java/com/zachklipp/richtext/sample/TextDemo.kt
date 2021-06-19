@@ -204,7 +204,7 @@ val slowLoadingImage = InlineContent {
 @OptIn(ExperimentalStdlibApi::class)
 private fun Builder.appendPreviewSentence(
   format: Format,
-  text: String = format.javaClass.simpleName.decapitalize(Locale.US)
+  text: String = format.javaClass.simpleName.replaceFirstChar { it.lowercase() }
 ) {
   append("Here is some ")
   withFormat(format) {
