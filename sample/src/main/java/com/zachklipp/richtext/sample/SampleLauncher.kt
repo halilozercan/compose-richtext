@@ -16,8 +16,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.material.ripple.ExperimentalRippleApi
-import androidx.compose.material.ripple.LocalRippleNativeRendering
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -30,6 +28,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.zachklipp.richtext.ui.material.ProvideMaterialThemingToRichText
 
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
@@ -47,12 +46,14 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 @Composable fun SampleLauncher() {
   var currentSampleIndex: Int? by remember { mutableStateOf(null) }
 
-  Crossfade(currentSampleIndex) { index ->
-    index?.let {
-      BackHandler(onBack = { currentSampleIndex = null })
-      Samples[it].second()
+  ProvideMaterialThemingToRichText {
+    Crossfade(currentSampleIndex) { index ->
+      index?.let {
+        BackHandler(onBack = { currentSampleIndex = null })
+        Samples[it].second()
+      }
+        ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
     }
-      ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
   }
 }
 

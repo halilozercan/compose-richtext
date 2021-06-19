@@ -151,6 +151,26 @@ public final class com/zachklipp/richtext/ui/RichTextKt {
 	public static final fun RichText (Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
+public final class com/zachklipp/richtext/ui/RichTextLocals {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/runtime/ProvidableCompositionLocal;Landroidx/compose/runtime/ProvidableCompositionLocal;)V
+	public final fun component1 ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public final fun component2 ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public final fun copy (Landroidx/compose/runtime/ProvidableCompositionLocal;Landroidx/compose/runtime/ProvidableCompositionLocal;)Lcom/zachklipp/richtext/ui/RichTextLocals;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/RichTextLocals;Landroidx/compose/runtime/ProvidableCompositionLocal;Landroidx/compose/runtime/ProvidableCompositionLocal;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/RichTextLocals;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLocalContentColor ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public final fun getLocalTextStyle ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextLocalsKt {
+	public static final fun ProvideRichTextLocals (Landroidx/compose/runtime/ProvidableCompositionLocal;Landroidx/compose/runtime/ProvidableCompositionLocal;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+	public static final fun getCurrentContentColor (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)J
+	public static final fun getCurrentTextStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/text/TextStyle;
+}
+
 public final class com/zachklipp/richtext/ui/RichTextScope {
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/RichTextScope;
 }
@@ -249,8 +269,8 @@ public final class com/zachklipp/richtext/ui/string/ComposableSingletons$TextKt 
 
 public final class com/zachklipp/richtext/ui/string/InlineContent {
 	public static final field $stable I
-	public fun <init> (Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/text/PlaceholderVerticalAlign;Lkotlin/jvm/functions/Function4;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/text/PlaceholderVerticalAlign;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function4;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString {
@@ -284,6 +304,7 @@ public final class com/zachklipp/richtext/ui/string/RichTextString$Builder {
 public abstract class com/zachklipp/richtext/ui/string/RichTextString$Format {
 	public static final field $stable I
 	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Companion;
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

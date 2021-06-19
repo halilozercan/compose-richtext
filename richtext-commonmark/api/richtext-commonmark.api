@@ -15,6 +15,6 @@ public final class com/zachklipp/richtext/markdown/ComposableSingletons$Markdown
 }
 
 public final class com/zachklipp/richtext/markdown/MarkdownKt {
-	public static final fun Markdown (Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Markdown (Lcom/zachklipp/richtext/ui/RichTextScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
 }
 

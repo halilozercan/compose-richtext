@@ -26,12 +26,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zachklipp.richtext.markdown.Markdown
+import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextStyle
+import com.zachklipp.richtext.ui.material.ProvideMaterialThemingToRichText
 import com.zachklipp.richtext.ui.resolveDefaults
 
 @Preview
 @Composable private fun MarkdownSamplePreview() {
-  MarkdownSample()
+  ProvideMaterialThemingToRichText {
+    MarkdownSample()
+  }
 }
 
 @Composable fun MarkdownSample() {
@@ -69,14 +73,17 @@ import com.zachklipp.richtext.ui.resolveDefaults
 
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
-            Markdown(
-              content = sampleMarkdown,
+            RichText(
               style = richTextStyle,
-              modifier = Modifier.padding(8.dp),
-              onLinkClicked = {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-              }
-            )
+              modifier = Modifier.padding(8.dp)
+            ) {
+              Markdown(
+                content = sampleMarkdown,
+                onLinkClicked = {
+                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+              )
+            }
           }
         }
       }

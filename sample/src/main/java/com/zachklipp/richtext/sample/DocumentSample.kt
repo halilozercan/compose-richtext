@@ -40,7 +40,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle.Italic
+import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration.Companion.Underline
@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.ListType.Unordered
 import com.zachklipp.richtext.ui.RichText
+import com.zachklipp.richtext.ui.material.ProvideMaterialThemingToRichText
 import com.zachklipp.richtext.ui.printing.Printable
 import com.zachklipp.richtext.ui.printing.PrintableController
 import com.zachklipp.richtext.ui.printing.hideWhenPrinting
@@ -196,7 +197,10 @@ private val LargeGap = 96.dp
           secondary = Color(0x20, 0x79, 0xc7)
         )
       ) {
-        content()
+        // Printable leaves the current composition while rendering the content inside a PDF
+        ProvideMaterialThemingToRichText {
+          content()
+        }
       }
     }
   }
@@ -240,7 +244,7 @@ private val LargeGap = 96.dp
   verticalArrangement: Arrangement.Vertical = Arrangement.Top,
   content: @Composable () -> Unit
 ) {
-  val uppercaseTitle = remember(title) { title.toUpperCase(Locale.US) }
+  val uppercaseTitle = remember(title) { title.uppercase(Locale.US) }
 
   Column(verticalArrangement = verticalArrangement) {
     Text(

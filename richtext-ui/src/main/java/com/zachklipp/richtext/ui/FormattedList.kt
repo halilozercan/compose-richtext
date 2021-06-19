@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.DisableSelection
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -17,9 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.resolveDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
+import com.zachklipp.richtext.ui.string.InternalText
 import kotlin.math.max
 
 public enum class ListType {
@@ -60,7 +62,7 @@ public interface OrderedMarkers {
      */
     public fun text(vararg markers: (index: Int) -> String): OrderedMarkers =
       OrderedMarkers { level, index ->
-        Text(markers[level % markers.size](index))
+        RichTextScope.InternalText(markers[level % markers.size](index))
       }
 
     /**
@@ -94,7 +96,7 @@ public interface UnorderedMarkers {
      * indentation level.
      */
     public fun text(vararg markers: String): UnorderedMarkers = UnorderedMarkers {
-      Text(markers[it % markers.size])
+      RichTextScope.InternalText(markers[it % markers.size])
     }
 
     /**
@@ -264,7 +266,7 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumBy { it.height }
+    val listHeight = itemPlaceables.sumOf { it.height }
     layout(listWidth, listHeight) {
       var y = 0
 
@@ -333,14 +335,14 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
         ).withIndex()
           .toList()
       ) { (index, text) ->
-        Text(text)
+        InternalText(text)
         if (index == 0) {
           FormattedList(listType, @Composable() {
-            Text("indented $text")
+            InternalText("indented $text")
             FormattedList(listType, @Composable() {
-              Text("indented $text")
+              InternalText("indented $text")
               FormattedList(listType, @Composable() {
-                Text("indented $text")
+                InternalText("indented $text")
               })
             })
           })

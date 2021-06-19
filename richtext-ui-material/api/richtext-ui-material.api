@@ -1,0 +1,11 @@
+public final class com/zachklipp/richtext/ui/material/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class com/zachklipp/richtext/ui/material/MaterialRichTextKt {
+	public static final fun ProvideMaterialThemingToRichText (Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;I)V
+}
+

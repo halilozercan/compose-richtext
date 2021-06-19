@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -23,6 +21,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.BlockQuoteGutter.BarGutter
+import com.zachklipp.richtext.ui.string.InternalText
 
 internal val DefaultBlockQuoteGutter = BarGutter()
 
@@ -44,7 +43,7 @@ public interface BlockQuoteGutter {
   ) : BlockQuoteGutter {
     @Composable override fun drawGutter() {
       with(LocalDensity.current) {
-        val color = color(LocalContentColor.current)
+        val color = color(RichTextScope.currentContentColor)
         val modifier = remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
           Modifier
@@ -121,13 +120,13 @@ public interface BlockQuoteGutter {
   backgroundColor: Color,
   contentColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  BasicLocalsProvider(contentColor = contentColor) {
     Box(Modifier.background(backgroundColor)) {
       RichTextScope.BlockQuote {
-        Text("Some text.")
-        Text("Another paragraph.")
+        InternalText("Some text.")
+        InternalText("Another paragraph.")
         BlockQuote {
-          Text("Nested block quote.")
+          InternalText("Nested block quote.")
         }
       }
     }

@@ -6,7 +6,7 @@ android rootProject.ext.defaultAndroidConfig
 dependencies {
   implementation project(':printing')
   implementation project(':richtext-commonmark')
-  implementation project(':richtext-ui')
+  implementation project(':richtext-ui-material')
   implementation project(':slideshow')
   implementation deps.androidx.appcompat
   implementation deps.compose.activity

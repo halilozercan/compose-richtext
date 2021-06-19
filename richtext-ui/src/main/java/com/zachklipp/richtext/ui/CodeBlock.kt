@@ -5,11 +5,6 @@ package com.zachklipp.richtext.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -22,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zachklipp.richtext.ui.string.InternalText
 
 /**
  * Defines how [CodeBlock]s are rendered.
@@ -60,7 +56,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  */
 @Composable public fun RichTextScope.CodeBlock(text: String) {
   CodeBlock {
-    Text(text)
+    InternalText(text)
   }
 }
 
@@ -70,7 +66,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  */
 @Composable public fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
-  val textStyle = LocalTextStyle.current.merge(richTextStyle.textStyle)
+  val textStyle = currentTextStyle.merge(richTextStyle.textStyle)
   val background = Modifier.background(color = richTextStyle.background!!)
   val blockPadding = with(LocalDensity.current) {
     richTextStyle.padding!!.toDp()
@@ -79,7 +75,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
   Box(modifier = background) {
     // Can't use Box(padding=) because that property doesn't seem affect the intrinsic size.
     Box(Modifier.padding(blockPadding)) {
-      ProvideTextStyle(textStyle) {
+      CompositionLocalProvider(LocalRichTextLocals.current.localTextStyle provides textStyle) {
         children()
       }
     }
@@ -101,7 +97,7 @@ private fun CodeBlockPreview(
   backgroundColor: Color,
   contentColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  BasicLocalsProvider(contentColor = contentColor) {
     Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
         RichTextScope.CodeBlock(

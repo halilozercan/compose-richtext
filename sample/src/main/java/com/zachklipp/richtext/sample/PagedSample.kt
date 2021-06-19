@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zachklipp.richtext.ui.material.ProvideMaterialThemingToRichText
 import com.zachklipp.richtext.ui.printing.Paged
 import com.zachklipp.richtext.ui.printing.Printable
 import com.zachklipp.richtext.ui.printing.isBeingPrinted
@@ -33,9 +34,12 @@ import com.zachklipp.richtext.ui.printing.rememberPrintableController
   val controller = rememberPrintableController()
   val state = remember { PagedScreenState() }
   Printable(controller, printBreakpoints = state.drawBreakpoints) {
-    PagedScreen(state, doPrint = {
-      controller.print("Document Sample")
-    })
+    // Printable leaves the current composition while rendering the content inside a PDF
+    ProvideMaterialThemingToRichText {
+      PagedScreen(state, doPrint = {
+        controller.print("Document Sample")
+      })
+    }
   }
 }
 
