@@ -264,7 +264,7 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumBy { it.height }
+    val listHeight = itemPlaceables.sumOf { it.height }
     layout(listWidth, listHeight) {
       var y = 0
 
