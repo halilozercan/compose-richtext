@@ -1,8 +1,6 @@
 package com.zachklipp.richtext.ui.string
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -20,6 +18,7 @@ import androidx.compose.ui.unit.Constraints
 import com.zachklipp.richtext.ui.LocalRichTextStyle
 import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
+import com.zachklipp.richtext.ui.currentContentColor
 import com.zachklipp.richtext.ui.string.RichTextString.Format
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Bold
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Link
@@ -51,7 +50,7 @@ public fun RichTextScope.Text(
   onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
   val style = LocalRichTextStyle.current.stringStyle
-  val contentColor = LocalContentColor.current
+  val contentColor = currentContentColor
   val annotated = remember(text, style, contentColor) {
     val resolvedStyle = (style ?: RichTextStringStyle.Default).resolveDefaults()
     text.toAnnotatedString(resolvedStyle, contentColor)
@@ -93,7 +92,7 @@ public fun RichTextScope.Text(
   Layout(
     modifier = modifier.then(pressIndicator),
     content = {
-      Text(
+      InternalText(
         text = hack,
         onTextLayout = { result ->
           layoutResult.value = result

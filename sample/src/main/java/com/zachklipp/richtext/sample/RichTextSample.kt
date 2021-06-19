@@ -26,11 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.RichTextStyle
+import com.zachklipp.richtext.ui.material.ProvideMaterialThemingToRichText
 import com.zachklipp.richtext.ui.resolveDefaults
 
 @Preview
 @Composable private fun RichTextSamplePreview() {
-  RichTextSample()
+  ProvideMaterialThemingToRichText {
+    RichTextSample()
+  }
 }
 
 @Composable fun RichTextSample() {

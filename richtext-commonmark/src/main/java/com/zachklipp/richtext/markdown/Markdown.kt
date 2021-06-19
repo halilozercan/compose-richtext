@@ -31,35 +31,27 @@ import org.commonmark.ext.gfm.tables.TablesExtension
 import org.commonmark.parser.Parser
 
 /**
- * A composable that renders Markdown content using [RichText].
+ * A composable that renders Markdown content inside [RichText].
  *
- * @param content Markdown text. No restriction on length.
- * @param style [RichTextStyle] that will be used to style markdown rendering.
- * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
+ * @param content Markdown text.
+ * @param onLinkClicked A callback for when a link is clicked from rendered content.
  */
 @Composable
-public fun Markdown(
+public fun RichTextScope.Markdown(
   content: String,
-  modifier: Modifier = Modifier,
-  style: RichTextStyle? = null,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
-  RichText(
-    modifier = modifier,
-    style = style
-  ) {
-    // Can't use UriHandlerAmbient.current::openUri here,
-    // see https://issuetracker.google.com/issues/172366483
-    val realLinkClickedHandler = onLinkClicked ?: LocalUriHandler.current.let {
-      remember {
-        { url -> it.openUri(url) }
-      }
+  // Can't use UriHandlerAmbient.current::openUri here,
+  // see https://issuetracker.google.com/issues/172366483
+  val realLinkClickedHandler = onLinkClicked ?: LocalUriHandler.current.let {
+    remember {
+      { url -> it.openUri(url) }
     }
+  }
 
-    CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-      val markdownAst = parsedMarkdownAst(text = content)
-      RecursiveRenderMarkdownAst(astNode = markdownAst)
-    }
+  CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
+    val markdownAst = parsedMarkdownAst(text = content)
+    RecursiveRenderMarkdownAst(astNode = markdownAst)
   }
 }
 

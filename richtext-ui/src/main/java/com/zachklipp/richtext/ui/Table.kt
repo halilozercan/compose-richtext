@@ -4,10 +4,8 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -22,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zachklipp.richtext.ui.string.InternalText
 import kotlin.math.max
 
 /**
@@ -108,13 +107,13 @@ public fun RichTextScope.Table(
         rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
-  val headerStyle = LocalTextStyle.current.merge(tableStyle.headerTextStyle)
+  val headerStyle = currentTextStyle.merge(tableStyle.headerTextStyle)
   val cellPadding = with(LocalDensity.current) {
     tableStyle.cellPadding!!.toDp()
   }
   val cellModifier = Modifier
-      .clipToBounds()
-      .padding(cellPadding)
+    .clipToBounds()
+    .padding(cellPadding)
 
   val styledRows = remember(header, rows, cellModifier) {
     buildList {
@@ -123,7 +122,7 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            ProvideTextStyle(headerStyle) {
+            CompositionLocalProvider(LocalRichTextLocals.current.localTextStyle provides headerStyle) {
               RichText(modifier = cellModifier, children = cell)
             }
           }
@@ -204,12 +203,12 @@ private fun TablePreviewContents(modifier: Modifier = Modifier) {
           .background(Color.White)
           .padding(4.dp),
       headerRow = {
-        cell { Text("Column 1") }
-        cell { Text("Column 2") }
+        cell { InternalText("Column 1") }
+        cell { InternalText("Column 2") }
       }
   ) {
     row {
-      cell { Text("Hello") }
+      cell { InternalText("Hello") }
       cell {
         CodeBlock("Foo bar")
       }
@@ -217,10 +216,10 @@ private fun TablePreviewContents(modifier: Modifier = Modifier) {
     row {
       cell {
         BlockQuote {
-          Text("Stuff")
+          InternalText("Stuff")
         }
       }
-      cell { Text("Hello world this is a really long line that is going to wrap hopefully") }
+      cell { InternalText("Hello world this is a really long line that is going to wrap hopefully") }
     }
   }
 }

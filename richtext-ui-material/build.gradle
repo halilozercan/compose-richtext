@@ -5,11 +5,7 @@ apply from: rootProject.file('gradle/maven-publish.gradle')
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  compileOnly deps.compose.tooling
 
-  api deps.androidx.annotations
-  api deps.compose.foundation
-
-  // TODO Migrate off this.
-//  implementation deps.compose.material
+  api project(':richtext-ui')
+  implementation deps.compose.material
 }
