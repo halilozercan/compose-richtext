@@ -16,10 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.material.ripple.ExperimentalRippleApi
-import androidx.compose.material.ripple.LocalRippleNativeRendering
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,12 +28,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
+private val Samples = listOf<Pair<String, @Composable (isThumbnail: Boolean) -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
   "Markdown Demo" to @Composable { MarkdownSample() },
   "Pagination" to @Composable { PagedSample() },
   "Printable Document" to @Composable { DocumentSample() },
-  "Slideshow" to @Composable { SlideshowSample() },
+  "Slideshow" to @Composable { isThumbnail ->
+    SlideshowSample(configureFullScreenWindow = isThumbnail.not())
+  },
 )
 
 @Preview(showBackground = true)
@@ -50,7 +49,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   Crossfade(currentSampleIndex) { index ->
     index?.let {
       BackHandler(onBack = { currentSampleIndex = null })
-      Samples[it].second()
+      Samples[it].second(isThumbnail = false)
     }
       ?: SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
   }
@@ -68,7 +67,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
         itemsIndexed(Samples) { index, (title, sampleContent) ->
           ListItem(
             Modifier.clickable(onClick = { onSampleClicked(index) }),
-            icon = { SamplePreview(sampleContent) }
+            icon = { SamplePreview { sampleContent(isThumbnail = true) } }
           ) {
             Text(title)
           }

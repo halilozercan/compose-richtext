@@ -32,8 +32,9 @@ import com.zachklipp.richtext.ui.slideshow.Slideshow
 import com.zachklipp.richtext.ui.slideshow.TitleSlide
 
 @Preview(showBackground = true)
-@Composable fun SlideshowSample() {
+@Composable fun SlideshowSample(configureFullScreenWindow: Boolean = false) {
   Slideshow(
+    configureFullScreenWindow = configureFullScreenWindow,
     {
       TitleSlide(
         title = { Text("Title") },

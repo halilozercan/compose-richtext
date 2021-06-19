@@ -98,12 +98,42 @@ public class SlideshowController {
   controller: SlideshowController = rememberSlideshowController(),
   theme: SlideshowTheme = SlideshowTheme()
 ) {
+  Slideshow(
+    configureFullScreenWindow = true,
+    slides = slides,
+    controller = controller,
+    theme = theme
+  )
+}
+
+/**
+ * A slideshow consisting of a sequence of slides which can be navigated through by tapping on them.
+ *
+ * Each slide is defined as a composable function with a [SlideScope] receiver. The [SlideScope]
+ * can be used to get information about the current slide and control navigation.
+ *
+ * A number of scaffold slide composables are provided to create common slide layouts, which can be
+ * customized through the [SlideshowTheme]. These include:
+ *  - [TitleSlide]
+ *  - [BodySlide]
+ *
+ * There are other helpers as well:
+ *  - [SlideDivider]
+ *  - [NavigableContentContainer]
+ */
+@OptIn(ExperimentalAnimationApi::class)
+@Composable public fun Slideshow(
+  configureFullScreenWindow: Boolean,
+  vararg slides: @Composable SlideScope.() -> Unit,
+  controller: SlideshowController = rememberSlideshowController(),
+  theme: SlideshowTheme = SlideshowTheme()
+) {
   if (slides.isEmpty()) return
   val state = remember { SlidesContainerState(slides, controller) }
   val dragState = rememberDraggableState(onDelta = { /* Noop */ })
 
   val rootView = LocalView.current
-  DisposableEffect(rootView) {
+  if (configureFullScreenWindow) DisposableEffect(rootView) {
     configureFullScreenWindow(rootView)
   }
 

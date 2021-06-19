@@ -7,7 +7,6 @@ import android.hardware.display.DisplayManager
 import android.hardware.display.DisplayManager.DisplayListener
 import android.os.Handler
 import android.util.DisplayMetrics
-import android.view.View
 import android.view.WindowManager
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,7 +25,6 @@ import androidx.compose.ui.input.pointer.PointerInputModifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Density
@@ -61,17 +59,9 @@ import androidx.compose.ui.unit.IntSize
     val previewDensityScale = constraints.maxWidth / screenSize.width.toFloat()
     val previewDensity = actualDensity * previewDensityScale
 
-    // Provide a fake host view, since the preview doesn't really belong to this host view.
-    val context = LocalContext.current
-    val previewView = remember {
-      val previewContext = context.applicationContext
-      View(previewContext)
-    }
-
     DisableSelection {
       CompositionLocalProvider(
         LocalDensity provides Density(previewDensity),
-        LocalView provides previewView,
         content = content
       )
     }
