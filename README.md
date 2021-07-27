@@ -38,7 +38,7 @@ might be broken or very non-performant.
 
 ## License
 ```
-Copyright 2020 Zach Klippenstein
+Copyright 2020 Halil Ozercan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
