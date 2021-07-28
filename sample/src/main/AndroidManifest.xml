@@ -13,7 +13,8 @@
 
     <activity
         android:name=".MainActivity"
-        android:configChanges="orientation|screenSize|smallestScreenSize|fontScale|density|layoutDirection">
+        android:configChanges="orientation|screenSize|smallestScreenSize|fontScale|density|layoutDirection"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

@@ -4,9 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState.Error
-import com.google.accompanist.imageloading.ImageLoadState.Loading
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter.State.Error
+import coil.compose.ImagePainter.State.Loading
+import coil.compose.ImagePainter.State.Success
+import coil.compose.rememberImagePainter
 import com.zachklipp.richtext.markdown.extensions.AstStrikethrough
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.FormattedList
@@ -52,6 +54,7 @@ internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
   InlineRichText(text = richText)
 }
 
+@OptIn(ExperimentalCoilApi::class)
 private fun computeRichTextString(
   astNode: AstNode,
   onLinkClicked: (String) -> Unit
@@ -86,11 +89,11 @@ private fun computeRichTextString(
         )
         is AstImage -> {
           richTextStringBuilder.appendInlineContent(content = InlineContent {
-            val painter = rememberCoilPainter(request = currentNode.destination)
-            Image(painter = painter, contentDescription = currentNode.title)
-            when (painter.loadState) {
+            val painter = rememberImagePainter(data = currentNode.destination)
+            when (painter.state) {
               is Loading -> Text("Loading Image...")
               is Error -> Text("Image failed to load")
+              is Success -> Image(painter = painter, contentDescription = currentNode.title)
             }
           })
           null

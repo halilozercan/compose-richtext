@@ -159,7 +159,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       Text(astNode.literal)
     }
     is AstTableRoot -> {
-      renderTable(astNode)
+      RenderTable(astNode)
     }
     else -> visitChildren(astNode)
   }
