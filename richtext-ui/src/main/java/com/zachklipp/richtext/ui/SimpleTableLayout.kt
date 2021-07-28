@@ -71,7 +71,7 @@ internal fun SimpleTableLayout(
     val rowHeights = rowPlaceables.map { row -> row.maxByOrNull { it.height }!!.height }
 
     val tableWidth = constraints.maxWidth
-    val tableHeight = (rowHeights.sumBy { it } + cellSpacingHeight).roundToInt()
+    val tableHeight = (rowHeights.sumOf { it } + cellSpacingHeight).roundToInt()
     layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()

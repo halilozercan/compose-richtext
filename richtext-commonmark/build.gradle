@@ -9,7 +9,7 @@ dependencies {
 
   api project(":richtext-ui")
 
-  implementation deps.accompanist
+  implementation deps.coil
   implementation deps.commonmark.core
   implementation deps.commonmark.strikethrough
   implementation deps.commonmark.tables

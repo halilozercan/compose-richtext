@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap.Round
+import androidx.compose.ui.graphics.StrokeCap.Companion.Round
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +50,6 @@ import com.zachklipp.richtext.ui.string.richTextString
 import com.zachklipp.richtext.ui.string.withFormat
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable fun TextPreview() {
@@ -204,7 +203,7 @@ val slowLoadingImage = InlineContent {
 @OptIn(ExperimentalStdlibApi::class)
 private fun Builder.appendPreviewSentence(
   format: Format,
-  text: String = format.javaClass.simpleName.decapitalize(Locale.US)
+  text: String = format.javaClass.simpleName.replaceFirstChar { it.lowercase() }
 ) {
   append("Here is some ")
   withFormat(format) {

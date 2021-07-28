@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
   body: @Composable () -> Unit,
   footer: @Composable () -> Unit = { SlideNumberFooter() }
 ) {
-  val theme = SlideshowThemeAmbient.current
+  val theme = LocalSlideshowTheme.current
   Column(
     Modifier
       .fillMaxSize()
@@ -49,7 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
  * A simple horizontal divider line which uses the [SlideshowTheme] content color.
  */
 @Composable public fun SlideScope.SlideDivider() {
-  Divider(color = SlideshowThemeAmbient.current.contentColor)
+  Divider(color = LocalSlideshowTheme.current.contentColor)
 }
 
 /**

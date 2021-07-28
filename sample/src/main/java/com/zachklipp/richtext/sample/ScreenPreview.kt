@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.zachklipp.richtext.sample
 
 import android.content.Context
@@ -6,9 +8,10 @@ import android.content.Context.WINDOW_SERVICE
 import android.hardware.display.DisplayManager
 import android.hardware.display.DisplayManager.DisplayListener
 import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
-import android.view.View
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.text.selection.DisableSelection
@@ -65,7 +68,7 @@ import androidx.compose.ui.unit.IntSize
     val context = LocalContext.current
     val previewView = remember {
       val previewContext = context.applicationContext
-      View(previewContext)
+      FrameLayout(previewContext)
     }
 
     DisableSelection {
@@ -106,7 +109,7 @@ private class DisplaySizeCalculator(context: Context) : RememberObserver,
 
   override fun onRemembered() {
     // Update the preview on device rotation, for example.
-    displayManager.registerDisplayListener(this, Handler())
+    displayManager.registerDisplayListener(this, Handler(Looper.getMainLooper()))
   }
 
   override fun onForgotten() {

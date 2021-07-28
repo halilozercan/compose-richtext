@@ -249,15 +249,14 @@ public final class com/zachklipp/richtext/ui/string/ComposableSingletons$TextKt 
 
 public final class com/zachklipp/richtext/ui/string/InlineContent {
 	public static final field $stable I
-	public fun <init> (Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/text/PlaceholderVerticalAlign;Lkotlin/jvm/functions/Function4;)V
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/text/PlaceholderVerticalAlign;Lkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function4;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/functions/Function4;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/zachklipp/richtext/ui/string/RichTextString {
 	public final fun copy (Landroidx/compose/ui/text/AnnotatedString;Ljava/util/Map;)Lcom/zachklipp/richtext/ui/string/RichTextString;
 	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/string/RichTextString;Landroidx/compose/ui/text/AnnotatedString;Ljava/util/Map;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/string/RichTextString;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getLength ()I
 	public final fun getText ()Ljava/lang/String;
 	public fun hashCode ()I
 	public final fun plus (Lcom/zachklipp/richtext/ui/string/RichTextString;)Lcom/zachklipp/richtext/ui/string/RichTextString;
@@ -284,6 +283,7 @@ public final class com/zachklipp/richtext/ui/string/RichTextString$Builder {
 public abstract class com/zachklipp/richtext/ui/string/RichTextString$Format {
 	public static final field $stable I
 	public static final field Companion Lcom/zachklipp/richtext/ui/string/RichTextString$Format$Companion;
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 

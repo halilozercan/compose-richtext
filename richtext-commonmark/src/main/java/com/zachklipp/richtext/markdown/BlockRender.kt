@@ -10,7 +10,7 @@ import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.Table
 
 @Composable
-internal fun RichTextScope.renderTable(node: AstTableRoot) {
+internal fun RichTextScope.RenderTable(node: AstTableRoot) {
   Table(
     headerRow = {
       node.filterChildrenIsInstance<AstTableHeader>()

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.zachklipp.richtext.ui.slideshow
 
 import android.app.Activity
@@ -127,7 +129,7 @@ public class SlideshowController {
   ) {
     CompositionLocalProvider(
       LocalContentColor provides theme.contentColor,
-      SlideshowThemeAmbient provides theme,
+      LocalSlideshowTheme provides theme,
     ) {
       ProvideTextStyle(theme.baseTextStyle) {
         // This crossfade provides transitions between slides.
@@ -182,7 +184,7 @@ public class SlideshowController {
   var scrubberSlide by remember(controller.currentSlide) {
     mutableStateOf(controller.currentSlide.toFloat())
   }
-  val theme = SlideshowThemeAmbient.current
+  val theme = LocalSlideshowTheme.current
 
   BoxWithConstraints(Modifier.fillMaxWidth()) {
     val outerconstraints = constraints
@@ -279,6 +281,7 @@ private fun Modifier.splitClickable(
   )
 }
 
+@Suppress("Deprecated")
 private fun DisposableEffectScope.configureFullScreenWindow(view: View): DisposableEffectResult {
   tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
