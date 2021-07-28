@@ -156,13 +156,13 @@ internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
   unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
 
-private val ListLevelAmbient = compositionLocalOf { 0 }
+private val LocalListLevel = compositionLocalOf { 0 }
 
 /**
- * Composes [children] with their [ListLevelAmbient] reset back to 0.
+ * Composes [children] with their [LocalListLevel] reset back to 0.
  */
 @Composable internal fun RestartListLevel(children: @Composable () -> Unit) {
-  CompositionLocalProvider(ListLevelAmbient provides 0) {
+  CompositionLocalProvider(LocalListLevel provides 0) {
     children()
   }
 }
@@ -195,7 +195,7 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
   val density = LocalDensity.current
   val markerIndent = with(density) { listStyle.markerIndent!!.toDp() }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
-  val currentLevel = ListLevelAmbient.current
+  val currentLevel = LocalListLevel.current
 
   PrefixListLayout(
     count = items.size,
@@ -208,7 +208,7 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
     },
     itemForIndex = { index ->
       RichText {
-        CompositionLocalProvider(ListLevelAmbient provides currentLevel + 1) {
+        CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
       }
@@ -264,7 +264,7 @@ private val ListLevelAmbient = compositionLocalOf { 0 }
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumBy { it.height }
+    val listHeight = itemPlaceables.sumOf { it.height }
     layout(listWidth, listHeight) {
       var y = 0
 

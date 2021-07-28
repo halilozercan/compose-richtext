@@ -98,7 +98,7 @@ public data class RichTextString internal constructor(
   internal val formatObjects: Map<String, Any>
 ) {
 
-  val length: Int get() = taggedString.length
+  private val length: Int get() = taggedString.length
   val text: String get() = taggedString.text
 
   public operator fun plus(other: RichTextString): RichTextString =

@@ -88,7 +88,7 @@ public final class com/zachklipp/richtext/ui/slideshow/SlideshowTheme {
 }
 
 public final class com/zachklipp/richtext/ui/slideshow/SlideshowThemeKt {
-	public static final fun getSlideshowThemeAmbient ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+	public static final fun getLocalSlideshowTheme ()Landroidx/compose/runtime/ProvidableCompositionLocal;
 }
 
 public final class com/zachklipp/richtext/ui/slideshow/TitleSlideKt {

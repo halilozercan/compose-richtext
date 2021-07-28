@@ -6,7 +6,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign.Center
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,5 +45,5 @@ public data class SlideshowTheme(
   val aspectRatio: Float = 16 / 9f
 )
 
-public val SlideshowThemeAmbient: ProvidableCompositionLocal<SlideshowTheme> =
+public val LocalSlideshowTheme: ProvidableCompositionLocal<SlideshowTheme> =
   staticCompositionLocalOf { SlideshowTheme() }

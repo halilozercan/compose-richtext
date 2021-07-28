@@ -370,7 +370,7 @@ private fun DrawScope.drawBreakpoints(
     val childConstraints = constraints.copy(maxHeight = Int.MAX_VALUE)
     val placeables = measurables.map { it.measure(childConstraints) }
     val maxChildWidth = placeables.maxOfOrNull { it.width } ?: 0
-    val totalChildHeight = placeables.sumBy { it.height }
+    val totalChildHeight = placeables.sumOf { it.height }
 
     val actualWidth = constraints.constrainWidth(maxChildWidth)
     val actualHeight = constraints.constrainHeight(totalChildHeight)

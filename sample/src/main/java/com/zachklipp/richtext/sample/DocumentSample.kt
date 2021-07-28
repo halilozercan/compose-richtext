@@ -40,7 +40,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle.Italic
+import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration.Companion.Underline
@@ -240,7 +240,7 @@ private val LargeGap = 96.dp
   verticalArrangement: Arrangement.Vertical = Arrangement.Top,
   content: @Composable () -> Unit
 ) {
-  val uppercaseTitle = remember(title) { title.toUpperCase(Locale.US) }
+  val uppercaseTitle = remember(title) { title.uppercase(Locale.US) }
 
   Column(verticalArrangement = verticalArrangement) {
     Text(
