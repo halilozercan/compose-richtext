@@ -22,5 +22,5 @@ jobs:
           python-version: 3.x
       - run: pip install mkdocs-material
       - run: ./gradlew dokkaGfmCollector
-      - run: mv build/dokka/gfmCollector/compose-richtext docs/api
+      - run: mv build/dokka/gfmCollector/ docs/api
       - run: mkdocs gh-deploy --force
