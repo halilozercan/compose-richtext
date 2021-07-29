@@ -1,7 +1,7 @@
 # Markdown
 
 Library for rendering Markdown in Compose using [CommonMark](https://github.com/commonmark/commonmark-java)
-library to parse, and `richtext-ui` to render.
+library/spec to parse, and `richtext-ui` to render.
 
 ## Gradle
 
@@ -14,7 +14,7 @@ dependencies {
 ## Usage
 
 The simplest way to render markdown is just pass a string to the [`Markdown`](../api/richtext-commonmark/com.zachklipp.richtext.markdown/-markdown.html)
-composable:
+composable under RichText scope:
 
 !!! warning
     Markdown composable has recently changed to be an extension on [RichTextScope](../api/richtext-ui/com.zachklipp.richtext.ui/-rich-text-scope/index.html) instead
