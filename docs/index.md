@@ -21,7 +21,7 @@ These libraries are published to Maven Central, so just add a Gradle dependency:
 
 ```groovy
 dependencies {
-  implementation "com.zachklipp.compose-richtext:<LIBRARY-ARTIFACT>:${richtext_version}"
+  implementation "com.halilibo.compose-richtext:<LIBRARY-ARTIFACT>:${richtext_version}"
 }
 ```
 

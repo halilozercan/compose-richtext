@@ -1,9 +1,9 @@
 site_name: Compose Richtext
 repo_name: compose-richtext
-repo_url: https://github.com/zach-klippenstein/compose-richtext
+repo_url: https://github.com/halilozercan/compose-richtext
 site_description: "A collection of Compose libraries for advanced text formatting and alternative display types."
-site_author: Zach Klippenstein
-site_url: http://www.zachklipp.com/compose-richtext
+site_author: Halil Ozercan
+site_url: https://halilibo.com/compose-richtext
 remote_branch: gh-pages
 edit_uri: edit/main/docs/
 
@@ -28,4 +28,4 @@ nav:
   - printing.md
   - slideshow.md
   - 'API Reference': api/index.md
-  - Changelog: https://github.com/zach-klippenstein/compose-richtext/releases
+  - Changelog: https://github.com/halilozercan/compose-richtext/releases

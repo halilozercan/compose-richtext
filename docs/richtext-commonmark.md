@@ -7,7 +7,7 @@ library to parse, and `richtext-ui` to render.
 
 ```groovy
 dependencies {
-  implementation "com.zachklipp.compose-richtext:richtext-commonmark:${richtext_version}"
+  implementation "com.halilibo.compose-richtext:richtext-commonmark:${richtext_version}"
 }
 ```
 

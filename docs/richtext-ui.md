@@ -7,7 +7,7 @@ compose foundation, such as "bullet lists" and "headings".
 
 ```groovy
 dependencies {
-  implementation "com.zachklipp.compose-richtext:richtext-ui:${richtext_version}"
+  implementation "com.halilibo.compose-richtext:richtext-ui:${richtext_version}"
 }
 ```
 

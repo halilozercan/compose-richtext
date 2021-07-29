@@ -6,7 +6,7 @@ A library for using Compose to generated printed documents, using Android's prin
 
 ```groovy
 dependencies {
-  implementation "com.zachklipp.compose-richtext:printing:${richtext_version}"
+  implementation "com.halilibo.compose-richtext:printing:${richtext_version}"
 }
 ```
 

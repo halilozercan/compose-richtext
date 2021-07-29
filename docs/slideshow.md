@@ -10,7 +10,7 @@ although a few pre-fab scaffolds are provided for common slide layouts.
 
 ```groovy
 dependencies {
-  implementation "com.zachklipp.compose-richtext:slideshow:${richtext_version}"
+  implementation "com.halilibo.compose-richtext:slideshow:${richtext_version}"
 }
 ```
 
