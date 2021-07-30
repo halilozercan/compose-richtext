@@ -13,7 +13,7 @@ dependencies {
 
 ## Usage
 
-The simplest way to render markdown is just pass a string to the [`Markdown`](/api/com.zachklipp.richtext.markdown/-markdown/)
+The simplest way to render markdown is just pass a string to the [`Markdown`](../api/richtext-commonmark/com.zachklipp.richtext.markdown/-markdown.html)
 composable:
 
 ~~~kotlin

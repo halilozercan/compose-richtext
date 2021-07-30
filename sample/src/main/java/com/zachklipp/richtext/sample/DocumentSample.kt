@@ -156,7 +156,7 @@ private val LargeGap = 96.dp
         }
       )
 
-      val sourceUrl = "https://github.com/zach-klippenstein/compose-richtext"
+      val sourceUrl = "https://github.com/halilozercan/compose-richtext"
       Footer(
         if (isBeingPrinted) {
           "This document was built and printed with Compose. It is also available as an app."
