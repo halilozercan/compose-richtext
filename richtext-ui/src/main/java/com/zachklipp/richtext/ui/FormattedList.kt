@@ -173,7 +173,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
  * @sample com.zachklipp.richtext.ui.OrderedListPreview
  * @sample com.zachklipp.richtext.ui.UnorderedListPreview
  */
-// inline is required for https://github.com/zach-klippenstein/compose-richtext/issues/7
+// inline is required for https://github.com/halilozercan/compose-richtext/issues/7
 @Suppress("NOTHING_TO_INLINE")
 @Composable public inline fun RichTextScope.FormattedList(
   listType: ListType,

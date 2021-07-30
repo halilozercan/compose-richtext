@@ -105,6 +105,11 @@ repositories {
   mavenCentral()
 }
 
+tasks.withType(org.jetbrains.dokka.gradle.DokkaMultiModuleTask).configureEach {
+  outputDirectory = rootProject.file('docs/api')
+  failOnWarning = true
+}
+
 // See https://stackoverflow.com/questions/25324880/detect-ide-environment-with-gradle
 def isRunningFromIde() {
   return project.properties["android.injected.invoked.from.ide"] == "true"
@@ -136,6 +141,34 @@ subprojects {
 
       if (project.name != "sample" && !name.contains("test")) {
         freeCompilerArgs += "-Xexplicit-api=strict"
+      }
+    }
+  }
+
+  // taken from https://github.com/google/accompanist/blob/main/build.gradle
+  afterEvaluate {
+    if (tasks.findByName('dokkaHtmlPartial') == null) {
+      // If dokka isn't enabled on this module, skip
+      return
+    }
+
+    tasks.named('dokkaHtmlPartial') {
+      dokkaSourceSets.configureEach {
+        reportUndocumented.set(true)
+        skipEmptyPackages.set(true)
+        skipDeprecated.set(true)
+        jdkVersion.set(11)
+
+        // Add Android SDK packages
+        noAndroidSdkLink.set(false)
+
+        sourceLink {
+          localDirectory.set(project.file("src/main/java"))
+          // URL showing where the source code can be accessed through the web browser
+          remoteUrl.set(new URL("https://github.com/halilozercan/compose-richtext/blob/main/${project.name}/src/main/java"))
+          // Suffix which is used to append the line number to the URL. Use #L for GitHub
+          remoteLineSuffix.set("#L")
+        }
       }
     }
   }

@@ -7,6 +7,8 @@ site_url: https://halilibo.com/compose-richtext
 remote_branch: gh-pages
 edit_uri: edit/main/docs/
 
+docs_dir: docs-gen
+
 theme:
   name: material
   icon:
@@ -27,5 +29,5 @@ nav:
   - richtext-commonmark.md
   - printing.md
   - slideshow.md
-  - 'API Reference': api/index.md
+  - 'API Reference': api/
   - Changelog: https://github.com/halilozercan/compose-richtext/releases
