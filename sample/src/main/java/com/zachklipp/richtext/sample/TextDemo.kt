@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.zachklipp.richtext.ui.RichTextScope
+import com.zachklipp.richtext.ui.material.RichText
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.RichTextString.Builder
 import com.zachklipp.richtext.ui.string.RichTextString.Format
@@ -96,7 +96,9 @@ import kotlinx.coroutines.launch
       }
     }
   }
-  RichTextScope.Text(text)
+  RichText {
+    Text(text)
+  }
 }
 
 private val spinningCross = InlineContent {

@@ -22,10 +22,10 @@ import com.zachklipp.richtext.ui.HorizontalRule
 import com.zachklipp.richtext.ui.ListType
 import com.zachklipp.richtext.ui.ListType.Ordered
 import com.zachklipp.richtext.ui.ListType.Unordered
-import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.Table
+import com.zachklipp.richtext.ui.material.RichText
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {

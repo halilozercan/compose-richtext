@@ -3,6 +3,10 @@
 A library of composables for formatting text using higher-level concepts than are supported by
 compose foundation, such as "bullet lists" and "headings".
 
+RichText UI is a base library that is non-opinionated about higher level design requirements.
+If you are already using `MaterialTheme` in your compose app, you can jump to [RichText UI Material](../richtext-ui-material/index.html)
+for quick start.
+
 ## Gradle
 
 ```groovy
@@ -11,12 +15,34 @@ dependencies {
 }
 ```
 
+## [`BasicRichText`](../api/richtext-ui/com.zachklipp.richtext.ui/-basic-rich-text.html)
+
+Richtext UI does not depend on Material artifact of Compose. Design agnostic API allows anyone
+to adopt RichText UI and its extensions like Markdown to their own design and typography systems.
+
+If you are planning to adopt RichText within your design system, please go ahead and check out [`RichText Material`](../richtext-ui-material/index.html)
+for inspiration.
+
+## [`RichTextScope`](../api/richtext-ui/com.zachklipp.richtext.ui/-rich-text-scope/index.html)
+
+`RichTextScope` is a context wrapper around composables that integrate and play well within RichText
+content. Scope carries information about the current `TextStyle` and `ContentColor` which enables anyone
+to adopt `BasicRichText` by passing their own typography in the composition tree. `ProvideTextStyle` and
+`ProvideContentColor` functions also serve to pass updated text styles from RichText context to outer
+design system.
+
+RichTextScope also offers a `Default` implementation that sets up an internal design system to
+easily test the library.
+
 ## Example
 
-Open the `Demo.kt` file in the `richtext-ui` module to play with this.
+Open the `Demo.kt` file in the `sample` module to play with this. Although the mentioned demo
+uses Material integrated version of `BasicRichText`, they share 99% of their API.
 
 ```kotlin
-RichText(modifier = Modifier.background(color = Color.White)) {
+RichTextScope.Default.BasicRichText(
+  modifier = Modifier.background(color = Color.White)
+) {
   Heading(0, "Paragraphs")
   Text("Simple paragraph.")
   Text("Paragraph with\nmultiple lines.")

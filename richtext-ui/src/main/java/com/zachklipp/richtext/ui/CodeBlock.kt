@@ -1,14 +1,8 @@
-@file:Suppress("RemoveEmptyParenthesesFromAnnotationEntry")
-
 package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -69,7 +63,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  */
 @Composable public fun RichTextScope.CodeBlock(children: @Composable RichTextScope.() -> Unit) {
   val richTextStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
-  val textStyle = LocalTextStyle.current.merge(richTextStyle.textStyle)
+  val textStyle = currentTextStyle.merge(richTextStyle.textStyle)
   val background = Modifier.background(color = richTextStyle.background!!)
   val blockPadding = with(LocalDensity.current) {
     richTextStyle.padding!!.toDp()
@@ -103,7 +97,7 @@ private fun CodeBlockPreview(
   CompositionLocalProvider(LocalContentColor provides contentColor) {
     Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
-        RichTextScope.CodeBlock(
+        RichTextScope.Default.CodeBlock(
           """
               data class Hello(
                 val name: String

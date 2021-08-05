@@ -4,9 +4,6 @@ package com.zachklipp.richtext.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -108,7 +105,7 @@ public fun RichTextScope.Table(
         rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
-  val headerStyle = LocalTextStyle.current.merge(tableStyle.headerTextStyle)
+  val headerStyle = currentTextStyle.merge(tableStyle.headerTextStyle)
   val cellPadding = with(LocalDensity.current) {
     tableStyle.cellPadding!!.toDp()
   }
@@ -124,7 +121,10 @@ public fun RichTextScope.Table(
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
-              RichText(modifier = cellModifier, children = cell)
+              BasicRichText(
+                modifier = cellModifier,
+                children = cell
+              )
             }
           }
         })
@@ -134,7 +134,10 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            RichText(modifier = cellModifier, children = cell)
+            BasicRichText(
+              modifier = cellModifier,
+              children = cell
+            )
           }
         }
       }
@@ -199,7 +202,7 @@ private fun TablePreviewFixedWidth() {
 
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
-  RichTextScope.Table(
+  RichTextScope.Default.Table(
       modifier = modifier
           .background(Color.White)
           .padding(4.dp),

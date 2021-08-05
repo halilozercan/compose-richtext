@@ -1,5 +1,9 @@
+public final class com/zachklipp/richtext/ui/BasicRichTextKt {
+	public static final fun BasicRichText (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
 public abstract interface class com/zachklipp/richtext/ui/BlockQuoteGutter {
-	public abstract fun drawGutter (Landroidx/compose/runtime/Composer;I)V
+	public abstract fun gutterModifier (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/Modifier;
 }
 
 public final class com/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter : com/zachklipp/richtext/ui/BlockQuoteGutter {
@@ -11,12 +15,12 @@ public final class com/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter : com/za
 	public final fun component4 ()Lkotlin/jvm/functions/Function1;
 	public final fun copy-mDbLjjM (JJJLkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
 	public static synthetic fun copy-mDbLjjM$default (Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;JJJLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/BlockQuoteGutter$BarGutter;
-	public fun drawGutter (Landroidx/compose/runtime/Composer;I)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBarWidth-XSAIIZE ()J
 	public final fun getColor ()Lkotlin/jvm/functions/Function1;
 	public final fun getEndMargin-XSAIIZE ()J
 	public final fun getStartMargin-XSAIIZE ()J
+	public fun gutterModifier (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/Modifier;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -74,6 +78,15 @@ public final class com/zachklipp/richtext/ui/ComposableSingletons$FormattedListK
 	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function4;
 }
 
+public final class com/zachklipp/richtext/ui/ComposableSingletons$RichTextScopeKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$RichTextScopeKt;
+	public static field lambda-1 Lkotlin/jvm/functions/Function4;
+	public static field lambda-2 Lkotlin/jvm/functions/Function4;
+	public fun <init> ()V
+	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function4;
+	public final fun getLambda-2$richtext_ui_release ()Lkotlin/jvm/functions/Function4;
+}
+
 public final class com/zachklipp/richtext/ui/ComposableSingletons$TableKt {
 	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$TableKt;
 	public static field lambda-1 Lkotlin/jvm/functions/Function3;
@@ -96,6 +109,9 @@ public final class com/zachklipp/richtext/ui/ComposableSingletons$TableKt {
 public final class com/zachklipp/richtext/ui/FormattedListKt {
 	public static final fun FormattedList (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/ListType;Ljava/util/List;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;I)V
 	public static final fun FormattedList (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/ListType;[Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public static final fun painterUnorderedMarkers ([Landroidx/compose/ui/graphics/painter/Painter;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+	public static final fun textOrderedMarkers (Lcom/zachklipp/richtext/ui/RichTextScope;[Lkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/OrderedMarkers;
+	public static final fun textUnorderedMarkers (Lcom/zachklipp/richtext/ui/RichTextScope;[Ljava/lang/String;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
 }
 
 public final class com/zachklipp/richtext/ui/HeadingKt {
@@ -109,19 +125,19 @@ public final class com/zachklipp/richtext/ui/HorizontalRuleKt {
 
 public final class com/zachklipp/richtext/ui/ListStyle {
 	public static final field Companion Lcom/zachklipp/richtext/ui/ListStyle$Companion;
-	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
 	public final fun component2-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
-	public final fun component3 ()Lcom/zachklipp/richtext/ui/OrderedMarkers;
-	public final fun component4 ()Lcom/zachklipp/richtext/ui/UnorderedMarkers;
-	public final fun copy-iXsHpI0 (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;)Lcom/zachklipp/richtext/ui/ListStyle;
-	public static synthetic fun copy-iXsHpI0$default (Lcom/zachklipp/richtext/ui/ListStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lcom/zachklipp/richtext/ui/OrderedMarkers;Lcom/zachklipp/richtext/ui/UnorderedMarkers;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/ListStyle;
+	public final fun component3 ()Lkotlin/jvm/functions/Function1;
+	public final fun component4 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy-iXsHpI0 (Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/ListStyle;
+	public static synthetic fun copy-iXsHpI0$default (Lcom/zachklipp/richtext/ui/ListStyle;Landroidx/compose/ui/unit/TextUnit;Landroidx/compose/ui/unit/TextUnit;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/ListStyle;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContentsIndent-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
 	public final fun getMarkerIndent-U3a4LBI ()Landroidx/compose/ui/unit/TextUnit;
-	public final fun getOrderedMarkers ()Lcom/zachklipp/richtext/ui/OrderedMarkers;
-	public final fun getUnorderedMarkers ()Lcom/zachklipp/richtext/ui/UnorderedMarkers;
+	public final fun getOrderedMarkers ()Lkotlin/jvm/functions/Function1;
+	public final fun getUnorderedMarkers ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -144,15 +160,28 @@ public abstract interface class com/zachklipp/richtext/ui/OrderedMarkers {
 
 public final class com/zachklipp/richtext/ui/OrderedMarkers$Companion {
 	public final fun invoke (Lkotlin/jvm/functions/Function4;)Lcom/zachklipp/richtext/ui/OrderedMarkers;
-	public final fun text ([Lkotlin/jvm/functions/Function1;)Lcom/zachklipp/richtext/ui/OrderedMarkers;
-}
-
-public final class com/zachklipp/richtext/ui/RichTextKt {
-	public static final fun RichText (Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/zachklipp/richtext/ui/RichTextScope {
-	public static final field INSTANCE Lcom/zachklipp/richtext/ui/RichTextScope;
+	public static final field Companion Lcom/zachklipp/richtext/ui/RichTextScope$Companion;
+	public fun <init> (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;)V
+	public final fun component1 ()Lkotlin/jvm/functions/Function2;
+	public final fun component2 ()Lkotlin/jvm/functions/Function4;
+	public final fun component3 ()Lkotlin/jvm/functions/Function2;
+	public final fun component4 ()Lkotlin/jvm/functions/Function4;
+	public final fun copy (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;)Lcom/zachklipp/richtext/ui/RichTextScope;
+	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/RichTextScope;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/RichTextScope;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContentColor ()Lkotlin/jvm/functions/Function2;
+	public final fun getProvideContentColor ()Lkotlin/jvm/functions/Function4;
+	public final fun getProvideTextStyle ()Lkotlin/jvm/functions/Function4;
+	public final fun getTextStyle ()Lkotlin/jvm/functions/Function2;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/zachklipp/richtext/ui/RichTextScope$Companion {
+	public final fun getDefault ()Lcom/zachklipp/richtext/ui/RichTextScope;
 }
 
 public final class com/zachklipp/richtext/ui/RichTextScopeKt {
@@ -236,15 +265,6 @@ public abstract interface class com/zachklipp/richtext/ui/UnorderedMarkers {
 
 public final class com/zachklipp/richtext/ui/UnorderedMarkers$Companion {
 	public final fun invoke (Lkotlin/jvm/functions/Function3;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
-	public final fun painters ([Landroidx/compose/ui/graphics/painter/Painter;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
-	public final fun text ([Ljava/lang/String;)Lcom/zachklipp/richtext/ui/UnorderedMarkers;
-}
-
-public final class com/zachklipp/richtext/ui/string/ComposableSingletons$TextKt {
-	public static final field INSTANCE Lcom/zachklipp/richtext/ui/string/ComposableSingletons$TextKt;
-	public static field lambda-1 Lkotlin/jvm/functions/Function3;
-	public fun <init> ()V
-	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function3;
 }
 
 public final class com/zachklipp/richtext/ui/string/InlineContent {

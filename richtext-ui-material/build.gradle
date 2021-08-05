@@ -9,9 +9,8 @@ apply from: rootProject.file('gradle/maven-publish.gradle')
 android rootProject.ext.defaultAndroidConfig
 
 dependencies {
-  compileOnly deps.compose.activity
   compileOnly deps.compose.tooling
 
-  api deps.androidx.annotations
-  api deps.compose.foundation
+  api project(":richtext-ui")
+  implementation deps.compose.material
 }
