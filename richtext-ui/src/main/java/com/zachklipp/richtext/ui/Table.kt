@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +44,7 @@ public data class TableStyle(
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
-private val DefaultBorderColor = Color.Black
+private val DefaultBorderColor = Color.Unspecified
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
@@ -93,6 +94,7 @@ public fun RichTextScope.Table(
   bodyRows: RichTextTableRowScope.() -> Unit
 ) {
   val tableStyle = currentRichTextStyle.resolveDefaults().tableStyle!!
+  val contentColor = currentContentColor
   val header = remember(headerRow) {
     headerRow?.let { RowBuilder().apply(headerRow).row }
   }
@@ -153,7 +155,7 @@ public fun RichTextScope.Table(
         Modifier.drawTableBorders(
             rowOffsets = layoutResult.rowOffsets,
             columnOffsets = layoutResult.columnOffsets,
-            borderColor = tableStyle.borderColor!!,
+            borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
             borderStrokeWidth = tableStyle.borderStrokeWidth
         )
       },

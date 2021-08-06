@@ -120,6 +120,14 @@ def isRunningFromIde() {
   return project.properties["android.injected.invoked.from.ide"] == "true"
 }
 
+allprojects {
+  plugins.withId("com.vanniktech.maven.publish") {
+    mavenPublish {
+      sonatypeHost = "S01"
+    }
+  }
+}
+
 subprojects {
   repositories {
     google()
