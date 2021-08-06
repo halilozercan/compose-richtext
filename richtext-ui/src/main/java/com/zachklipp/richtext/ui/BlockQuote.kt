@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -32,8 +30,7 @@ internal val DefaultBlockQuoteGutter = BarGutter()
  * [BarGutter] is provided as the reasonable default of a simple vertical line.
  */
 public interface BlockQuoteGutter {
-  // TODO Make this return a modifier instead?
-  @Composable public fun drawGutter()
+  @Composable public fun RichTextScope.gutterModifier(): Modifier
 
   @Immutable
   public data class BarGutter(
@@ -42,10 +39,11 @@ public interface BlockQuoteGutter {
     val endMargin: TextUnit = 6.sp,
     val color: (contentColor: Color) -> Color = { it.copy(alpha = .25f) }
   ) : BlockQuoteGutter {
-    @Composable override fun drawGutter() {
+    @Composable override fun RichTextScope.gutterModifier(): Modifier {
       with(LocalDensity.current) {
-        val color = color(LocalContentColor.current)
-        val modifier = remember(startMargin, endMargin, barWidth, color) {
+        val color = color(currentContentColor)
+
+        return remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
           Modifier
             .padding(
@@ -55,8 +53,6 @@ public interface BlockQuoteGutter {
             .width(barWidth.toDp())
             .background(color, RoundedCornerShape(50))
         }
-
-        Box(modifier = modifier)
       }
     }
   }
@@ -72,8 +68,8 @@ public interface BlockQuoteGutter {
   }
 
   Layout(content = {
-    gutter.drawGutter()
-    RichText(
+    Box(modifier = with(gutter) { gutterModifier() })
+    BasicRichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),
       children = children
     )
@@ -123,7 +119,7 @@ public interface BlockQuoteGutter {
 ) {
   CompositionLocalProvider(LocalContentColor provides contentColor) {
     Box(Modifier.background(backgroundColor)) {
-      RichTextScope.BlockQuote {
+      RichTextScope.Default.BlockQuote {
         Text("Some text.")
         Text("Another paragraph.")
         BlockQuote {

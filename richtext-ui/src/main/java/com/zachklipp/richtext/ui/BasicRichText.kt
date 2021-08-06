@@ -10,25 +10,25 @@ import androidx.compose.ui.platform.LocalDensity
 
 /**
  * Draws some rich text. Entry point to the compose-richtext library.
+ *
+ * Calling [BasicRichText] requires a [RichTextScope] instance as a receiving context.
+ * Please refer to [RichTextScope] for more information.
  */
 @Composable
-public fun RichText(
+public fun RichTextScope.BasicRichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
   children: @Composable RichTextScope.() -> Unit
 ) {
-  with(RichTextScope) {
-    // Nested RichTexts should not continue list leveling from the parent.
-    RestartListLevel {
-      WithStyle(style) {
-        val resolvedStyle = currentRichTextStyle.resolveDefaults()
-        val blockSpacing = with(LocalDensity.current) {
-          resolvedStyle.paragraphSpacing!!.toDp()
-        }
+  RestartListLevel {
+    WithStyle(style) {
+      val resolvedStyle = currentRichTextStyle.resolveDefaults()
+      val blockSpacing = with(LocalDensity.current) {
+        resolvedStyle.paragraphSpacing!!.toDp()
+      }
 
-        Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
-          children()
-        }
+      Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
+        children()
       }
     }
   }

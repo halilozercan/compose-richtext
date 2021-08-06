@@ -6,10 +6,6 @@ import androidx.annotation.IntRange
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -91,21 +87,12 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
 ) {
   require(level >= 0) { "Level must be at least 0" }
 
-  val richTextStyle = currentRichTextStyle.resolveDefaults()
-  val headingStyleFunction = richTextStyle.headingStyle!!
-
-  // According to [Text] composable's documentation:
-  //   "Additionally, for [color], if [color] is not set, and [style] does not have a color, then
-  //   [AmbientContentColor] will be used - this allows this [Text] or element containing this [Text]
-  //   to adapt to different background colors and still maintain contrast and accessibility."
-  // However, [resolveDefaults] uses a static default color which is [Color.Black].
-  // To fix this issue, we are specifying the text color according to [Text] documentation
-  // before calling [resolveDefaults].
-  val incomingStyle = LocalTextStyle.current.let {
-    it.copy(color = it.color.takeOrElse { LocalContentColor.current })
+  val incomingStyle = currentTextStyle.let {
+    it.copy(color = it.color.takeOrElse { currentContentColor })
   }
   val currentTextStyle = resolveDefaults(incomingStyle, LocalLayoutDirection.current)
 
+  val headingStyleFunction = currentRichTextStyle.resolveDefaults().headingStyle!!
   val headingTextStyle = headingStyleFunction(level, currentTextStyle)
   val mergedTextStyle = currentTextStyle.merge(headingTextStyle)
 
@@ -130,7 +117,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
     Box(Modifier.background(color = backgroundColor)) {
       Column {
         for (level in 0 until 10) {
-          RichTextScope.Heading(level, "Heading ${level + 1}")
+          RichTextScope.Default.Heading(level, "Heading ${level + 1}")
         }
       }
     }

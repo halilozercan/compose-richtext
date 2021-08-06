@@ -1,8 +1,7 @@
 package com.zachklipp.richtext.ui.string
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -17,9 +16,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
-import com.zachklipp.richtext.ui.LocalRichTextStyle
-import com.zachklipp.richtext.ui.RichText
 import com.zachklipp.richtext.ui.RichTextScope
+import com.zachklipp.richtext.ui.currentContentColor
+import com.zachklipp.richtext.ui.currentRichTextStyle
+import com.zachklipp.richtext.ui.currentTextStyle
 import com.zachklipp.richtext.ui.string.RichTextString.Format
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Bold
 import com.zachklipp.richtext.ui.string.RichTextString.Format.Link
@@ -28,14 +28,12 @@ private const val ZERO_WIDTH_CHAR = "\u200B"
 
 @Preview(showBackground = true)
 @Composable private fun TextPreview() {
-  RichText {
-    Text(richTextString {
-      append("I'm ")
-      withFormat(Bold) {
-        append("bold!")
-      }
-    })
-  }
+  RichTextScope.Default.Text(richTextString {
+    append("I'm ")
+    withFormat(Bold) {
+      append("bold!")
+    }
+  })
 }
 
 /**
@@ -50,8 +48,8 @@ public fun RichTextScope.Text(
   modifier: Modifier = Modifier,
   onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
-  val style = LocalRichTextStyle.current.stringStyle
-  val contentColor = LocalContentColor.current
+  val style = currentRichTextStyle.stringStyle
+  val contentColor = currentContentColor
   val annotated = remember(text, style, contentColor) {
     val resolvedStyle = (style ?: RichTextStringStyle.Default).resolveDefaults()
     text.toAnnotatedString(resolvedStyle, contentColor)
@@ -93,12 +91,13 @@ public fun RichTextScope.Text(
   Layout(
     modifier = modifier.then(pressIndicator),
     content = {
-      Text(
+      BasicText(
         text = hack,
         onTextLayout = { result ->
           layoutResult.value = result
           onTextLayout(result)
         },
+        style = currentTextStyle,
         inlineContent = inlineTextContents
       )
     }

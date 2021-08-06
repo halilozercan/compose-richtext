@@ -7,6 +7,7 @@ pluginManagement {
 
 include ':printing'
 include ':richtext-ui'
+include ':richtext-ui-material'
 include ':richtext-commonmark'
 include ':sample'
 include ':slideshow'

@@ -1,4 +1,4 @@
-@file:Suppress("RemoveEmptyParenthesesFromAnnotationEntry")
+@file:Suppress("ComposableNaming")
 
 package com.zachklipp.richtext.ui
 
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.DisableSelection
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -55,15 +54,6 @@ public interface OrderedMarkers {
 
   public companion object {
     /**
-     * Creates an [OrderedMarkers] that will cycle through the values in [markers] for each
-     * indentation level given the index.
-     */
-    public fun text(vararg markers: (index: Int) -> String): OrderedMarkers =
-      OrderedMarkers { level, index ->
-        Text(markers[level % markers.size](index))
-      }
-
-    /**
      * Creates an [OrderedMarkers] from an arbitrary composable given the indentation level and
      * the index.
      */
@@ -81,6 +71,17 @@ public interface OrderedMarkers {
 }
 
 /**
+ * Creates an [OrderedMarkers] that will cycle through the values in [markers] for each
+ * indentation level given the index.
+ */
+public fun RichTextScope.textOrderedMarkers(
+  vararg markers: (index: Int) -> String
+): OrderedMarkers =
+  OrderedMarkers { level, index ->
+    Text(markers[level % markers.size](index))
+  }
+
+/**
  * Defines how to draw list markers for [FormattedList]s that are [Unordered].
  *
  * These are typically some sort of bullet point.
@@ -90,22 +91,6 @@ public interface UnorderedMarkers {
 
   public companion object {
     /**
-     * Creates an [UnorderedMarkers] that will cycle through the values in [markers] for each
-     * indentation level.
-     */
-    public fun text(vararg markers: String): UnorderedMarkers = UnorderedMarkers {
-      Text(markers[it % markers.size])
-    }
-
-    /**
-     * Creates an [UnorderedMarkers] that will cycle through the values in [painters] for each
-     * indentation level.
-     */
-    public fun painters(vararg painters: Painter): UnorderedMarkers = UnorderedMarkers {
-      Box(Modifier.paint(painters[it % painters.size]))
-    }
-
-    /**
      * Creates an [UnorderedMarkers] from an arbitrary composable given the indentation level.
      */
     public operator fun invoke(drawMarker: @Composable (level: Int) -> Unit): UnorderedMarkers =
@@ -113,6 +98,24 @@ public interface UnorderedMarkers {
         @Composable override fun drawMarker(level: Int) = drawMarker(level)
       }
   }
+}
+
+/**
+ * Creates an [UnorderedMarkers] that will cycle through the values in [markers] for each
+ * indentation level.
+ */
+public fun @Composable RichTextScope.textUnorderedMarkers(
+  vararg markers: String
+): UnorderedMarkers = UnorderedMarkers {
+  Text(markers[it % markers.size])
+}
+
+/**
+ * Creates an [UnorderedMarkers] that will cycle through the values in [painters] for each
+ * indentation level.
+ */
+public fun painterUnorderedMarkers(vararg painters: Painter): UnorderedMarkers = UnorderedMarkers {
+  Box(Modifier.paint(painters[it % painters.size]))
 }
 
 /**
@@ -125,8 +128,8 @@ public interface UnorderedMarkers {
 public data class ListStyle(
   val markerIndent: TextUnit? = null,
   val contentsIndent: TextUnit? = null,
-  val orderedMarkers: OrderedMarkers? = null,
-  val unorderedMarkers: UnorderedMarkers? = null
+  val orderedMarkers: (RichTextScope.() -> OrderedMarkers)? = null,
+  val unorderedMarkers: (RichTextScope.() -> UnorderedMarkers)? = null
 ) {
   public companion object {
     public val Default: ListStyle = ListStyle()
@@ -135,19 +138,23 @@ public data class ListStyle(
 
 private val DefaultMarkerIndent = 8.sp
 private val DefaultContentsIndent = 4.sp
-private val DefaultOrderedMarkers = OrderedMarkers.text(
-  { "${it + 1}." },
-  {
-    ('a'..'z').drop(it % 26)
-      .first() + "."
-  },
-  { "${it + 1})" },
-  {
-    ('a'..'z').drop(it % 26)
-      .first() + ")"
-  }
-)
-private val DefaultUnorderedMarkers = UnorderedMarkers.text("•", "◦", "▸", "▹")
+private val DefaultOrderedMarkers: RichTextScope.() -> OrderedMarkers = {
+  textOrderedMarkers(
+    { "${it + 1}." },
+    {
+      ('a'..'z').drop(it % 26)
+        .first() + "."
+    },
+    { "${it + 1})" },
+    {
+      ('a'..'z').drop(it % 26)
+        .first() + ")"
+    }
+  )
+}
+private val DefaultUnorderedMarkers: RichTextScope.() -> UnorderedMarkers = {
+  textUnorderedMarkers("•", "◦", "▸", "▹")
+}
 
 internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
   markerIndent = markerIndent ?: DefaultMarkerIndent,
@@ -202,12 +209,12 @@ private val LocalListLevel = compositionLocalOf { 0 }
     prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
     prefixForIndex = { index ->
       when (listType) {
-        Ordered -> listStyle.orderedMarkers!!.drawMarker(currentLevel, index)
-        Unordered -> listStyle.unorderedMarkers!!.drawMarker(currentLevel)
+        Ordered -> listStyle.orderedMarkers!!().drawMarker(currentLevel, index)
+        Unordered -> listStyle.unorderedMarkers!!().drawMarker(currentLevel)
       }
     },
     itemForIndex = { index ->
-      RichText {
+      BasicRichText {
         CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
@@ -317,7 +324,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
 ) {
   CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
     Box(Modifier.background(color = Color.White)) {
-      RichTextScope.FormattedList(
+      RichTextScope.Default.FormattedList(
         listType = listType,
         items = listOf(
           "Foo",
@@ -335,11 +342,11 @@ private val LocalListLevel = compositionLocalOf { 0 }
       ) { (index, text) ->
         Text(text)
         if (index == 0) {
-          FormattedList(listType, @Composable() {
+          FormattedList(listType, @Composable {
             Text("indented $text")
-            FormattedList(listType, @Composable() {
+            FormattedList(listType, @Composable {
               Text("indented $text")
-              FormattedList(listType, @Composable() {
+              FormattedList(listType, @Composable {
                 Text("indented $text")
               })
             })
