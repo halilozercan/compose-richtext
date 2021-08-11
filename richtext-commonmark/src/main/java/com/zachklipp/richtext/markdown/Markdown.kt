@@ -1,8 +1,10 @@
 package com.zachklipp.richtext.markdown
 
 import android.annotation.SuppressLint
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.text.Html
+import android.util.Log
 import android.widget.TextView
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,15 +13,37 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.viewinterop.AndroidView
-import com.zachklipp.richtext.markdown.extensions.AstTableRoot
+import com.zachklipp.richtext.markdown.node.AstBlockQuote
+import com.zachklipp.richtext.markdown.node.AstBulletList
+import com.zachklipp.richtext.markdown.node.AstDocument
+import com.zachklipp.richtext.markdown.node.AstFencedCodeBlock
+import com.zachklipp.richtext.markdown.node.AstHeading
+import com.zachklipp.richtext.markdown.node.AstHtmlBlock
+import com.zachklipp.richtext.markdown.node.AstIndentedCodeBlock
+import com.zachklipp.richtext.markdown.node.AstInlineNodeType
+import com.zachklipp.richtext.markdown.node.AstLinkReferenceDefinition
+import com.zachklipp.richtext.markdown.node.AstListItem
+import com.zachklipp.richtext.markdown.node.AstNode
+import com.zachklipp.richtext.markdown.node.AstOrderedList
+import com.zachklipp.richtext.markdown.node.AstParagraph
+import com.zachklipp.richtext.markdown.node.AstTableBody
+import com.zachklipp.richtext.markdown.node.AstTableCell
+import com.zachklipp.richtext.markdown.node.AstTableHeader
+import com.zachklipp.richtext.markdown.node.AstTableRoot
+import com.zachklipp.richtext.markdown.node.AstTableRow
+import com.zachklipp.richtext.markdown.node.AstText
+import com.zachklipp.richtext.markdown.node.AstThematicBreak
+import com.zachklipp.richtext.markdown.commonmark.convert
 import com.zachklipp.richtext.ui.BlockQuote
 import com.zachklipp.richtext.ui.CodeBlock
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.Heading
 import com.zachklipp.richtext.ui.HorizontalRule
-import com.zachklipp.richtext.ui.ListType
+import com.zachklipp.richtext.ui.ListType.Ordered
+import com.zachklipp.richtext.ui.ListType.Unordered
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.string.InlineContent
 import com.zachklipp.richtext.ui.string.Text
@@ -39,9 +63,10 @@ public fun RichTextScope.Markdown(
   content: String,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
+  val onLinkClickedState = rememberUpdatedState(onLinkClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
   // see https://issuetracker.google.com/issues/172366483
-  val realLinkClickedHandler = onLinkClicked ?: LocalUriHandler.current.let {
+  val realLinkClickedHandler = onLinkClickedState.value ?: LocalUriHandler.current.let {
     remember {
       { url -> it.openUri(url) }
     }
@@ -78,11 +103,13 @@ public fun RichTextScope.Markdown(
  *
  * @param astNode Root node to start rendering.
  */
+@Suppress("IMPLICIT_CAST_TO_ANY")
 @Composable
 internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
   astNode ?: return
 
-  when (astNode) {
+  when (val astNodeType = astNode.type) {
+    is AstDocument -> visitChildren(node = astNode)
     is AstBlockQuote -> {
       BlockQuote {
         visitChildren(astNode)
@@ -90,22 +117,33 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     }
     is AstBulletList -> {
       FormattedList(
-        listType = ListType.Unordered,
+        listType = Unordered,
+        items = astNode.filterChildrenType<AstListItem>().toList()
+      ) {
+        visitChildren(it)
+      }
+    }
+    is AstOrderedList -> {
+      FormattedList(
+        listType = Ordered,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
         visitChildren(astListItem)
       }
     }
-    is AstFencedCodeBlock -> {
-      CodeBlock(text = astNode.literal)
+    is AstThematicBreak -> {
+      HorizontalRule()
     }
     is AstHeading -> {
-      Heading(level = astNode.level) {
+      Heading(level = astNodeType.level) {
         MarkdownRichText(astNode)
       }
     }
-    is AstThematicBreak -> {
-      HorizontalRule()
+    is AstIndentedCodeBlock -> {
+      CodeBlock(text = astNodeType.literal)
+    }
+    is AstFencedCodeBlock -> {
+      CodeBlock(text = astNodeType.literal)
     }
     is AstHtmlBlock -> {
       Text(text = richTextString {
@@ -116,43 +154,49 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
               TextView(context)
             },
             update = {
-              it.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(astNode.literal, 0)
+              it.text = if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Html.fromHtml(astNodeType.literal, 0)
               } else {
                 @Suppress("DEPRECATION")
-                Html.fromHtml(astNode.literal)
+                Html.fromHtml(astNodeType.literal)
               }
             }
           )
         })
       })
     }
-    is AstIndentedCodeBlock -> {
-      CodeBlock(text = astNode.literal)
-    }
-    is AstOrderedList -> {
-      FormattedList(
-        listType = ListType.Ordered,
-        items = astNode.childrenSequence().toList()
-      ) { astListItem ->
-        visitChildren(astListItem)
-      }
+    is AstLinkReferenceDefinition -> {
+      // TODO(halilozercan)
+      /* no-op */
     }
     is AstParagraph -> {
       MarkdownRichText(astNode)
+    }
+    is AstTableRoot -> {
+      RenderTable(astNode)
     }
     // This should almost never happen. All the possible text
     // nodes must be under either Heading, Paragraph or CustomNode
     // In any case, we should include it here to prevent any
     // non-rendered text problems.
     is AstText -> {
-      Text(astNode.literal)
+      Log.e("MarkdownRichText", "Unexpected raw text while traversing the Abstract Syntax Tree.")
+      Text(astNodeType.literal)
     }
-    is AstTableRoot -> {
-      RenderTable(astNode)
+    is AstListItem -> {
+      Log.e("MarkdownRichText", "Unexpected AstListItem while traversing the Abstract Syntax Tree.")
     }
-    else -> visitChildren(astNode)
-  }
+    is AstInlineNodeType -> {
+      // ignore
+      Log.e("MarkdownRichText", "Unexpected AstInlineNodeType ${astNodeType} while traversing the Abstract Syntax Tree.")
+    }
+    AstTableBody,
+    AstTableHeader,
+    AstTableRow,
+    is AstTableCell -> {
+      Log.e("MarkdownRichText", "Unexpected Table node while traversing the Abstract Syntax Tree.")
+    }
+  }.let {}
 }
 
 /**

@@ -236,7 +236,6 @@ private val LocalListLevel = compositionLocalOf { 0 }
       for (i in 0 until count) {
         // TODO Use the padding in the calculation directly instead of wrapping.
         Box(Modifier.padding(prefixPadding)) {
-
           prefixForIndex(i)
         }
       }
