@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zachklipp.richtext.markdown.Markdown
 import com.zachklipp.richtext.ui.RichTextStyle
-import com.zachklipp.richtext.ui.material.RichText
+import com.zachklipp.richtext.ui.material.MaterialRichText
 import com.zachklipp.richtext.ui.resolveDefaults
 
 @Preview
@@ -70,7 +70,7 @@ import com.zachklipp.richtext.ui.resolveDefaults
 
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
-            RichText(
+            MaterialRichText(
               style = richTextStyle,
               modifier = Modifier.padding(8.dp),
             ) {

@@ -1,7 +1,3 @@
-public final class com/zachklipp/richtext/ui/BasicRichTextKt {
-	public static final fun BasicRichText (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
-}
-
 public abstract interface class com/zachklipp/richtext/ui/BlockQuoteGutter {
 	public abstract fun gutterModifier (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Landroidx/compose/ui/Modifier;
 }
@@ -78,8 +74,8 @@ public final class com/zachklipp/richtext/ui/ComposableSingletons$FormattedListK
 	public final fun getLambda-1$richtext_ui_release ()Lkotlin/jvm/functions/Function4;
 }
 
-public final class com/zachklipp/richtext/ui/ComposableSingletons$RichTextScopeKt {
-	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$RichTextScopeKt;
+public final class com/zachklipp/richtext/ui/ComposableSingletons$RichTextThemeIntegrationKt {
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/ComposableSingletons$RichTextThemeIntegrationKt;
 	public static field lambda-1 Lkotlin/jvm/functions/Function4;
 	public static field lambda-2 Lkotlin/jvm/functions/Function4;
 	public fun <init> ()V
@@ -162,31 +158,12 @@ public final class com/zachklipp/richtext/ui/OrderedMarkers$Companion {
 	public final fun invoke (Lkotlin/jvm/functions/Function4;)Lcom/zachklipp/richtext/ui/OrderedMarkers;
 }
 
+public final class com/zachklipp/richtext/ui/RichTextKt {
+	public static final fun RichText (Landroidx/compose/ui/Modifier;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
 public final class com/zachklipp/richtext/ui/RichTextScope {
-	public static final field Companion Lcom/zachklipp/richtext/ui/RichTextScope$Companion;
-	public fun <init> (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;)V
-	public final fun component1 ()Lkotlin/jvm/functions/Function2;
-	public final fun component2 ()Lkotlin/jvm/functions/Function4;
-	public final fun component3 ()Lkotlin/jvm/functions/Function2;
-	public final fun component4 ()Lkotlin/jvm/functions/Function4;
-	public final fun copy (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;)Lcom/zachklipp/richtext/ui/RichTextScope;
-	public static synthetic fun copy$default (Lcom/zachklipp/richtext/ui/RichTextScope;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;ILjava/lang/Object;)Lcom/zachklipp/richtext/ui/RichTextScope;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContentColor ()Lkotlin/jvm/functions/Function2;
-	public final fun getProvideContentColor ()Lkotlin/jvm/functions/Function4;
-	public final fun getProvideTextStyle ()Lkotlin/jvm/functions/Function4;
-	public final fun getTextStyle ()Lkotlin/jvm/functions/Function2;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/zachklipp/richtext/ui/RichTextScope$Companion {
-	public final fun getDefault ()Lcom/zachklipp/richtext/ui/RichTextScope;
-}
-
-public final class com/zachklipp/richtext/ui/RichTextScopeKt {
-	public static final fun WithStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
-	public static final fun getCurrentRichTextStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Lcom/zachklipp/richtext/ui/RichTextStyle;
+	public static final field INSTANCE Lcom/zachklipp/richtext/ui/RichTextScope;
 }
 
 public final class com/zachklipp/richtext/ui/RichTextStyle {
@@ -219,6 +196,8 @@ public final class com/zachklipp/richtext/ui/RichTextStyle$Companion {
 }
 
 public final class com/zachklipp/richtext/ui/RichTextStyleKt {
+	public static final fun WithStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/RichTextStyle;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public static final fun getCurrentRichTextStyle (Lcom/zachklipp/richtext/ui/RichTextScope;Landroidx/compose/runtime/Composer;I)Lcom/zachklipp/richtext/ui/RichTextStyle;
 	public static final fun merge (Lcom/zachklipp/richtext/ui/RichTextStyle;Lcom/zachklipp/richtext/ui/RichTextStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
 	public static final fun resolveDefaults (Lcom/zachklipp/richtext/ui/RichTextStyle;)Lcom/zachklipp/richtext/ui/RichTextStyle;
 }
@@ -229,6 +208,10 @@ public abstract interface class com/zachklipp/richtext/ui/RichTextTableCellScope
 
 public abstract interface class com/zachklipp/richtext/ui/RichTextTableRowScope {
 	public abstract fun row (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class com/zachklipp/richtext/ui/RichTextThemeIntegrationKt {
+	public static final fun RichTextThemeIntegration (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
 }
 
 public final class com/zachklipp/richtext/ui/TableKt {

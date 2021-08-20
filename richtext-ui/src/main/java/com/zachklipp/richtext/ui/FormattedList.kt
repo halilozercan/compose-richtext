@@ -214,7 +214,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
       }
     },
     itemForIndex = { index ->
-      BasicRichText {
+      RichText {
         CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
@@ -323,7 +323,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
 ) {
   CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
     Box(Modifier.background(color = Color.White)) {
-      RichTextScope.Default.FormattedList(
+      RichTextScope.FormattedList(
         listType = listType,
         items = listOf(
           "Foo",

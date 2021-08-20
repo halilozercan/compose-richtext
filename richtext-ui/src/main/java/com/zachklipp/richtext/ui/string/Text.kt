@@ -27,7 +27,7 @@ private const val ZERO_WIDTH_CHAR = "\u200B"
 
 @Preview(showBackground = true)
 @Composable private fun TextPreview() {
-  RichTextScope.Default.Text(richTextString {
+  RichTextScope.Text(richTextString {
     append("I'm ")
     withFormat(Bold) {
       append("bold!")

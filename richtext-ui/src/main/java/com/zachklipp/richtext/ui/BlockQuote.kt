@@ -69,7 +69,7 @@ public interface BlockQuoteGutter {
 
   Layout(content = {
     Box(modifier = with(gutter) { gutterModifier() })
-    BasicRichText(
+    RichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),
       children = children
     )
@@ -117,9 +117,9 @@ public interface BlockQuoteGutter {
   backgroundColor: Color,
   contentColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  CompositionLocalProvider(LocalInternalContentColor provides contentColor) {
     Box(Modifier.background(backgroundColor)) {
-      RichTextScope.Default.BlockQuote {
+      RichTextScope.BlockQuote {
         Text("Some text.")
         Text("Another paragraph.")
         BlockQuote {

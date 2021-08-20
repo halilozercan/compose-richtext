@@ -15,7 +15,7 @@ dependencies {
 }
 ```
 
-## [`BasicRichText`](../api/richtext-ui/com.zachklipp.richtext.ui/-basic-rich-text.html)
+## [`RichText`](../api/richtext-ui/com.zachklipp.richtext.ui/-basic-rich-text.html)
 
 Richtext UI does not depend on Material artifact of Compose. Design agnostic API allows anyone
 to adopt RichText UI and its extensions like Markdown to their own design and typography systems.
@@ -26,21 +26,27 @@ for inspiration.
 ## [`RichTextScope`](../api/richtext-ui/com.zachklipp.richtext.ui/-rich-text-scope/index.html)
 
 `RichTextScope` is a context wrapper around composables that integrate and play well within RichText
-content. Scope carries information about the current `TextStyle` and `ContentColor` which enables anyone
-to adopt `BasicRichText` by passing their own typography in the composition tree. `ProvideTextStyle` and
-`ProvideContentColor` functions also serve to pass updated text styles from RichText context to outer
-design system.
+content. 
 
-RichTextScope also offers a `Default` implementation that sets up an internal design system to
-easily test the library.
+## [`RichTextThemeIntegration`](../api/richtext-ui/com.zachklipp.richtext.ui/-rich-text-theme-integration.html)
+
+Entry point for integrating app's own typography and theme system with RichText.
+
+API for this integration is highly influenced by how compose-material theming
+is designed. RichText library assumes that almost all Theme/Design systems would
+have composition locals that provide a TextStyle downstream.
+
+Moreover, text style should not include text color by best practice. Content color
+exists to figure out text color in the current context. Light/Dark theming leverages content
+color to influence not just text but other parts of theming as well.
 
 ## Example
 
 Open the `Demo.kt` file in the `sample` module to play with this. Although the mentioned demo
-uses Material integrated version of `BasicRichText`, they share 99% of their API.
+uses Material integrated version of `RichText`, they share exactly the same API.
 
 ```kotlin
-RichTextScope.Default.BasicRichText(
+RichText(
   modifier = Modifier.background(color = Color.White)
 ) {
   Heading(0, "Paragraphs")
