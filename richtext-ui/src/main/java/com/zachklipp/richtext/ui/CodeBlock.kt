@@ -94,10 +94,10 @@ private fun CodeBlockPreview(
   backgroundColor: Color,
   contentColor: Color
 ) {
-  CompositionLocalProvider(LocalContentColor provides contentColor) {
+  CompositionLocalProvider(LocalInternalContentColor provides contentColor) {
     Box(modifier = Modifier.background(color = backgroundColor)) {
       Box(modifier = Modifier.padding(24.dp)) {
-        RichTextScope.Default.CodeBlock(
+        RichTextScope.CodeBlock(
           """
               data class Hello(
                 val name: String

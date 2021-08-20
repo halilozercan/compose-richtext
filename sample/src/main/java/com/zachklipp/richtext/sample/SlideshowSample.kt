@@ -22,7 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.ListType.Ordered
-import com.zachklipp.richtext.ui.material.RichText
+import com.zachklipp.richtext.ui.material.MaterialRichText
 import com.zachklipp.richtext.ui.slideshow.BodySlide
 import com.zachklipp.richtext.ui.slideshow.NavigableContentContainer
 import com.zachklipp.richtext.ui.slideshow.SlideDivider
@@ -90,7 +90,7 @@ import com.zachklipp.richtext.ui.slideshow.TitleSlide
 @OptIn(ExperimentalAnimationApi::class)
 @Composable private fun SlideScope.AnimatedOrderedListSlide() {
   NavigableContentContainer {
-    RichText {
+    MaterialRichText {
       FormattedList(
         listType = Ordered,
         items = listOf(

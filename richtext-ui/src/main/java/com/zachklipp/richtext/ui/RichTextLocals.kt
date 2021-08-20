@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
  * LocalTextStyle also exists in Material package but this one is internal
  * to RichText.
  */
-internal val LocalTextStyle = compositionLocalOf { TextStyle.Default }
+internal val LocalInternalTextStyle = compositionLocalOf { TextStyle.Default }
 
 /**
  * Carries the content color in Composition tree. Default TextStyle
@@ -28,7 +28,7 @@ internal val LocalTextStyle = compositionLocalOf { TextStyle.Default }
  * in the "resolve chain" but Dark Mode is an exception. To also resolve
  * for Dark Mode, content color should be passed to [RichTextScope].
  */
-internal val LocalContentColor = compositionLocalOf { Color.Black }
+internal val LocalInternalContentColor = compositionLocalOf { Color.Black }
 
 /**
  * The current [TextStyle].

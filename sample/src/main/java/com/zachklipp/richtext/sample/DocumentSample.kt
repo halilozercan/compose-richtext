@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import com.zachklipp.richtext.ui.FormattedList
 import com.zachklipp.richtext.ui.ListType.Unordered
-import com.zachklipp.richtext.ui.material.RichText
+import com.zachklipp.richtext.ui.material.MaterialRichText
 import com.zachklipp.richtext.ui.printing.Printable
 import com.zachklipp.richtext.ui.printing.PrintableController
 import com.zachklipp.richtext.ui.printing.hideWhenPrinting
@@ -286,7 +286,7 @@ private val LargeGap = 96.dp
 ) {
   LargeBlurb(organization, location, title, duration) {
     // RichText works seamlessly with printing!
-    RichText {
+    MaterialRichText {
       FormattedList(Unordered, listOf(*descriptionBulletPoints)) {
         Text(it, fontSize = 13.sp)
       }

@@ -123,7 +123,7 @@ public fun RichTextScope.Table(
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
             ProvideTextStyle(headerStyle) {
-              BasicRichText(
+              RichText(
                 modifier = cellModifier,
                 children = cell
               )
@@ -136,7 +136,7 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            BasicRichText(
+            RichText(
               modifier = cellModifier,
               children = cell
             )
@@ -204,7 +204,7 @@ private fun TablePreviewFixedWidth() {
 
 @Composable
 private fun TablePreviewContents(modifier: Modifier = Modifier) {
-  RichTextScope.Default.Table(
+  RichTextScope.Table(
       modifier = modifier
           .background(Color.White)
           .padding(4.dp),

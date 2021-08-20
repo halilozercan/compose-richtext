@@ -25,7 +25,7 @@ import com.zachklipp.richtext.ui.ListType.Unordered
 import com.zachklipp.richtext.ui.RichTextScope
 import com.zachklipp.richtext.ui.RichTextStyle
 import com.zachklipp.richtext.ui.Table
-import com.zachklipp.richtext.ui.material.RichText
+import com.zachklipp.richtext.ui.material.MaterialRichText
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {
@@ -47,7 +47,7 @@ import com.zachklipp.richtext.ui.material.RichText
   style: RichTextStyle? = null,
   header: String = ""
 ) {
-  RichText(
+  MaterialRichText(
     modifier = Modifier.padding(8.dp),
     style = style
   ) {
