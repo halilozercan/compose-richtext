@@ -1,5 +1,8 @@
 # Richtext UI
 
+[![Android Library](https://img.shields.io/badge/Platform-Android-green.svg?style=for-the-badge)](https://developer.android.com/studio/build/dependencies)
+[![JVM Library](https://img.shields.io/badge/Platform-JVM-red.svg?style=for-the-badge)](https://kotlinlang.org/docs/mpp-intro.html)
+
 A library of composables for formatting text using higher-level concepts than are supported by
 compose foundation, such as "bullet lists" and "headings".
 
@@ -15,7 +18,7 @@ dependencies {
 }
 ```
 
-## [`RichText`](../api/richtext-ui/com.zachklipp.richtext.ui/-basic-rich-text.html)
+## [`RichText`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text.html)
 
 Richtext UI does not depend on Material artifact of Compose. Design agnostic API allows anyone
 to adopt RichText UI and its extensions like Markdown to their own design and typography systems.
@@ -23,12 +26,12 @@ to adopt RichText UI and its extensions like Markdown to their own design and ty
 If you are planning to adopt RichText within your design system, please go ahead and check out [`RichText Material`](../richtext-ui-material/index.html)
 for inspiration.
 
-## [`RichTextScope`](../api/richtext-ui/com.zachklipp.richtext.ui/-rich-text-scope/index.html)
+## [`RichTextScope`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-scope/index.html)
 
 `RichTextScope` is a context wrapper around composables that integrate and play well within RichText
 content. 
 
-## [`RichTextThemeIntegration`](../api/richtext-ui/com.zachklipp.richtext.ui/-rich-text-theme-integration.html)
+## [`RichTextThemeIntegration`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-theme-integration.html)
 
 Entry point for integrating app's own typography and theme system with RichText.
 
