@@ -376,6 +376,6 @@ public final class com/zachklipp/richtext/ui/string/RichTextStringStyle$Companio
 }
 
 public final class com/zachklipp/richtext/ui/string/TextKt {
-	public static final fun Text (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/string/RichTextString;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Text-7zs97cc (Lcom/zachklipp/richtext/ui/RichTextScope;Lcom/zachklipp/richtext/ui/string/RichTextString;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function1;ZIILandroidx/compose/runtime/Composer;II)V
 }
 
