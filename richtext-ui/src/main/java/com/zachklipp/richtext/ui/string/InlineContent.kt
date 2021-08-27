@@ -3,12 +3,7 @@
 package com.zachklipp.richtext.ui.string
 
 import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.runtime.*
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.Placeholder
@@ -39,24 +34,17 @@ public class InlineContent(
  * the core Text composable. Whenever any of the contents resize themselves, or if the map changes,
  * a new map will be returned with updated [Placeholder]s.
  */
-@Composable internal fun ManageInlineTextContents(
+@Composable internal fun manageInlineTextContents(
   inlineContents: Map<String, InlineContent>,
-  textConstraints: () -> Constraints,
-  forceTextRelayout: () -> Unit
+  textConstraints: Constraints
 ): Map<String, InlineTextContent> {
   val density = LocalDensity.current
 
-  // The content must fit inside the text's max bounds, but can be as small as it wants.
-  val contentConstraints = fun(): Constraints = textConstraints().let {
-    Constraints(maxWidth = it.maxWidth, maxHeight = it.maxHeight)
-  }
-
   return inlineContents.mapValues { (_, content) ->
-    ReifyInlineContent(
+    reifyInlineContent(
       content,
-      contentConstraints,
-      density,
-      forceTextRelayout
+      Constraints(maxWidth = textConstraints.maxWidth, maxHeight = textConstraints.maxHeight),
+      density
     )
   }
 }
@@ -67,11 +55,10 @@ public class InlineContent(
  * new [InlineTextContent] whenever the content changes size to update how much space is reserved
  * in the text layout for the content.
  */
-@Composable private fun ReifyInlineContent(
+@Composable private fun reifyInlineContent(
   content: InlineContent,
-  contentConstraints: () -> Constraints,
-  density: Density,
-  forceTextRelayout: () -> Unit
+  contentConstraints: Constraints,
+  density: Density
 ): InlineTextContent {
   var size by remember {
     mutableStateOf(
@@ -94,14 +81,13 @@ public class InlineContent(
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.
-        val contentPlaceable = measurables.singleOrNull()?.measure(contentConstraints())
+        val contentPlaceable = measurables.singleOrNull()?.measure(contentConstraints)
           ?: return@Layout layout(0, 0) {}
 
         if (contentPlaceable.width != size?.width
           || contentPlaceable.height != size?.height
         ) {
           size = IntSize(contentPlaceable.width, contentPlaceable.height)
-          forceTextRelayout()
         }
 
         layout(contentPlaceable.width, contentPlaceable.height) {
