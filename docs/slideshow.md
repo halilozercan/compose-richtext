@@ -1,5 +1,7 @@
 # Slideshow
 
+[![Android Library](https://img.shields.io/badge/Platform-Android-green.svg?style=for-the-badge)](https://developer.android.com/studio/build/dependencies)
+
 A library for presenting simple Powerpoint-like slideshows from a phone (e.g. you can share your
 phone screen to a Google Hangout and present that way). Slides can contain any composable content,
 although a few pre-fab scaffolds are provided for common slide layouts.

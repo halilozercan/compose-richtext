@@ -1,5 +1,7 @@
 # Printing
 
+[![Android Library](https://img.shields.io/badge/Platform-Android-green.svg?style=for-the-badge)](https://developer.android.com/studio/build/dependencies)
+
 A library for using Compose to generated printed documents, using Android's printing services.
 
 ## Gradle
