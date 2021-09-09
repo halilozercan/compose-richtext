@@ -24,8 +24,4 @@ android {
   composeOptions {
     kotlinCompilerExtensionVersion = Compose.version
   }
-
-  lint {
-    disable("ComposableModifierFactory", "ModifierFactoryExtensionFunction", "ModifierFactoryReturnType", "ModifierFactoryUnreferencedReceiver")
-  }
 }
