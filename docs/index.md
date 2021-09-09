@@ -62,7 +62,7 @@ configurations.all {
 
 Most importantly, this problem seems to be temporary. Jetbrains team is actively working on it.
 
-![A comment from Jetbrains in Compose Plugin docs.](https://github.com/JetBrains/compose-jb/blob/master/gradle-plugins/compose/src/main/kotlin/org/jetbrains/compose/ComposePlugin.kt#L79)
+[A comment from Jetbrains in Compose Plugin docs.](https://github.com/JetBrains/compose-jb/blob/master/gradle-plugins/compose/src/main/kotlin/org/jetbrains/compose/ComposePlugin.kt#L79)
 
 > It is temporarily solution until we will be publishing all MPP artifacts in Google Maven repository. Or align versions with androidx artifacts and point MPP-android artifacts to androidx artifacts (is it possible?)
 
@@ -72,5 +72,5 @@ The `LIBRARY_ARTIFACT`s for each individual library can be found on their respec
 
 ## Samples
 
-Please check out ![Android](https://github.com/halilozercan/compose-richtext/tree/main/android-sample) and ![Desktop](https://github.com/halilozercan/compose-richtext/tree/main/desktop-sample)
+Please check out [Android](https://github.com/halilozercan/compose-richtext/tree/main/android-sample) and [Desktop](https://github.com/halilozercan/compose-richtext/tree/main/desktop-sample)
 projects to see various use cases of RichText in both platforms.
