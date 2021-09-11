@@ -100,7 +100,6 @@ subprojects {
       artifact(tasks.named("javadocJar").get())
 
       groupId = property("GROUP").toString()
-      artifactId = property("POM_ARTIFACT_ID").toString()
       version = property("VERSION_NAME").toString()
 
       pom {

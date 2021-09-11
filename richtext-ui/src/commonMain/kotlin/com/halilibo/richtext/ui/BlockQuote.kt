@@ -28,7 +28,7 @@ internal val DefaultBlockQuoteGutter = BarGutter()
  * [BarGutter] is provided as the reasonable default of a simple vertical line.
  */
 public interface BlockQuoteGutter {
-  @Composable public fun RichTextScope.gutterModifier(): Modifier
+  @Composable public fun RichTextScope.drawGutter()
 
   @Immutable
   public data class BarGutter(
@@ -37,11 +37,13 @@ public interface BlockQuoteGutter {
     val endMargin: TextUnit = 6.sp,
     val color: (contentColor: Color) -> Color = { it.copy(alpha = .25f) }
   ) : BlockQuoteGutter {
-    @Composable override fun RichTextScope.gutterModifier(): Modifier {
+
+    @Composable
+    override fun RichTextScope.drawGutter() {
       with(LocalDensity.current) {
         val color = color(currentContentColor)
 
-        return remember(startMargin, endMargin, barWidth, color) {
+        val modifier = remember(startMargin, endMargin, barWidth, color) {
           // Padding must come before width.
           Modifier
             .padding(
@@ -51,6 +53,8 @@ public interface BlockQuoteGutter {
             .width(barWidth.toDp())
             .background(color, RoundedCornerShape(50))
         }
+
+        Box(modifier)
       }
     }
   }
@@ -66,7 +70,7 @@ public interface BlockQuoteGutter {
   }
 
   Layout(content = {
-    Box(modifier = with(gutter) { gutterModifier() })
+    with(gutter) { drawGutter() }
     RichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),
       children = children

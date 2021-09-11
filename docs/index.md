@@ -72,5 +72,5 @@ The `LIBRARY_ARTIFACT`s for each individual library can be found on their respec
 
 ## Samples
 
-Please check out ![Android](https://github.com/halilozercan/compose-richtext/tree/main/sample) and ![Desktop](https://github.com/halilozercan/compose-richtext/tree/main/desktop)
+Please check out ![Android](https://github.com/halilozercan/compose-richtext/tree/main/android-sample) and ![Desktop](https://github.com/halilozercan/compose-richtext/tree/main/desktop-sample)
 projects to see various use cases of RichText in both platforms.
