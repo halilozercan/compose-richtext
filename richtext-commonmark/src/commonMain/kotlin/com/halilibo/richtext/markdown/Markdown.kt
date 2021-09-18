@@ -135,10 +135,10 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       }
     }
     is AstIndentedCodeBlock -> {
-      CodeBlock(text = astNodeType.literal)
+      CodeBlock(text = astNodeType.literal.trim())
     }
     is AstFencedCodeBlock -> {
-      CodeBlock(text = astNodeType.literal)
+      CodeBlock(text = astNodeType.literal.trim())
     }
     is AstHtmlBlock -> {
       Text(text = richTextString {
