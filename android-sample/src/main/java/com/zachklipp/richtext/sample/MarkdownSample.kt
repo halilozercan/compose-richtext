@@ -17,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +39,15 @@ import com.halilibo.richtext.ui.resolveDefaults
 @Composable fun MarkdownSample() {
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
+  var isWordWrapEnabled by remember { mutableStateOf(true) }
+
+  LaunchedEffect(isWordWrapEnabled) {
+    richTextStyle = richTextStyle.copy(
+      codeBlockStyle = richTextStyle.codeBlockStyle!!.copy(
+        wordWrap = isWordWrapEnabled
+      )
+    )
+  }
 
   val colors = if (isDarkModeEnabled) darkColors() else lightColors()
   val context = LocalContext.current
@@ -48,19 +58,22 @@ import com.halilibo.richtext.ui.resolveDefaults
         // Config
         Card(elevation = 4.dp) {
           Column {
-            Row(
-              Modifier
-                .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
-                .padding(8.dp),
-              horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-              Checkbox(
-                checked = isDarkModeEnabled,
-                onCheckedChange = { isDarkModeEnabled = it },
+            CheckboxPreference(
+              onClick = {
+                isDarkModeEnabled = !isDarkModeEnabled
+              },
+              checked = isDarkModeEnabled,
+              label = "Dark Mode"
+            )
 
-                )
-              Text("Dark Mode")
-            }
+            CheckboxPreference(
+              onClick = {
+                isWordWrapEnabled = !isWordWrapEnabled
+              },
+              checked = isWordWrapEnabled,
+              label = "Word Wrap"
+            )
+
             RichTextStyleConfig(
               richTextStyle = richTextStyle,
               onChanged = { richTextStyle = it }
@@ -85,6 +98,26 @@ import com.halilibo.richtext.ui.resolveDefaults
         }
       }
     }
+  }
+}
+
+@Composable
+private fun CheckboxPreference(
+  onClick: () -> Unit,
+  checked: Boolean,
+  label: String
+) {
+  Row(
+    Modifier
+      .clickable(onClick = onClick)
+      .padding(8.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp)
+  ) {
+    Checkbox(
+      checked = checked,
+      onCheckedChange = { onClick() },
+    )
+    Text(label)
   }
 }
 

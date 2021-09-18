@@ -1,6 +1,8 @@
 package com.halilibo.richtext.desktop
 
+import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.background
+import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -8,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,31 +23,41 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.singleWindowApplication
 import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.ui.CodeBlockStyle
+import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material.MaterialRichText
 
 fun main(): Unit = singleWindowApplication(
   title = "RichText KMP"
 ) {
   Surface {
-    Row(
-      modifier = Modifier.padding(32.dp).fillMaxSize(),
-      horizontalArrangement = Arrangement.spacedBy(32.dp)
-    ) {
-      var text by remember { mutableStateOf(sampleMarkdown) }
-      BasicTextField(
-        value = text,
-        onValueChange = { text = it },
-        maxLines = Int.MAX_VALUE,
-        modifier = Modifier.weight(1f)
-          .fillMaxHeight()
-          .background(Color.LightGray)
-          .padding(8.dp)
-      )
-      MaterialRichText(
-        modifier = Modifier.weight(1f)
-          .verticalScroll(rememberScrollState())
-      ) {
-        Markdown(content = text)
+    CompositionLocalProvider(LocalScrollbarStyle provides defaultScrollbarStyle().copy(
+      hoverColor = Color.DarkGray,
+      unhoverColor = Color.Gray
+    )) {
+      SelectionContainer {
+        Row(
+          modifier = Modifier.padding(32.dp).fillMaxSize(),
+          horizontalArrangement = Arrangement.spacedBy(32.dp)
+        ) {
+          var text by remember { mutableStateOf(sampleMarkdown) }
+          BasicTextField(
+            value = text,
+            onValueChange = { text = it },
+            maxLines = Int.MAX_VALUE,
+            modifier = Modifier.weight(1f)
+              .fillMaxHeight()
+              .background(Color.LightGray)
+              .padding(8.dp)
+          )
+          MaterialRichText(
+            modifier = Modifier.weight(1f)
+              .verticalScroll(rememberScrollState()),
+            style = RichTextStyle(codeBlockStyle = CodeBlockStyle(wordWrap = true))
+          ) {
+            Markdown(content = text)
+          }
+        }
       }
     }
   }
