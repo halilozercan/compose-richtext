@@ -4,6 +4,7 @@ package com.zachklipp.richtext.sample
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LocalContentColor
@@ -19,6 +20,8 @@ import com.halilibo.richtext.ui.CodeBlock
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.Heading
 import com.halilibo.richtext.ui.HorizontalRule
+import com.halilibo.richtext.ui.InfoPanel
+import com.halilibo.richtext.ui.InfoPanelType
 import com.halilibo.richtext.ui.ListType
 import com.halilibo.richtext.ui.ListType.Ordered
 import com.halilibo.richtext.ui.ListType.Unordered
@@ -83,6 +86,18 @@ import com.halilibo.richtext.ui.material.MaterialRichText
       Text("More text.")
       BlockQuote {
         Text("Nested block quote.")
+      }
+    }
+
+    Heading(0, "Info Panel")
+    InfoPanel(InfoPanelType.Primary, "Only text primary info panel")
+    InfoPanel(InfoPanelType.Success) {
+      Column {
+        Text("Successfully sent some data")
+        HorizontalRule()
+        BlockQuote {
+          Text("This is a quote")
+        }
       }
     }
 
