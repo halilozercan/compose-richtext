@@ -15,7 +15,7 @@ kotlin {
         implementation(compose.runtime)
         implementation(compose.foundation)
         implementation(compose.material)
-        implementation(project(":richtext-ui"))
+        api(project(":richtext-ui"))
       }
     }
     val commonTest by getting
