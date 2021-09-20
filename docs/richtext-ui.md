@@ -86,6 +86,18 @@ RichText(
     }
   }
 
+  Heading(0, "Info Panel")
+  InfoPanel(InfoPanelType.Primary, "Only text primary info panel")
+  InfoPanel(InfoPanelType.Success) {
+    Column {
+      Text("Successfully sent some data")
+      HorizontalRule()
+      BlockQuote {
+        Text("This is a quote")
+      }
+    }
+  }
+
   Heading(0, "Table")
   Table(headerRow = {
     cell { Text("Column 1") }

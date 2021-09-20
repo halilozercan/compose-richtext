@@ -6,8 +6,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.halilibo.richtext.ui.BlockQuoteGutter
-import com.halilibo.richtext.ui.DefaultBlockQuoteGutter
 import com.halilibo.richtext.ui.string.RichTextStringStyle
 
 internal val LocalRichTextStyle = compositionLocalOf { RichTextStyle.Default }
@@ -33,6 +31,7 @@ public data class RichTextStyle(
   val blockQuoteGutter: BlockQuoteGutter? = null,
   val codeBlockStyle: CodeBlockStyle? = null,
   val tableStyle: TableStyle? = null,
+  val infoPanelStyle: InfoPanelStyle? = null,
   val stringStyle: RichTextStringStyle? = null
 ) {
   public companion object {
@@ -47,6 +46,7 @@ public fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = Rich
   blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
   codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
   tableStyle = otherStyle?.tableStyle ?: tableStyle,
+  infoPanelStyle = otherStyle?.infoPanelStyle ?: infoPanelStyle,
   stringStyle = stringStyle?.merge(otherStyle?.stringStyle) ?: otherStyle?.stringStyle
 )
 
@@ -57,6 +57,7 @@ public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
   blockQuoteGutter = blockQuoteGutter ?: DefaultBlockQuoteGutter,
   codeBlockStyle = (codeBlockStyle ?: CodeBlockStyle.Default).resolveDefaults(),
   tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults(),
+  infoPanelStyle = (infoPanelStyle ?: InfoPanelStyle.Default).resolveDefaults(),
   stringStyle = (stringStyle ?: RichTextStringStyle.Default).resolveDefaults()
 )
 
