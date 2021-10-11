@@ -47,18 +47,31 @@ If this is not done, gradle build fails with too many **Duplicate Class** errors
 On the other hand, applying a KMP plugin in a pure Android App might not be the desired approach. Adding the following
 configuration to `build.gradle` file in an Android module that depends on any of `RichText` KMP libraries would solve the problem as well.
 
-```groovy
-configurations.all {
-  resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-    if (details.requested.group.contains('org.jetbrains.compose')) {
-      def groupName = details.requested.group.replace("org.jetbrains.compose", "androidx.compose")
-      details.useTarget(
-          [group: groupName, name: details.requested.name, version: composeVersion] // compose version in your project
-      )
+=== "Groovy"
+    ```groovy
+    configurations.all {
+      resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group.contains('org.jetbrains.compose')) {
+          def groupName = details.requested.group.replace("org.jetbrains.compose", "androidx.compose")
+          details.useTarget(
+              [group: groupName, name: details.requested.name, version: composeVersion] // compose version in your project
+          )
+        }
+      }
     }
-  }
-}
-```
+    ```
+
+=== "Kotlin"
+    ``` kotlin
+    configurations.all {
+      resolutionStrategy.eachDependency {
+        if (requested.group.contains("org.jetbrains.compose")) {
+          val groupName = requested.group.replace("org.jetbrains.compose", "androidx.compose")
+          useTarget("$groupName:${requested.name}:${composeVersion}") // compose version in your project
+        }
+      }
+    }
+    ```
 
 Most importantly, this problem seems to be temporary. Jetbrains team is actively working on it.
 
