@@ -20,17 +20,6 @@ android {
   }
 }
 
-configurations.all {
-  resolutionStrategy.eachDependency {
-    if (requested.group.contains("org.jetbrains.compose")) {
-      val groupName = requested.group.replace("org.jetbrains.compose", "androidx.compose")
-      useTarget(
-          mapOf("group" to groupName, "name" to requested.name, "version" to Compose.version)
-      )
-    }
-  }
-}
-
 dependencies {
   implementation(project(":printing"))
   implementation(project(":richtext-commonmark"))

@@ -20,7 +20,7 @@ object Network {
 }
 
 object Kotlin {
-  val version = "1.5.21"
+  val version = "1.5.31"
   val binaryCompatibilityValidatorPlugin = "org.jetbrains.kotlinx:binary-compatibility-validator:0.5.0"
   val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
   val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
@@ -37,7 +37,7 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val version = "1.0.2"
+  val version = "1.1.0-beta03"
   val activity = "androidx.activity:activity-compose:1.3.0"
   val foundation = "androidx.compose.foundation:foundation:$version"
   val layout = "androidx.compose.foundation:foundation-layout:$version"
@@ -47,8 +47,8 @@ object Compose {
   val tooling = "androidx.compose.ui:ui-tooling:$version"
   val toolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
-  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.0.0-alpha3"
-  val coil = "io.coil-kt:coil-compose:1.3.2"
+  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.0.0-beta5"
+  val coil = "io.coil-kt:coil-compose:1.4.0"
 }
 
 object Commonmark {
@@ -60,6 +60,6 @@ object Commonmark {
 
 object AndroidConfiguration {
   val minSdk = 21
-  val targetSdk = 30
+  val targetSdk = 31
   val compileSdk = targetSdk
 }

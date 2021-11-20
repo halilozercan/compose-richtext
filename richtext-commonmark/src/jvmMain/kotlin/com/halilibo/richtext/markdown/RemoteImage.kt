@@ -7,10 +7,11 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jetbrains.skija.Image.makeFromEncoded
+import org.jetbrains.skia.Image.Companion.makeFromEncoded
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -27,7 +28,7 @@ internal actual fun RemoteImage(
 ) {
   val image by produceState<ImageBitmap?>(null, url) {
     loadFullImage(url)?.let {
-      value = makeFromEncoded(toByteArray(it)).asImageBitmap()
+      value = makeFromEncoded(toByteArray(it)).toComposeImageBitmap()
     }
   }
 

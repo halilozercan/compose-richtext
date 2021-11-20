@@ -13,6 +13,7 @@ import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -167,8 +168,8 @@ public class SlideshowController {
           modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(align = Alignment.BottomCenter),
-          enter = slideInVertically({ it }),
-          exit = slideOutVertically({ it })
+          enter = slideInVertically(spring()) { it },
+          exit = slideOutVertically(spring()) { it }
         ) {
           SlideshowScrubber(controller, slides)
         }

@@ -13,7 +13,7 @@ Each library is documented separately, see the navigation menu for the list. Thi
 an API reference.
 
 !!! warning
-    This project is currently very experimental and mostly just a proof-of-concept at this point.
+    This project is currently experimental and mostly just a proof-of-concept at this point.
     There are no tests and some things might be broken or very non-performant.
 
     The API may also change between releases without deprecation cycles.
@@ -37,47 +37,6 @@ val commonMain by getting {
   }
 }
 ```
-
-### Android 
-
-Desktop Compose and Jetpack Compose for Android use the same modules but they are published under separate 
-artifacts. `org.jetbrains.compose` plugin replaces all `androidx.compose` dependencies with their `org.jetbrains.compose` counterparts.
-If this is not done, gradle build fails with too many **Duplicate Class** errors.
-
-On the other hand, applying a KMP plugin in a pure Android App might not be the desired approach. Adding the following
-configuration to `build.gradle` file in an Android module that depends on any of `RichText` KMP libraries would solve the problem as well.
-
-=== "Groovy"
-    ```groovy
-    configurations.all {
-      resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group.contains('org.jetbrains.compose')) {
-          def groupName = details.requested.group.replace("org.jetbrains.compose", "androidx.compose")
-          details.useTarget(
-              [group: groupName, name: details.requested.name, version: composeVersion] // compose version in your project
-          )
-        }
-      }
-    }
-    ```
-
-=== "Kotlin"
-    ``` kotlin
-    configurations.all {
-      resolutionStrategy.eachDependency {
-        if (requested.group.contains("org.jetbrains.compose")) {
-          val groupName = requested.group.replace("org.jetbrains.compose", "androidx.compose")
-          useTarget("$groupName:${requested.name}:${composeVersion}") // compose version in your project
-        }
-      }
-    }
-    ```
-
-Most importantly, this problem seems to be temporary. Jetbrains team is actively working on it.
-
-[A comment from Jetbrains in Compose Plugin docs.](https://github.com/JetBrains/compose-jb/blob/master/gradle-plugins/compose/src/main/kotlin/org/jetbrains/compose/ComposePlugin.kt#L79)
-
-> It is temporarily solution until we will be publishing all MPP artifacts in Google Maven repository. Or align versions with androidx artifacts and point MPP-android artifacts to androidx artifacts (is it possible?)
 
 ### Library Artifacts
 
