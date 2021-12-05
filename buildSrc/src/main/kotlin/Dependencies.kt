@@ -1,5 +1,5 @@
 object BuildPlugins {
-  val androidGradlePlugin = "com.android.tools.build:gradle:7.0.1"
+  val androidGradlePlugin = "com.android.tools.build:gradle:7.0.3"
 }
 
 object AndroidX {
@@ -23,8 +23,6 @@ object Kotlin {
   val version = "1.5.31"
   val binaryCompatibilityValidatorPlugin = "org.jetbrains.kotlinx:binary-compatibility-validator:0.5.0"
   val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
-  val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-  val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
 
   object Test {
     val common = "org.jetbrains.kotlin:kotlin-test-common"
@@ -47,7 +45,7 @@ object Compose {
   val tooling = "androidx.compose.ui:ui-tooling:$version"
   val toolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
-  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.0.0-beta5"
+  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.0.0"
   val coil = "io.coil-kt:coil-compose:1.4.0"
 }
 
