@@ -10,10 +10,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 
 private val DEFAULT_IMAGE_SIZE = 64.dp
 
@@ -28,7 +30,12 @@ internal actual fun RemoteImage(
   modifier: Modifier,
   contentScale: ContentScale
 ) {
-  val painter = rememberImagePainter(data = url)
+  val painter = rememberAsyncImagePainter(
+    ImageRequest.Builder(LocalContext.current)
+      .data(data = url)
+      .crossfade(true)
+      .build()
+  )
 
   val density = LocalDensity.current
 
