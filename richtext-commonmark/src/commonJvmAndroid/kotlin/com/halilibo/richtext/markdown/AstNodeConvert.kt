@@ -112,12 +112,12 @@ internal fun convert(
       literal = node.literal
     )
     is Image -> {
-      if (node.title == null || node.destination == null) {
+      if (node.destination == null) {
         null
       }
       else {
         AstImage(
-          title = node.title,
+          title = node.title ?: "",
           destination = node.destination
         )
       }
