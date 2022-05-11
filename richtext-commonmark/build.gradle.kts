@@ -41,5 +41,12 @@ kotlin {
         implementation(Commonmark.strikethrough)
       }
     }
+
+    val jvmTest by getting {
+      kotlin.srcDir("src/commonJvmAndroidTest/kotlin")
+      dependencies {
+        implementation(Kotlin.Test.jdk)
+      }
+    }
   }
 }
