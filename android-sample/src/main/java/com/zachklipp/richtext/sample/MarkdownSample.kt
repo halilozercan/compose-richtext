@@ -243,7 +243,9 @@ private val sampleMarkdown = """
 
   ## Images
   
-  Inline-style: 
+  Inline-style:
+   
+  ![random image](https://picsum.photos/seed/picsum/400/400)
   
   ![random image](https://picsum.photos/seed/picsum/400/400 "Text 1")
   
