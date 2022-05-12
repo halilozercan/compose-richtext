@@ -46,7 +46,7 @@ object Compose {
   val toolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
   val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.0.0"
-  val coil = "io.coil-kt:coil-compose:2.0.0-alpha06"
+  val coil = "io.coil-kt:coil-compose:2.0.0"
 }
 
 object Commonmark {
