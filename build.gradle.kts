@@ -22,7 +22,7 @@ buildscript {
 }
 
 plugins {
-  id("org.jetbrains.dokka") version "1.6.0"
+  id("org.jetbrains.dokka") version "1.6.21"
 }
 
 repositories {
@@ -53,7 +53,7 @@ subprojects {
         allWarningsAsErrors = true
       }
 
-      freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+      freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
     }
   }
 

@@ -17,6 +17,8 @@ android {
     targetSdk = AndroidConfiguration.targetSdk
   }
 
+  kotlinOptions { jvmTarget = "11" }
+
   buildFeatures {
     compose = true
   }

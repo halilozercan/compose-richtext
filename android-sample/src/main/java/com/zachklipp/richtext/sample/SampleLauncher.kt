@@ -5,6 +5,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
@@ -61,8 +62,8 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
       topBar = {
         TopAppBar(title = { Text("Samples") })
       }
-    ) {
-      LazyColumn {
+    ) { contentPadding ->
+      LazyColumn(modifier = Modifier.padding(contentPadding)) {
         itemsIndexed(Samples) { index, (title, sampleContent) ->
           ListItem(
             Modifier.clickable(onClick = { onSampleClicked(index) }),

@@ -2,7 +2,6 @@
 
 package com.halilibo.richtext.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -14,14 +13,12 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.ListType.Ordered
@@ -127,6 +124,7 @@ public fun painterUnorderedMarkers(vararg painters: Painter): UnorderedMarkers =
 public data class ListStyle(
   val markerIndent: TextUnit? = null,
   val contentsIndent: TextUnit? = null,
+  val itemSpacing: TextUnit? = null,
   val orderedMarkers: (RichTextScope.() -> OrderedMarkers)? = null,
   val unorderedMarkers: (RichTextScope.() -> UnorderedMarkers)? = null
 ) {
@@ -137,6 +135,7 @@ public data class ListStyle(
 
 private val DefaultMarkerIndent = 8.sp
 private val DefaultContentsIndent = 4.sp
+private val DefaultItemSpacing = 4.sp
 private val DefaultOrderedMarkers: RichTextScope.() -> OrderedMarkers = {
   textOrderedMarkers(
     { "${it + 1}." },
@@ -158,6 +157,7 @@ private val DefaultUnorderedMarkers: RichTextScope.() -> UnorderedMarkers = {
 internal fun ListStyle.resolveDefaults(): ListStyle = ListStyle(
   markerIndent = markerIndent ?: DefaultMarkerIndent,
   contentsIndent = contentsIndent ?: DefaultContentsIndent,
+  itemSpacing = itemSpacing ?: DefaultItemSpacing,
   orderedMarkers = orderedMarkers ?: DefaultOrderedMarkers,
   unorderedMarkers = unorderedMarkers ?: DefaultUnorderedMarkers
 )
@@ -201,10 +201,12 @@ private val LocalListLevel = compositionLocalOf { 0 }
   val density = LocalDensity.current
   val markerIndent = with(density) { listStyle.markerIndent!!.toDp() }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
+  val itemSpacing = with(density) { listStyle.itemSpacing!!.toDp() }
   val currentLevel = LocalListLevel.current
 
   PrefixListLayout(
     count = items.size,
+    itemSpacing = itemSpacing,
     prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
     prefixForIndex = { index ->
       when (listType) {
@@ -213,7 +215,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
       }
     },
     itemForIndex = { index ->
-      RichText {
+      RichText(style = currentRichTextStyle.copy(paragraphSpacing = listStyle.itemSpacing)) {
         CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
@@ -224,6 +226,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
 
 @Composable private fun PrefixListLayout(
   count: Int,
+  itemSpacing: Dp,
   prefixPadding: PaddingValues,
   prefixForIndex: @Composable (index: Int) -> Unit,
   itemForIndex: @Composable (index: Int) -> Unit
@@ -269,7 +272,8 @@ private val LocalListLevel = compositionLocalOf { 0 }
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumOf { it.height }
+    val listHeight = itemPlaceables.sumOf { it.height } +
+        (itemPlaceables.size - 1) * itemSpacing.roundToPx()
     layout(listWidth, listHeight) {
       var y = 0
 
@@ -277,7 +281,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
       for (i in 0 until count) {
         val prefix = prefixPlaceables[i]
         val item = itemPlaceables[i]
-        val rowHeight = max(prefix.height, item.height)
+        val rowHeight = max(prefix.height, item.height) + itemSpacing.roundToPx()
         val size = IntSize(
           width = widestPrefix.width - prefix.width,
           height = rowHeight - prefix.height
