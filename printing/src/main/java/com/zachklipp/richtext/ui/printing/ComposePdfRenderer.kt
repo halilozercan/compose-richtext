@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -177,7 +177,7 @@ private fun createWindowComposeView(
 ): View = ComposeView(activity).apply {
   ViewTreeLifecycleOwner.set(this, activity)
   ViewTreeViewModelStoreOwner.set(this, activity)
-  ViewTreeSavedStateRegistryOwner.set(this, activity)
+  setViewTreeSavedStateRegistryOwner(activity)
   setContent(content)
 }
 

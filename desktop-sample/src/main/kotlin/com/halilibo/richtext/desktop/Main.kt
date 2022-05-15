@@ -4,15 +4,21 @@ import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Slider
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,44 +26,136 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.singleWindowApplication
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.ui.CodeBlockStyle
+import com.halilibo.richtext.ui.RichText
 import com.halilibo.richtext.ui.RichTextStyle
+import com.halilibo.richtext.ui.Table
 import com.halilibo.richtext.ui.material.MaterialRichText
+import com.halilibo.richtext.ui.resolveDefaults
 
 fun main(): Unit = singleWindowApplication(
   title = "RichText KMP"
 ) {
+  var richTextStyle by remember {
+    mutableStateOf(
+      RichTextStyle(
+        codeBlockStyle = CodeBlockStyle(wordWrap = true)
+      ).resolveDefaults()
+    )
+  }
+
   Surface {
-    CompositionLocalProvider(LocalScrollbarStyle provides defaultScrollbarStyle().copy(
-      hoverColor = Color.DarkGray,
-      unhoverColor = Color.Gray
-    )) {
+    CompositionLocalProvider(
+      LocalScrollbarStyle provides defaultScrollbarStyle().copy(
+        hoverColor = Color.DarkGray,
+        unhoverColor = Color.Gray
+      )
+    ) {
       SelectionContainer {
+        var text by remember { mutableStateOf(sampleMarkdown) }
         Row(
-          modifier = Modifier.padding(32.dp).fillMaxSize(),
+          modifier = Modifier
+            .padding(32.dp)
+            .fillMaxSize(),
           horizontalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-          var text by remember { mutableStateOf(sampleMarkdown) }
-          BasicTextField(
-            value = text,
-            onValueChange = { text = it },
-            maxLines = Int.MAX_VALUE,
-            modifier = Modifier.weight(1f)
-              .fillMaxHeight()
-              .background(Color.LightGray)
-              .padding(8.dp)
-          )
+          Column(modifier = Modifier.weight(1f)) {
+            RichTextStyleConfig(richTextStyle = richTextStyle, onChanged = { richTextStyle = it })
+            BasicTextField(
+              value = text,
+              onValueChange = { text = it },
+              maxLines = Int.MAX_VALUE,
+              modifier = Modifier
+                .fillMaxHeight()
+                .background(Color.LightGray)
+                .padding(8.dp)
+            )
+          }
           MaterialRichText(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+              .weight(1f)
               .verticalScroll(rememberScrollState()),
-            style = RichTextStyle(codeBlockStyle = CodeBlockStyle(wordWrap = true))
+            style = richTextStyle
           ) {
             Markdown(content = text)
           }
         }
+      }
+    }
+  }
+}
+
+@Composable
+fun RichTextStyleConfig(
+  richTextStyle: RichTextStyle,
+  onChanged: (RichTextStyle) -> Unit
+) {
+  Column(modifier = Modifier.fillMaxWidth()) {
+    Row {
+      Column(Modifier.weight(1f)) {
+        Text("Paragraph spacing:\n${richTextStyle.paragraphSpacing}")
+        Slider(
+          value = richTextStyle.paragraphSpacing!!.value,
+          valueRange = 0f..20f,
+          onValueChange = {
+            onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
+          }
+        )
+      }
+      Column(Modifier.weight(1f)) {
+        Text("List item spacing:\n${richTextStyle.listStyle!!.itemSpacing}")
+        Slider(
+          value = richTextStyle.listStyle!!.itemSpacing!!.value,
+          valueRange = 0f..20f,
+          onValueChange = {
+            onChanged(
+              richTextStyle.copy(
+                listStyle = richTextStyle.listStyle!!.copy(
+                  itemSpacing = it.sp
+                )
+              )
+            )
+          }
+        )
+      }
+    }
+    Row {
+      Column(Modifier.weight(1f)) {
+        Text("Table cell padding:\n${richTextStyle.tableStyle!!.cellPadding}")
+        Slider(
+          value = richTextStyle.tableStyle!!.cellPadding!!.value,
+          valueRange = 0f..20f,
+          onValueChange = {
+            onChanged(
+              richTextStyle.copy(
+                tableStyle = richTextStyle.tableStyle!!.copy(
+                  cellPadding = it.sp
+                )
+              )
+            )
+          }
+        )
+      }
+      Column(Modifier.weight(1f)) {
+        Text("Table border width padding:\n${richTextStyle.tableStyle!!.borderStrokeWidth!!}")
+        Slider(
+          value = richTextStyle.tableStyle!!.borderStrokeWidth!!,
+          valueRange = 0f..20f,
+          onValueChange = {
+            onChanged(
+              richTextStyle.copy(
+                tableStyle = richTextStyle.tableStyle!!.copy(
+                  borderStrokeWidth = it
+                )
+              )
+            )
+          }
+        )
       }
     }
   }

@@ -8,7 +8,7 @@ dependencies {
   implementation(Compose.tooling)
   // For slot table analysis.
   implementation(Compose.toolingData)
-  implementation(AndroidX.activity)
+  implementation(Compose.activity)
 
   // TODO Migrate off this.
   implementation(Compose.material)
