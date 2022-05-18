@@ -2,13 +2,13 @@ package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.DisposableEffect
 
 @Composable
 internal actual fun HtmlBlock(content: String) {
-  LaunchedEffect(Unit) {
+  DisposableEffect(Unit) {
     println("Html blocks are rendered literally in Compose Desktop!")
+    onDispose {  }
   }
   BasicText(content)
 }
