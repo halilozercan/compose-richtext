@@ -1,6 +1,45 @@
 Changelog
 =========
 
+v0.11.0
+------
+
+_2022_02_09_
+
+* Upgrade Coil to 2.0.0-alpha06 by @msfjarvis in https://github.com/halilozercan/compose-richtext/pull/72
+
+## New Contributors
+* @msfjarvis made their first contribution in https://github.com/halilozercan/compose-richtext/pull/72
+
+**Full Changelog**: https://github.com/halilozercan/compose-richtext/compare/v0.10.0...v0.11.0
+
+v0.10.0
+------
+
+_2021_12_05_
+
+This release celebrates the release of Compose Multiplatform 1.0.0 🎉🥳
+
+v0.9.0
+------
+
+_2021_11_20_
+
+This release is mostly a version bump.
+- Jetpack Compose: 1.1.0-beta03
+- Jetbrains Compose: 1.0.0-beta5
+- Kotlin: 1.5.31
+
+Other changes:
+
+* Fix link formatting in index page of docs by in https://github.com/halilozercan/compose-richtext/pull/60
+* CodeBlock fixes in https://github.com/halilozercan/compose-richtext/pull/62
+* Update CHANGELOG.md to include releases after the transfer in https://github.com/halilozercan/compose-richtext/pull/64
+* Add info panels similar to bootstrap alerts #54 in https://github.com/halilozercan/compose-richtext/pull/63
+
+
+**Full Changelog**: https://github.com/halilozercan/compose-richtext/compare/v0.8.1...v0.9.0
+
 v0.8.1
 ------
 
