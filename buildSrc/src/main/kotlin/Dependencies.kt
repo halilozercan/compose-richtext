@@ -1,5 +1,5 @@
 object BuildPlugins {
-  val androidGradlePlugin = "com.android.tools.build:gradle:7.4.0-alpha01"
+  val androidGradlePlugin = "com.android.tools.build:gradle:7.4.0-alpha02"
 }
 
 object AndroidX {
