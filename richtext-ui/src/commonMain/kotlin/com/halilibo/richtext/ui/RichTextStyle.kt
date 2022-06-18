@@ -21,7 +21,7 @@ internal val DefaultParagraphSpacing: TextUnit = 8.sp
  * @param codeBlockStyle The [CodeBlockStyle] that defines how [CodeBlock]s are drawn.
  * @param tableStyle The [TableStyle] used to render [Table]s.
  * @param stringStyle The [RichTextStringStyle] used to render
- * [RichTextString][com.zachklipp.richtext.ui.string.RichTextString]s
+ * [RichTextString][com.halilibo.richtext.ui.string.RichTextString]s
  */
 @Immutable
 public data class RichTextStyle(

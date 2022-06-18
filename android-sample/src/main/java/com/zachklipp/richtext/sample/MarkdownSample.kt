@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,10 +109,9 @@ private fun CheckboxPreference(
   label: String
 ) {
   Row(
-    Modifier
-      .clickable(onClick = onClick)
-      .padding(8.dp),
-    horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Modifier.clickable(onClick = onClick),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalAlignment = Alignment.CenterVertically
   ) {
     Checkbox(
       checked = checked,

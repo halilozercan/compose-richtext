@@ -20,7 +20,7 @@ object Network {
 }
 
 object Kotlin {
-  val version = "1.6.21"
+  val version = "1.6.10"
   val binaryCompatibilityValidatorPlugin = "org.jetbrains.kotlinx:binary-compatibility-validator:0.9.0"
   val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
 
@@ -35,11 +35,12 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val version = "1.2.0-beta01"
+  val version = "1.1.1"
   val activity = "androidx.activity:activity-compose:1.5.0-rc01"
   val foundation = "androidx.compose.foundation:foundation:$version"
   val layout = "androidx.compose.foundation:foundation-layout:$version"
   val material = "androidx.compose.material:material:$version"
+  val material3 = "androidx.compose.material3:material3:1.0.0-alpha13"
   val icons = "androidx.compose.material:material-icons-extended:$version"
   val test = "androidx.ui:ui-test:$version"
   val tooling = "androidx.compose.ui:ui-tooling:$version"
