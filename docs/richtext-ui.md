@@ -8,7 +8,7 @@ compose foundation, such as "bullet lists" and "headings".
 
 RichText UI is a base library that is non-opinionated about higher level design requirements.
 If you are already using `MaterialTheme` in your compose app, you can jump to [RichText UI Material](../richtext-ui-material/index.html)
-for quick start.
+for quick start. There is also Material3 flavor at [RichText UI Material3](../richtext-ui-material3/index.html)
 
 ## Gradle
 

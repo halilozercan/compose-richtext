@@ -10,6 +10,7 @@ pluginManagement {
 include(":printing")
 include(":richtext-ui")
 include(":richtext-ui-material")
+include(":richtext-ui-material3")
 include(":richtext-commonmark")
 include(":android-sample")
 include(":desktop-sample")
