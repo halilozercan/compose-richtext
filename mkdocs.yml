@@ -27,6 +27,7 @@ markdown_extensions:
 nav:
   - index.md
   - richtext-ui-material.md
+  - richtext-ui-material3.md
   - richtext-ui.md
   - richtext-commonmark.md
   - printing.md
