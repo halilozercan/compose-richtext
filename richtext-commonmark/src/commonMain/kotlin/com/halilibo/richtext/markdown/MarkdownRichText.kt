@@ -56,11 +56,11 @@ import com.halilibo.richtext.ui.string.withFormat
  * @param astNode Root node to accept as Text Content container.
  */
 @Composable
-internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
+internal fun RichTextScope.MarkdownRichText(averageLinkColour:Boolean, astNode: AstNode) {
   val onLinkClicked = LocalOnLinkClicked.current
   // Assume that only RichText nodes reside below this level.
-  val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, onLinkClicked)
+  val richText = remember(astNode, averageLinkColour, onLinkClicked) {
+    computeRichTextString(astNode, averageLinkColour, onLinkClicked)
   }
 
   Text(text = richText)
@@ -68,6 +68,7 @@ internal fun RichTextScope.MarkdownRichText(astNode: AstNode) {
 
 private fun computeRichTextString(
   astNode: AstNode,
+  averageLinkColour: Boolean,
   onLinkClicked: (String) -> Unit
 ): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
@@ -115,6 +116,7 @@ private fun computeRichTextString(
           null
         }
         is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
+          averageLinkColour = averageLinkColour,
           onClick = { onLinkClicked(currentNodeType.destination) }
         ))
         is AstSoftLineBreak -> {
@@ -132,6 +134,7 @@ private fun computeRichTextString(
         }
         is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
           RichTextString.Format.Link(
+            averageLinkColour = averageLinkColour,
             onClick = { onLinkClicked(currentNodeType.destination) }
           ))
         else -> null

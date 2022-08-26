@@ -43,10 +43,12 @@ import com.halilibo.richtext.ui.string.richTextString
  *
  * @param content Markdown text. No restriction on length.
  * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
+ * @param averageLinkColour Apply colour averaging to the link colour. False by default, enable for the old behaviour.
  */
 @Composable
 public fun RichTextScope.Markdown(
   content: String,
+  averageLinkColour:Boolean = false,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
@@ -60,7 +62,7 @@ public fun RichTextScope.Markdown(
 
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
     val markdownAst = parsedMarkdownAst(text = content)
-    RecursiveRenderMarkdownAst(astNode = markdownAst)
+    RecursiveRenderMarkdownAst(averageLinkColour=averageLinkColour, astNode = markdownAst)
   }
 }
 
@@ -100,14 +102,14 @@ internal expect fun parsedMarkdownAst(text: String): AstNode?
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
 @Composable
-internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
+internal fun RichTextScope.RecursiveRenderMarkdownAst(averageLinkColour:Boolean, astNode: AstNode?) {
   astNode ?: return
 
   when (val astNodeType = astNode.type) {
-    is AstDocument -> visitChildren(node = astNode)
+    is AstDocument -> visitChildren(averageLinkColour = averageLinkColour, node = astNode)
     is AstBlockQuote -> {
       BlockQuote {
-        visitChildren(astNode)
+        visitChildren(averageLinkColour = averageLinkColour, node = astNode)
       }
     }
     is AstBulletList -> {
@@ -115,7 +117,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()
       ) {
-        visitChildren(it)
+        visitChildren(averageLinkColour = averageLinkColour, node = it)
       }
     }
     is AstOrderedList -> {
@@ -123,7 +125,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         listType = Ordered,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
-        visitChildren(astListItem)
+        visitChildren(averageLinkColour = averageLinkColour, node = astListItem)
       }
     }
     is AstThematicBreak -> {
@@ -131,7 +133,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     }
     is AstHeading -> {
       Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode)
+        MarkdownRichText(averageLinkColour,astNode)
       }
     }
     is AstIndentedCodeBlock -> {
@@ -152,10 +154,10 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       /* no-op */
     }
     is AstParagraph -> {
-      MarkdownRichText(astNode)
+      MarkdownRichText(averageLinkColour, astNode)
     }
     is AstTableRoot -> {
-      RenderTable(astNode)
+      RenderTable(averageLinkColour, astNode)
     }
     // This should almost never happen. All the possible text
     // nodes must be under either Heading, Paragraph or CustomNode
@@ -188,9 +190,9 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
  * @param node Root ASTNode whose children will be visited.
  */
 @Composable
-internal fun RichTextScope.visitChildren(node: AstNode?) {
+internal fun RichTextScope.visitChildren(averageLinkColour:Boolean, node: AstNode?) {
   node?.childrenSequence()?.forEach {
-    RecursiveRenderMarkdownAst(astNode = it)
+    RecursiveRenderMarkdownAst(averageLinkColour = averageLinkColour, astNode = it)
   }
 }
 
