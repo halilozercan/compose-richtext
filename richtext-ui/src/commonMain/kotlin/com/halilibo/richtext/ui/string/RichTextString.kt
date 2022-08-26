@@ -215,21 +215,26 @@ public data class RichTextString internal constructor(
       ) = richTextStyle.codeStyle
     }
 
-    public data class Link(val onClick: () -> Unit) : Format() {
+    public data class Link(val averageLinkColour: Boolean = false, val onClick: () -> Unit) :
+      Format() {
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.linkStyle!!.let { style ->
-        // Tweak the colors a bit to make it more likely to contrast with the background color.
-        val averagedValues = Color(
-          red = ((contentColor.red + style.color.red) * .5f
-              + style.color.red * .5f).coerceAtMost(1f),
-          green = ((contentColor.green + style.color.green) * .5f
-              + style.color.green * .5f).coerceAtMost(1f),
-          blue = ((contentColor.blue + style.color.blue) * .5f
-              + style.color.blue * .5f).coerceAtMost(1f)
-        )
-        style.copy(color = averagedValues)
+        if(averageLinkColour) {
+          // Tweak the colors a bit to make it more likely to contrast with the background color.
+          val averagedValues = Color(
+            red = ((contentColor.red + style.color.red) * .5f
+                + style.color.red * .5f).coerceAtMost(1f),
+            green = ((contentColor.green + style.color.green) * .5f
+                + style.color.green * .5f).coerceAtMost(1f),
+            blue = ((contentColor.blue + style.color.blue) * .5f
+                + style.color.blue * .5f).coerceAtMost(1f)
+          )
+          style.copy(color = averagedValues)
+        }else{
+          style
+        }
       }
 
       internal companion object {
