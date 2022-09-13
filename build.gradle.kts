@@ -22,7 +22,7 @@ buildscript {
 }
 
 plugins {
-  id("org.jetbrains.dokka") version "1.6.10"
+  id("org.jetbrains.dokka") version "1.7.10"
 }
 
 repositories {

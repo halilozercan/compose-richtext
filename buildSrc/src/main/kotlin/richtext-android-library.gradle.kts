@@ -13,7 +13,7 @@ android {
   compileSdk = AndroidConfiguration.compileSdk
 
   defaultConfig {
-    minSdk = 21
+    minSdk = AndroidConfiguration.minSdk
     targetSdk = AndroidConfiguration.targetSdk
   }
 
@@ -24,6 +24,6 @@ android {
   }
 
   composeOptions {
-    kotlinCompilerExtensionVersion = Compose.version
+    kotlinCompilerExtensionVersion = Compose.compilerVersion
   }
 }
