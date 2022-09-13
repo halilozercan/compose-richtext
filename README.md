@@ -3,6 +3,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.halilibo.compose-richtext/richtext-ui.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.halilibo.compose-richtext%22)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
+> **Warning**
+> compose-richtext library and all its modules are very experimental and undermaintained. The roadmap is unclear at the moment. Thanks for your patience. Fork option is available as always.
+
 A collection of Compose libraries for working with rich text formatting and documents.
 
 `richtext-ui`, `richtext-commonmark`, and `richtext-material-ui` are Kotlin Multiplatform Compose Libraries.
@@ -41,7 +44,7 @@ might be broken or very non-performant.
 
 ## License
 ```
-Copyright 2020 Halil Ozercan
+Copyright 2022 Halil Ozercan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

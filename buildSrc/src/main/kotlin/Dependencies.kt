@@ -1,5 +1,5 @@
 object BuildPlugins {
-  val androidGradlePlugin = "com.android.tools.build:gradle:7.4.0-alpha01"
+  val androidGradlePlugin = "com.android.tools.build:gradle:7.2.2"
 }
 
 object AndroidX {
@@ -20,7 +20,7 @@ object Network {
 }
 
 object Kotlin {
-  val version = "1.6.10"
+  val version = "1.7.10"
   val binaryCompatibilityValidatorPlugin = "org.jetbrains.kotlinx:binary-compatibility-validator:0.9.0"
   val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
 
@@ -35,23 +35,22 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val version = "1.1.1"
-  val activity = "androidx.activity:activity-compose:1.5.0-rc01"
+  val version = "1.2.1"
+  val compilerVersion = "1.3.1"
+  val activity = "androidx.activity:activity-compose:1.6.0-rc01"
   val foundation = "androidx.compose.foundation:foundation:$version"
-  val layout = "androidx.compose.foundation:foundation-layout:$version"
   val material = "androidx.compose.material:material:$version"
-  val material3 = "androidx.compose.material3:material3:1.0.0-alpha13"
+  val material3 = "androidx.compose.material3:material3:1.0.0-beta02"
   val icons = "androidx.compose.material:material-icons-extended:$version"
   val test = "androidx.ui:ui-test:$version"
   val tooling = "androidx.compose.ui:ui-tooling:$version"
-  val toolingPreview = "androidx.compose.ui:ui-tooling-preview:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
-  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.0.0"
-  val coil = "io.coil-kt:coil-compose:2.0.0"
+  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.2.0-alpha01-dev620"
+  val coil = "io.coil-kt:coil-compose:2.2.1"
 }
 
 object Commonmark {
-  private val version = "0.18.0"
+  private val version = "0.19.0"
   val core = "org.commonmark:commonmark:$version"
   val tables = "org.commonmark:commonmark-ext-gfm-tables:$version"
   val strikethrough = "org.commonmark:commonmark-ext-gfm-strikethrough:$version"
@@ -59,6 +58,6 @@ object Commonmark {
 
 object AndroidConfiguration {
   val minSdk = 21
-  val targetSdk = 32
+  val targetSdk = 33
   val compileSdk = targetSdk
 }
