@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.style.TextOverflow
 import com.halilibo.richtext.ui.ClickableText
@@ -48,18 +49,24 @@ public fun RichTextScope.Text(
       softWrap = softWrap,
       overflow = overflow,
       maxLines = maxLines,
+      isOffsetClickable = { offset ->
+        annotated.getConsumableAnnotations(text.formatObjects, offset).any()
+      },
       onClick = { offset ->
-        annotated.getStringAnnotations(Format.FormatAnnotationScope, offset, offset)
-          .asSequence()
-          .mapNotNull {
-            Format.findTag(
-              it.item,
-              text.formatObjects
-            ) as? Format.Link
-          }
+        annotated.getConsumableAnnotations(text.formatObjects, offset)
           .firstOrNull()
           ?.let { link -> link.onClick() }
       }
     )
   }
 }
+
+private fun AnnotatedString.getConsumableAnnotations(textFormatObjects: Map<String, Any>, offset: Int): Sequence<Format.Link> =
+  getStringAnnotations(Format.FormatAnnotationScope, offset, offset)
+    .asSequence()
+    .mapNotNull {
+      Format.findTag(
+        it.item,
+        textFormatObjects
+      ) as? Format.Link
+    }
