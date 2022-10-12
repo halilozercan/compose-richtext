@@ -1,3 +1,5 @@
+import org.jetbrains.compose.compose
+
 plugins {
   id("richtext-kmp-library")
   id("org.jetbrains.compose") version Compose.desktopVersion
@@ -14,6 +16,7 @@ kotlin {
       dependencies {
         implementation(compose.runtime)
         implementation(compose.foundation)
+        implementation(Compose.multiplatformUiUtil)
       }
     }
     val commonTest by getting
