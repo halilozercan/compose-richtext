@@ -1,6 +1,6 @@
 plugins {
   id("richtext-kmp-library")
-  id("org.jetbrains.compose") version "1.2.0-alpha01-dev764"
+  id("org.jetbrains.compose") version Compose.desktopVersion
   id("org.jetbrains.dokka")
 }
 

@@ -37,6 +37,7 @@ val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 object Compose {
   val version = "1.2.1"
   val compilerVersion = "1.3.1"
+  val desktopVersion = "1.2.0"
   val activity = "androidx.activity:activity-compose:1.6.0-rc01"
   val foundation = "androidx.compose.foundation:foundation:$version"
   val material = "androidx.compose.material:material:$version"
@@ -45,7 +46,7 @@ object Compose {
   val test = "androidx.ui:ui-test:$version"
   val tooling = "androidx.compose.ui:ui-tooling:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
-  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:1.2.0-alpha01-dev620"
+  val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:$desktopVersion"
   val coil = "io.coil-kt:coil-compose:2.2.1"
 }
 
