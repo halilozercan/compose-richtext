@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
-import com.halilibo.richtext.ui.DefaultCodeBlockBackground
+import com.halilibo.richtext.ui.DefaultCodeBlockBackgroundColor
 import com.halilibo.richtext.ui.string.RichTextString.Builder
 import com.halilibo.richtext.ui.string.RichTextString.Format
 import com.halilibo.richtext.ui.string.RichTextString.Format.Bold
@@ -206,7 +206,7 @@ public data class RichTextString internal constructor(
       internal val DefaultStyle = SpanStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Medium,
-        background = DefaultCodeBlockBackground
+        background = DefaultCodeBlockBackgroundColor
       )
 
       override fun getStyle(
