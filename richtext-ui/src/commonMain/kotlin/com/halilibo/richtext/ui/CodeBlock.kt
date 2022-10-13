@@ -20,15 +20,14 @@ import androidx.compose.ui.unit.sp
  * Defines how [CodeBlock]s are rendered.
  *
  * @param textStyle The [TextStyle] to use for the block.
- * @param background The [Color] of a code block, drawn behind the text.
+ * @param modifier The [Modifier] to use for the block.
  * @param padding The amount of space between the edge of the text and the edge of the background.
  * @param wordWrap Whether a code block breaks the lines or scrolls horizontally.
  */
 @Immutable
 public data class CodeBlockStyle(
   val textStyle: TextStyle? = null,
-  // TODO Make background just a modifier instead?
-  val background: Color? = null,
+  val modifier: Modifier? = null,
   val padding: TextUnit? = null,
   val wordWrap: Boolean? = null
 ) {
@@ -40,13 +39,15 @@ public data class CodeBlockStyle(
 private val DefaultCodeBlockTextStyle = TextStyle(
   fontFamily = FontFamily.Monospace
 )
-internal val DefaultCodeBlockBackground: Color = Color.LightGray.copy(alpha = .5f)
+internal val DefaultCodeBlockBackgroundColor: Color = Color.LightGray.copy(alpha = .5f)
+private val DefaultCodeBlockModifier: Modifier =
+  Modifier.background(color = DefaultCodeBlockBackgroundColor)
 private val DefaultCodeBlockPadding: TextUnit = 16.sp
 private const val DefaultCodeWordWrap: Boolean = true
 
 internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
   textStyle = textStyle ?: DefaultCodeBlockTextStyle,
-  background = background ?: DefaultCodeBlockBackground,
+  modifier = modifier ?: DefaultCodeBlockModifier,
   padding = padding ?: DefaultCodeBlockPadding,
   wordWrap = wordWrap ?: DefaultCodeWordWrap
 )
@@ -78,6 +79,7 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 ) {
   val codeBlockStyle = currentRichTextStyle.resolveDefaults().codeBlockStyle!!
   val textStyle = currentTextStyle.merge(codeBlockStyle.textStyle)
+  val modifier = codeBlockStyle.modifier!!
   val blockPadding = with(LocalDensity.current) {
     codeBlockStyle.padding!!.toDp()
   }
@@ -85,10 +87,10 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
 
   CodeBlockLayout(
     wordWrap = resolvedWordWrap
-  ) { modifier ->
+  ) { layoutModifier ->
     Box(
-      modifier = modifier
-        .background(color = codeBlockStyle.background!!)
+      modifier = layoutModifier
+        .then(modifier)
         .padding(blockPadding)
     ) {
       ProvideTextStyle(textStyle) {
