@@ -1,6 +1,5 @@
 package com.halilibo.richtext.ui
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
@@ -8,6 +7,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.pointer.pointerInput
@@ -15,6 +15,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import com.halilibo.richtext.ui.util.detectTapGesturesIf
 
 /**
  * Carries the text style in Composition tree. [Heading], [CodeBlock],
@@ -111,11 +112,15 @@ internal fun RichTextScope.ClickableText(
   maxLines: Int = Int.MAX_VALUE,
   onTextLayout: (TextLayoutResult) -> Unit = {},
   inlineContent: Map<String, InlineTextContent> = mapOf(),
+  isOffsetClickable: (Int) -> Boolean,
   onClick: (Int) -> Unit
 ) {
   val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+  val shouldHandle = { pos: Offset ->
+    layoutResult.value?.getOffsetForPosition(pos)?.let { isOffsetClickable(it) } ?: false
+  }
   val pressIndicator = Modifier.pointerInput(onClick) {
-    detectTapGestures { pos ->
+    detectTapGesturesIf(predicate = shouldHandle) { pos ->
       layoutResult.value?.let { layoutResult ->
         onClick(layoutResult.getOffsetForPosition(pos))
       }

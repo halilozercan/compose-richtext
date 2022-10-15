@@ -47,6 +47,7 @@ object Compose {
   val tooling = "androidx.compose.ui:ui-tooling:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
   val desktopPreview = "org.jetbrains.compose.ui:ui-tooling-preview-desktop:$desktopVersion"
+  val multiplatformUiUtil = "org.jetbrains.compose.ui:ui-util:$desktopVersion"
   val coil = "io.coil-kt:coil-compose:2.2.1"
 }
 
