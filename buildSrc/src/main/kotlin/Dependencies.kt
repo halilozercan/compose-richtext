@@ -56,6 +56,7 @@ object Commonmark {
   val core = "org.commonmark:commonmark:$version"
   val tables = "org.commonmark:commonmark-ext-gfm-tables:$version"
   val strikethrough = "org.commonmark:commonmark-ext-gfm-strikethrough:$version"
+  val autolink = "org.commonmark:commonmark-ext-autolink:$version"
 }
 
 object AndroidConfiguration {

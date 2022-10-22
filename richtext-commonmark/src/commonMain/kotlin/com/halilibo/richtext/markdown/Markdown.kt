@@ -42,11 +42,13 @@ import com.halilibo.richtext.ui.string.richTextString
  * A composable that renders Markdown content using RichText.
  *
  * @param content Markdown text. No restriction on length.
+ * @param markdownParseOptions Options for the Markdown parser.
  * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
  */
 @Composable
 public fun RichTextScope.Markdown(
   content: String,
+  markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
@@ -57,9 +59,8 @@ public fun RichTextScope.Markdown(
       { url -> it.openUri(url) }
     }
   }
-
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    val markdownAst = parsedMarkdownAst(text = content)
+    val markdownAst = parsedMarkdownAst(text = content, options = markdownParseOptions)
     RecursiveRenderMarkdownAst(astNode = markdownAst)
   }
 }
@@ -69,9 +70,10 @@ public fun RichTextScope.Markdown(
  * Composable is efficient thanks to remember construct.
  *
  * @param text Markdown text to be parsed.
+ * @param options Options for the Markdown parser.
  */
 @Composable
-internal expect fun parsedMarkdownAst(text: String): AstNode?
+internal expect fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode?
 
 /**
  * When parsed, markdown content or any other rich text can be represented as a tree.

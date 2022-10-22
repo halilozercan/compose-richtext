@@ -35,6 +35,7 @@ import com.halilibo.richtext.markdown.node.AstTableRoot
 import com.halilibo.richtext.markdown.node.AstTableRow
 import com.halilibo.richtext.markdown.node.AstText
 import com.halilibo.richtext.markdown.node.AstThematicBreak
+import org.commonmark.ext.autolink.AutolinkExtension
 import org.commonmark.ext.gfm.strikethrough.Strikethrough
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TableBlock
@@ -188,19 +189,20 @@ internal fun convert(
 internal fun Node.convert() = convert(this)
 
 @Composable
-internal actual fun parsedMarkdownAst(text: String): AstNode? {
-  val parser = remember {
+internal actual fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode? {
+  val parser = remember(options) {
     Parser.builder()
       .extensions(
-        listOf(
+        listOfNotNull(
           TablesExtension.create(),
-          StrikethroughExtension.create()
+          StrikethroughExtension.create(),
+          if (options.autolink) AutolinkExtension.create() else null
         )
       )
       .build()
   }
 
-  val astRootNode by produceState<AstNode?>(null, text) {
+  val astRootNode by produceState<AstNode?>(null, text, parser) {
     value = parser.parse(text).convert()
   }
 
