@@ -64,3 +64,18 @@ RichText(
 Which produces something like this:
 
 ![markdown demo](img/markdown-demo.png)
+
+## MarkdownParseOptions
+
+Passing `MarkdownParseOptions` into `Markdown` provides the ability to control some aspects of the markdown parser:
+
+```kotlin
+val markdownParseOptions = MarkdownParseOptions.Default.copy(
+  autolink = false
+)
+
+Markdown(
+  markdownParseOptions = markdownParseOptions,
+  ...
+)
+```

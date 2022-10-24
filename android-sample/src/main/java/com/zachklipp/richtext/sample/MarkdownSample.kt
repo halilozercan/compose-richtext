@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.markdown.MarkdownParseOptions
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material.MaterialRichText
 import com.halilibo.richtext.ui.resolveDefaults
@@ -41,12 +42,19 @@ import com.halilibo.richtext.ui.resolveDefaults
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
   var isWordWrapEnabled by remember { mutableStateOf(true) }
+  var markdownParseOptions by remember { mutableStateOf(MarkdownParseOptions.Default) }
+  var isAutolinkEnabled by remember { mutableStateOf(true) }
 
   LaunchedEffect(isWordWrapEnabled) {
     richTextStyle = richTextStyle.copy(
       codeBlockStyle = richTextStyle.codeBlockStyle!!.copy(
         wordWrap = isWordWrapEnabled
       )
+    )
+  }
+  LaunchedEffect(isAutolinkEnabled) {
+    markdownParseOptions = markdownParseOptions.copy(
+      autolink = isAutolinkEnabled
     )
   }
 
@@ -75,6 +83,14 @@ import com.halilibo.richtext.ui.resolveDefaults
               label = "Word Wrap"
             )
 
+            CheckboxPreference(
+              onClick = {
+                isAutolinkEnabled = !isAutolinkEnabled
+              },
+              checked = isAutolinkEnabled,
+              label = "Autolink"
+            )
+
             RichTextStyleConfig(
               richTextStyle = richTextStyle,
               onChanged = { richTextStyle = it }
@@ -90,6 +106,7 @@ import com.halilibo.richtext.ui.resolveDefaults
             ) {
               Markdown(
                 content = sampleMarkdown,
+                markdownParseOptions = markdownParseOptions,
                 onLinkClicked = {
                   Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 }
@@ -178,6 +195,8 @@ private val sampleMarkdown = """
   [You can use numbers for reference-style link definitions][1]
 
   Or leave it empty and use the [link text itself].
+  
+  Autolink option will detect text links like https://www.google.com and turn them into Markdown links automatically.
 
   ---
 

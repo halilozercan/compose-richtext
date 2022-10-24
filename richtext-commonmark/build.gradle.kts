@@ -27,6 +27,7 @@ kotlin {
         implementation(Commonmark.core)
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
+        implementation(Commonmark.autolink)
       }
     }
 
@@ -39,6 +40,7 @@ kotlin {
         implementation(Commonmark.core)
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
+        implementation(Commonmark.autolink)
       }
     }
 

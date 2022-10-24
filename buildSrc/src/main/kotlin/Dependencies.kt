@@ -52,10 +52,11 @@ object Compose {
 }
 
 object Commonmark {
-  private val version = "0.19.0"
+  private val version = "0.20.0"
   val core = "org.commonmark:commonmark:$version"
   val tables = "org.commonmark:commonmark-ext-gfm-tables:$version"
   val strikethrough = "org.commonmark:commonmark-ext-gfm-strikethrough:$version"
+  val autolink = "org.commonmark:commonmark-ext-autolink:$version"
 }
 
 object AndroidConfiguration {

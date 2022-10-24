@@ -218,6 +218,8 @@ private val sampleMarkdown = """
   [You can use numbers for reference-style link definitions][1]
 
   Or leave it empty and use the [link text itself].
+  
+  Autolink option will detect text links like https://www.google.com and turn them into Markdown links automatically.
 
   ---
 
