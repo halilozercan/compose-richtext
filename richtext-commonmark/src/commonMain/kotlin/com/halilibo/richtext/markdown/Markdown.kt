@@ -5,7 +5,10 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import com.halilibo.richtext.markdown.node.AstBlockQuote
 import com.halilibo.richtext.markdown.node.AstBulletList
 import com.halilibo.richtext.markdown.node.AstDocument
@@ -133,7 +136,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     }
     is AstHeading -> {
       Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode)
+        MarkdownRichText(astNode, Modifier.semantics { heading() } )
       }
     }
     is AstIndentedCodeBlock -> {
