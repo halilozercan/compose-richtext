@@ -11,11 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.resolveDefaults
 import androidx.compose.ui.unit.sp
+
 
 /**
  * Function that computes the [TextStyle] for the given header level, given the current [TextStyle]
@@ -70,7 +73,7 @@ internal val DefaultHeadingStyle: HeadingStyle = { level, textStyle ->
   text: String
 ) {
   Heading(level) {
-    Text(text)
+    Text(text, Modifier.semantics { heading() })
   }
 }
 
