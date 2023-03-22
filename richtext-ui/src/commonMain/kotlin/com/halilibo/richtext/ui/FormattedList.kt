@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
@@ -247,7 +248,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
     for (i in 0 until count) {
       itemForIndex(i)
     }
-  }) { measurables, constraints ->
+  }, Modifier.semantics (mergeDescendants = true){ }) { measurables, constraints ->
     check(measurables.size == count * 2)
     val prefixMeasureables = measurables.asSequence()
       .take(count)
