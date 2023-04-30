@@ -28,6 +28,7 @@ kotlin {
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
         implementation(Commonmark.autolink)
+        implementation(Commonmark.imageAttributes)
       }
     }
 
@@ -41,6 +42,7 @@ kotlin {
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
         implementation(Commonmark.autolink)
+        implementation(Commonmark.imageAttributes)
       }
     }
 
