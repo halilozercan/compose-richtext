@@ -43,6 +43,7 @@ import org.commonmark.ext.gfm.tables.TableCell.Alignment.RIGHT
 import org.commonmark.ext.gfm.tables.TableHead
 import org.commonmark.ext.gfm.tables.TableRow
 import org.commonmark.ext.gfm.tables.TablesExtension
+import org.commonmark.ext.image.attributes.ImageAttributesExtension
 import org.commonmark.node.BlockQuote
 import org.commonmark.node.BulletList
 import org.commonmark.node.Code
@@ -186,26 +187,25 @@ public actual class CommonmarkAstNodeParser actual constructor(
   options: MarkdownParseOptions
 ) {
 
-  private val parser = Parser.builder()
-    .extensions(
-      listOfNotNull(
-        TablesExtension.create(),
-        StrikethroughExtension.create(),
-        if (options.autolink) AutolinkExtension.create() else null
+@Composable
+internal actual fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode? {
+  val parser = remember(options) {
+    Parser.builder()
+      .extensions(
+        listOfNotNull(
+          TablesExtension.create(),
+          StrikethroughExtension.create(),
+          ImageAttributesExtension.create(),
+          if (options.autolink) AutolinkExtension.create() else null
+        )
       )
-    )
-    .build()
-
-  public actual fun parse(text: String): AstNode {
-    val commonmarkNode = parser.parse(text)
-      ?: throw IllegalArgumentException(
-        "Could not parse the given text content into a meaningful Markdown representation!"
-      )
-
-    return convert(commonmarkNode)
-      ?: throw IllegalArgumentException(
-        "Could not convert the generated Commonmark Node into an ASTNode!"
-      )
+      .build()
   }
+
+  val astRootNode by produceState<AstNode?>(null, text, parser) {
+    value = parser.parse(text).convert()
+  }
+
+  return astRootNode
 }
 
