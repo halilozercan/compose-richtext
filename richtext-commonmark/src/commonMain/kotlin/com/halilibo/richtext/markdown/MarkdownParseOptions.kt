@@ -6,11 +6,13 @@ package com.halilibo.richtext.markdown
  * @param autolink Detect plain text links and turn them into Markdown links.
  */
 public data class MarkdownParseOptions(
-  val autolink: Boolean
+  val autolink: Boolean,
+  val imgFillMaxWidth: Boolean
 ) {
   public companion object {
     public val Default: MarkdownParseOptions = MarkdownParseOptions(
-      autolink = true
+      autolink = true,
+      imgFillMaxWidth = false
     )
   }
 }

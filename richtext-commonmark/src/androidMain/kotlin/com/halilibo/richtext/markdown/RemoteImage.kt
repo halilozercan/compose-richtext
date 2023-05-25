@@ -1,6 +1,7 @@
 package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -13,7 +14,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 
@@ -22,13 +22,14 @@ private val DEFAULT_IMAGE_SIZE = 64.dp
 /**
  * Implementation of RemoteImage by using Coil library for Android.
  */
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
   modifier: Modifier,
-  contentScale: ContentScale
+  contentScale: ContentScale,
+  isFillMaxWidth: Boolean,
+  onClickImg: ((url: String) -> Unit)?
 ) {
   val painter = rememberAsyncImagePainter(
     ImageRequest.Builder(LocalContext.current)
@@ -40,7 +41,7 @@ internal actual fun RemoteImage(
   val density = LocalDensity.current
 
   BoxWithConstraints {
-    val sizeModifier by remember(density, painter) {
+    val sizeModifier by remember(density, painter, isFillMaxWidth) {
       derivedStateOf {
         val painterIntrinsicSize = painter.state.painter?.intrinsicSize
         if (painterIntrinsicSize != null &&
@@ -50,17 +51,28 @@ internal actual fun RemoteImage(
         ) {
           val width = painterIntrinsicSize.width
           val height = painterIntrinsicSize.height
-          val scale = if (width > constraints.maxWidth) {
-            constraints.maxWidth.toFloat() / width
-          } else {
-            1f
-          }
 
-          with(density) {
-            Modifier.size(
-              (width * scale).toDp(),
-              (height * scale).toDp()
-            )
+          if (isFillMaxWidth) {
+            with(density) {
+              Modifier.size(
+                constraints.maxWidth.toDp(),
+                (constraints.maxWidth * height / width).toDp()
+              )
+            }
+          }
+          else {
+            val scale = if (width > constraints.maxWidth) {
+              constraints.maxWidth.toFloat() / width
+            } else {
+              1f
+            }
+
+            with(density) {
+              Modifier.size(
+                (width * scale).toDp(),
+                (height * scale).toDp()
+              )
+            }
           }
         } else {
           // if size is not defined at all, Coil fails to render the image
@@ -70,10 +82,16 @@ internal actual fun RemoteImage(
       }
     }
 
+    val realModifier by remember(onClickImg, url) {
+      derivedStateOf {
+        if (onClickImg == null) sizeModifier else sizeModifier.clickable { onClickImg(url) }
+      }
+    }
+
     Image(
       painter = painter,
       contentDescription = contentDescription,
-      modifier = sizeModifier,
+      modifier = realModifier,
       contentScale = contentScale
     )
   }

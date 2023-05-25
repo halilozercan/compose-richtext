@@ -56,11 +56,12 @@ import com.halilibo.richtext.ui.string.withFormat
  * @param astNode Root node to accept as Text Content container.
  */
 @Composable
-internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier = Modifier) {
+internal fun RichTextScope.MarkdownRichText(astNode: AstNode, options: MarkdownParseOptions, modifier: Modifier = Modifier) {
   val onLinkClicked = LocalOnLinkClicked.current
+  val onImgClicked = LocalOnImgClicked.current
   // Assume that only RichText nodes reside below this level.
-  val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, onLinkClicked)
+  val richText = remember(astNode, onLinkClicked, onImgClicked) {
+    computeRichTextString(astNode, options, onLinkClicked, onImgClicked)
   }
 
   Text(text = richText, modifier = modifier)
@@ -68,7 +69,9 @@ internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier
 
 private fun computeRichTextString(
   astNode: AstNode,
-  onLinkClicked: (String) -> Unit
+  options: MarkdownParseOptions,
+  onLinkClicked: (String) -> Unit,
+  onImgClicked: ((String) -> Unit)?
 ): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
 
@@ -108,7 +111,9 @@ private fun computeRichTextString(
                 url = currentNodeType.destination,
                 contentDescription = currentNodeType.title,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Inside
+                contentScale = if (options.imgFillMaxWidth) ContentScale.FillWidth else ContentScale.Inside,
+                isFillMaxWidth = options.imgFillMaxWidth,
+                onClickImg = onImgClicked
               )
             }
           )

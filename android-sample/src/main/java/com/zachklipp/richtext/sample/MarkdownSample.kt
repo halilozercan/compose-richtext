@@ -44,6 +44,7 @@ import com.halilibo.richtext.ui.resolveDefaults
   var isWordWrapEnabled by remember { mutableStateOf(true) }
   var markdownParseOptions by remember { mutableStateOf(MarkdownParseOptions.Default) }
   var isAutolinkEnabled by remember { mutableStateOf(true) }
+  var isImgFillMaxWidth by remember { mutableStateOf(true) }
 
   LaunchedEffect(isWordWrapEnabled) {
     richTextStyle = richTextStyle.copy(
@@ -55,6 +56,11 @@ import com.halilibo.richtext.ui.resolveDefaults
   LaunchedEffect(isAutolinkEnabled) {
     markdownParseOptions = markdownParseOptions.copy(
       autolink = isAutolinkEnabled
+    )
+  }
+  LaunchedEffect(isImgFillMaxWidth) {
+    markdownParseOptions = markdownParseOptions.copy(
+      imgFillMaxWidth = isImgFillMaxWidth
     )
   }
 
@@ -91,6 +97,14 @@ import com.halilibo.richtext.ui.resolveDefaults
               label = "Autolink"
             )
 
+            CheckboxPreference(
+              onClick = {
+                isImgFillMaxWidth = !isImgFillMaxWidth
+              },
+              checked = isImgFillMaxWidth,
+              label = "Img Fill Max Width"
+            )
+
             RichTextStyleConfig(
               richTextStyle = richTextStyle,
               onChanged = { richTextStyle = it }
@@ -108,6 +122,9 @@ import com.halilibo.richtext.ui.resolveDefaults
                 content = sampleMarkdown,
                 markdownParseOptions = markdownParseOptions,
                 onLinkClicked = {
+                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                },
+                onImgClicked = {
                   Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 }
               )

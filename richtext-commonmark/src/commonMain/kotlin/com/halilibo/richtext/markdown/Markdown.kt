@@ -52,9 +52,11 @@ import com.halilibo.richtext.ui.string.richTextString
 public fun RichTextScope.Markdown(
   content: String,
   markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
-  onLinkClicked: ((String) -> Unit)? = null
+  onLinkClicked: ((String) -> Unit)? = null,
+  onImgClicked: ((String) -> Unit)? = null
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
+  val onImgClickedState = rememberUpdatedState(onImgClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
   // see https://issuetracker.google.com/issues/172366483
   val realLinkClickedHandler = onLinkClickedState.value ?: LocalUriHandler.current.let {
@@ -62,9 +64,9 @@ public fun RichTextScope.Markdown(
       { url -> it.openUri(url) }
     }
   }
-  CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
+  CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler, LocalOnImgClicked provides onImgClickedState.value) {
     val markdownAst = parsedMarkdownAst(text = content, options = markdownParseOptions)
-    RecursiveRenderMarkdownAst(astNode = markdownAst)
+    RecursiveRenderMarkdownAst(astNode = markdownAst, options = markdownParseOptions)
   }
 }
 
@@ -105,14 +107,14 @@ internal expect fun parsedMarkdownAst(text: String, options: MarkdownParseOption
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
 @Composable
-internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
+internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?, options: MarkdownParseOptions) {
   astNode ?: return
 
   when (val astNodeType = astNode.type) {
-    is AstDocument -> visitChildren(node = astNode)
+    is AstDocument -> visitChildren(node = astNode, options = options)
     is AstBlockQuote -> {
       BlockQuote {
-        visitChildren(astNode)
+        visitChildren(astNode, options = options)
       }
     }
     is AstBulletList -> {
@@ -120,7 +122,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()
       ) {
-        visitChildren(it)
+        visitChildren(it, options = options)
       }
     }
     is AstOrderedList -> {
@@ -128,7 +130,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         listType = Ordered,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
-        visitChildren(astListItem)
+        visitChildren(astListItem, options = options)
       }
     }
     is AstThematicBreak -> {
@@ -136,7 +138,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     }
     is AstHeading -> {
       Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode, Modifier.semantics { heading() } )
+        MarkdownRichText(astNode, options, Modifier.semantics { heading() } )
       }
     }
     is AstIndentedCodeBlock -> {
@@ -157,10 +159,10 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       /* no-op */
     }
     is AstParagraph -> {
-      MarkdownRichText(astNode)
+      MarkdownRichText(astNode, options)
     }
     is AstTableRoot -> {
-      RenderTable(astNode)
+      RenderTable(astNode, options)
     }
     // This should almost never happen. All the possible text
     // nodes must be under either Heading, Paragraph or CustomNode
@@ -193,9 +195,9 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
  * @param node Root ASTNode whose children will be visited.
  */
 @Composable
-internal fun RichTextScope.visitChildren(node: AstNode?) {
+internal fun RichTextScope.visitChildren(node: AstNode?, options: MarkdownParseOptions) {
   node?.childrenSequence()?.forEach {
-    RecursiveRenderMarkdownAst(astNode = it)
+    RecursiveRenderMarkdownAst(astNode = it, options = options)
   }
 }
 
@@ -206,3 +208,6 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
  */
 internal val LocalOnLinkClicked =
   compositionLocalOf<(String) -> Unit> { error("OnLinkClicked is not provided") }
+
+internal val LocalOnImgClicked =
+  compositionLocalOf<((String) -> Unit)?> { error("OnImgClicked is not provided") }
