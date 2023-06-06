@@ -77,7 +77,16 @@ internal actual fun RemoteImage(
         } else {
           // if size is not defined at all, Coil fails to render the image
           // here, we give a default size for images until they are loaded.
-          Modifier.size(DEFAULT_IMAGE_SIZE)
+          if (isFillMaxWidth) {
+            // if here not provide a enough size for coil,
+            // it may loaded a very small image, such as DEFAULT_IMAGE_SIZE
+            with(density) {
+              Modifier.size(constraints.maxWidth.toDp())
+            }
+          }
+          else {
+            Modifier.size(DEFAULT_IMAGE_SIZE)
+          }
         }
       }
     }
