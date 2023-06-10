@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import coil.size.Size
 
 private val DEFAULT_IMAGE_SIZE = 64.dp
 
@@ -33,6 +34,7 @@ internal actual fun RemoteImage(
   val painter = rememberAsyncImagePainter(
     ImageRequest.Builder(LocalContext.current)
       .data(data = url)
+      .size(Size.ORIGINAL)
       .crossfade(true)
       .build()
   )
