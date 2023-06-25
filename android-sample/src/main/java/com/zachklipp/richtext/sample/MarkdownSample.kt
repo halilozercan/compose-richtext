@@ -153,6 +153,10 @@ private val sampleMarkdown = """
   ##### Header 5
   ###### Header 6
   ---
+  
+  ## Full-bleed Image
+  
+  ![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png)
 
   ## Emphasis
 
