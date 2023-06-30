@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 plugins {
   id("richtext-kmp-library")
   id("org.jetbrains.compose") version Compose.desktopVersion
@@ -8,6 +6,10 @@ plugins {
 
 repositories {
   maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+}
+
+android {
+  namespace = "com.halilibo.richtext.ui"
 }
 
 kotlin {

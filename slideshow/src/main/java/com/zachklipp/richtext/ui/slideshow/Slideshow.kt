@@ -257,8 +257,10 @@ private fun Modifier.splitClickable(
   onClick: (left: Boolean) -> Unit
 ): Modifier = composed {
   val sizeRef = remember { Ref<IntSize>() }
-  val splitPoint by derivedStateOf {
-    (sizeRef.value?.width ?: 0) * splitFraction
+  val splitPoint by remember {
+    derivedStateOf {
+      (sizeRef.value?.width ?: 0) * splitFraction
+    }
   }
 
   onSizeChanged { sizeRef.value = it }

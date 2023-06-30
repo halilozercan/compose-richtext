@@ -3,6 +3,10 @@ plugins {
   id("org.jetbrains.dokka")
 }
 
+android {
+  namespace = "com.zachklipp.richtext.ui.printing"
+}
+
 dependencies {
   implementation(Compose.foundation)
   implementation(Compose.tooling)

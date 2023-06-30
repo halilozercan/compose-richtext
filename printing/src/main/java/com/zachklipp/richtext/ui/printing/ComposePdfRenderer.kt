@@ -24,8 +24,8 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -175,8 +175,8 @@ private fun createWindowComposeView(
   activity: ComponentActivity,
   content: @Composable () -> Unit
 ): View = ComposeView(activity).apply {
-  ViewTreeLifecycleOwner.set(this, activity)
-  ViewTreeViewModelStoreOwner.set(this, activity)
+  this.setViewTreeLifecycleOwner(activity)
+  this.setViewTreeViewModelStoreOwner(activity)
   setViewTreeSavedStateRegistryOwner(activity)
   setContent(content)
 }
