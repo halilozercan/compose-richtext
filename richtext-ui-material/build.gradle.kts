@@ -8,6 +8,10 @@ repositories {
   maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
+android {
+  namespace = "com.halilibo.richtext.ui.material"
+}
+
 kotlin {
   sourceSets {
     val commonMain by getting {
