@@ -64,6 +64,10 @@ subprojects {
       return@afterEvaluate
     }
 
+    tasks.withType<AbstractPublishToMaven>().configureEach {
+      dependsOn(tasks.withType<Sign>())
+    }
+
     tasks.named<DokkaTaskPartial>("dokkaHtmlPartial").configure {
       dokkaSourceSets.configureEach {
         reportUndocumented.set(true)
@@ -81,26 +85,26 @@ subprojects {
       archiveClassifier.set("javadoc")
       from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
     }
+
+    if (tasks.names.contains("publishKotlinMultiplatformPublicationToMavenRepository")) {
+      tasks.named("publishKotlinMultiplatformPublicationToMavenRepository").configure {
+        dependsOn("signJvmPublication")
+      }
+    }
+
+    if (tasks.names.contains("publishAndroidReleasePublicationToMavenRepository")) {
+      tasks.named("publishAndroidReleasePublicationToMavenRepository").configure {
+        dependsOn("signJvmPublication")
+      }
+    }
   }
 
   afterEvaluate {
-    val androidExtension = extensions.findByType<LibraryExtension>()
-    val multiplatformExtension = extensions.findByType<KotlinMultiplatformExtension>()
-
     fun MavenPublication.configure() {
-      if (multiplatformExtension == null && androidExtension != null) {
-        val androidSourcesJar by tasks.registering(Jar::class) {
-          archiveClassifier.set("sources")
-          from(androidExtension.sourceSets["main"].java.srcDirs)
-        }
-        artifact(androidSourcesJar.get())
-        from(components["release"])
-      }
-
-      artifact(tasks.named("javadocJar").get())
-
       groupId = property("GROUP").toString()
       version = property("VERSION_NAME").toString()
+
+      artifact(tasks.named("javadocJar").get())
 
       pom {
         name.set(property("POM_NAME").toString())
@@ -157,16 +161,8 @@ subprojects {
         }
       }
 
-      if (multiplatformExtension != null) {
-        publications.withType<MavenPublication>().configureEach {
-          configure()
-        }
-      } else if (androidExtension != null) {
-        // Add publications for Android libraries.
-        // KMP libraries already have MavenPublications that are added by multiplatform plugin
-        publications.register<MavenPublication>("release") {
-          afterEvaluate { configure() }
-        }
+      publications.withType<MavenPublication>().configureEach {
+        configure()
       }
     }
 
