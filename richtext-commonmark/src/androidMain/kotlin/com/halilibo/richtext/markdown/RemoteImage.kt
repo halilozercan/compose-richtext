@@ -41,7 +41,7 @@ internal actual fun RemoteImage(
 
   val density = LocalDensity.current
 
-  BoxWithConstraints {
+  BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
     val sizeModifier by remember(density, painter) {
       derivedStateOf {
         val painterIntrinsicSize = painter.state.painter?.intrinsicSize

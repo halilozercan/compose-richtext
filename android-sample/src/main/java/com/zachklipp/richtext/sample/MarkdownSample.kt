@@ -158,6 +158,9 @@ private val sampleMarkdown = """
   
   ![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png)
 
+  ## Images smaller than the width should center  
+  ![](https://cdn.nostr.build/p/4a84.png)
+
   ## Emphasis
 
   Emphasis, aka italics, with *asterisks* or _underscores_.
