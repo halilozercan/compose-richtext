@@ -43,34 +43,30 @@ internal actual fun RemoteImage(
   val density = LocalDensity.current
 
   BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
-    val sizeModifier by remember(density, painter.state) {
-      derivedStateOf {
-        val painterIntrinsicSize = painter.state.painter?.intrinsicSize
-        if (painterIntrinsicSize != null &&
-          painterIntrinsicSize.isSpecified &&
-          painterIntrinsicSize.width != Float.POSITIVE_INFINITY &&
-          painterIntrinsicSize.height != Float.POSITIVE_INFINITY
-        ) {
-          val width = painterIntrinsicSize.width
-          val height = painterIntrinsicSize.height
-          val scale = if (width > constraints.maxWidth) {
-            constraints.maxWidth.toFloat() / width
-          } else {
-            1f
-          }
-
-          with(density) {
-            Modifier.size(
-              (width * scale).toDp(),
-              (height * scale).toDp()
-            )
-          }
-        } else {
-          // if size is not defined at all, Coil fails to render the image
-          // here, we give a default size for images until they are loaded.
-          Modifier.size(DEFAULT_IMAGE_SIZE)
-        }
+    val painterIntrinsicSize = painter.state.painter?.intrinsicSize
+    val sizeModifier = if (painterIntrinsicSize != null &&
+      painterIntrinsicSize.isSpecified &&
+      painterIntrinsicSize.width != Float.POSITIVE_INFINITY &&
+      painterIntrinsicSize.height != Float.POSITIVE_INFINITY
+    ) {
+      val width = painterIntrinsicSize.width
+      val height = painterIntrinsicSize.height
+      val scale = if (width > constraints.maxWidth) {
+        constraints.maxWidth.toFloat() / width
+      } else {
+        1f
       }
+
+      with(density) {
+        Modifier.size(
+          (width * scale).toDp(),
+          (height * scale).toDp()
+        )
+      }
+    } else {
+      // if size is not defined at all, Coil fails to render the image
+      // here, we give a default size for images until they are loaded.
+      Modifier.size(DEFAULT_IMAGE_SIZE)
     }
 
     Image(
