@@ -14,7 +14,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
@@ -24,7 +23,6 @@ private val DEFAULT_IMAGE_SIZE = 64.dp
 /**
  * Implementation of RemoteImage by using Coil library for Android.
  */
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 internal actual fun RemoteImage(
   url: String,
@@ -59,6 +57,8 @@ internal actual fun RemoteImage(
             1f
           }
 
+          println("AAA ${height * scale} ${width * scale}")
+
           with(density) {
             Modifier.size(
               (width * scale).toDp(),
@@ -72,6 +72,8 @@ internal actual fun RemoteImage(
         }
       }
     }
+
+    println("AAA ${constraints.minHeight} ${constraints.maxHeight}")
 
     Image(
       painter = painter,
