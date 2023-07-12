@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.darkColors
@@ -25,8 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.markdown.MarkdownParseOptions
 import com.halilibo.richtext.ui.RichTextStyle
@@ -100,17 +103,19 @@ import com.halilibo.richtext.ui.resolveDefaults
 
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
-            MaterialRichText(
-              style = richTextStyle,
-              modifier = Modifier.padding(8.dp),
-            ) {
-              Markdown(
-                content = sampleMarkdown,
-                markdownParseOptions = markdownParseOptions,
-                onLinkClicked = {
-                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
-              )
+            ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
+              MaterialRichText(
+                style = richTextStyle,
+                //modifier = Modifier.padding(8.dp),
+              ) {
+                Markdown(
+                  content = sampleMarkdown,
+                  markdownParseOptions = markdownParseOptions,
+                  onLinkClicked = {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                  }
+                )
+              }
             }
           }
         }
@@ -168,6 +173,12 @@ private val sampleMarkdown = """
   Strong emphasis, aka bold, with **asterisks** or __underscores__.
 
   Combined emphasis with **asterisks and _underscores_**.
+  
+  ## Product Development
+  Most products are super close to alpha release. It’s going to be like popcorn soon.
+
+  Here’s a sneak peek with the Bitcoin Knowledge Project (name is still in progress):
+  ![](https://cdn.nostr.build/p/PxZ0.jpg)
 
   ---
 

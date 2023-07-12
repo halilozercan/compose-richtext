@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -26,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.singleWindowApplication
 import com.halilibo.richtext.markdown.Markdown
@@ -76,13 +79,15 @@ fun main(): Unit = singleWindowApplication(
                 .padding(8.dp)
             )
           }
-          MaterialRichText(
-            modifier = Modifier
-              .weight(1f)
-              .verticalScroll(rememberScrollState()),
-            style = richTextStyle
-          ) {
-            Markdown(content = text)
+          ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
+            MaterialRichText(
+              modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState()),
+              style = richTextStyle
+            ) {
+              Markdown(content = text)
+            }
           }
         }
       }
@@ -193,6 +198,27 @@ private val sampleMarkdown = """
   Strong emphasis, aka bold, with **asterisks** or __underscores__.
 
   Combined emphasis with **asterisks and _underscores_**.
+
+  ## Product Development
+  Most products are super close to alpha release. It’s going to be like popcorn soon.
+
+  Here’s a sneak peek with the Bitcoin Knowledge Project (name is still in progress):
+  ![](https://cdn.nostr.build/p/PxZ0.jpg)
+
+  # Lifestuff
+  * Been helping Brittany a bunch to prepare [Bolli Imports](https://www.bollibears.com/) for [Shambhala](https://www.youtube.com/watch?v=UPQv2G0AMHo)
+  ![](https://cdn.nostr.build/p/Wgdk.webp)
+
+  * Went camping in Alberta’s crownland. We’re so far north that could still see the silhouette outline of the mountains at midnight. (Image not at midnight lol). Did a bunch of cold dips in the ice cold creek.
+  ![](https://cdn.nostr.build/p/6KZ2.webp)
+
+  Image [link](nostr:note13aleezg5xkmqskshlkh5nnzh243xfjchq52acfqxghe7pws2e9lsx5rxzz)
+
+  * Hit up the Calgary Stampede. Ate nasty food. Saw big majestic horses.
+  ![](https://cdn.nostr.build/p/BmZ0.webp)
+
+  * Wrote part of this with my feet in a bucket of ice water. This one hurt life hell for some reason. Usually not this bad.
+  ![](https://cdn.nostr.build/p/QEwP.webp)
 
   ---
 
