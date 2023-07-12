@@ -106,7 +106,7 @@ import com.halilibo.richtext.ui.resolveDefaults
             ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
               MaterialRichText(
                 style = richTextStyle,
-                //modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(8.dp),
               ) {
                 Markdown(
                   content = sampleMarkdown,
