@@ -57,8 +57,6 @@ internal actual fun RemoteImage(
             1f
           }
 
-          println("AAA ${height * scale} ${width * scale}")
-
           with(density) {
             Modifier.size(
               (width * scale).toDp(),
@@ -72,8 +70,6 @@ internal actual fun RemoteImage(
         }
       }
     }
-
-    println("AAA ${constraints.minHeight} ${constraints.maxHeight}")
 
     Image(
       painter = painter,
