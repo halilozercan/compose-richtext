@@ -189,7 +189,7 @@ private val sampleMarkdown = """
   ## Images smaller than the width should center
   ![](https://cdn.nostr.build/p/4a84.png)
 
-  ## On LineHeight bug, the image below goes over this text. 
+  On LineHeight bug, the image below goes over this text. 
   ![](https://cdn.nostr.build/p/PxZ0.jpg)
 
   ---
