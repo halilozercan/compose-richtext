@@ -160,11 +160,13 @@ private val sampleMarkdown = """
   ---
   
   ## Full-bleed Image
-  
   ![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png)
 
   ## Images smaller than the width should center
   ![](https://cdn.nostr.build/p/4a84.png)
+  
+  ## On LineHeight bug, the image below goes over this text. 
+  ![](https://cdn.nostr.build/p/PxZ0.jpg)
 
   ## Emphasis
 
@@ -173,12 +175,6 @@ private val sampleMarkdown = """
   Strong emphasis, aka bold, with **asterisks** or __underscores__.
 
   Combined emphasis with **asterisks and _underscores_**.
-  
-  ## Product Development
-  Most products are super close to alpha release. It’s going to be like popcorn soon.
-
-  Here’s a sneak peek with the Bitcoin Knowledge Project (name is still in progress):
-  ![](https://cdn.nostr.build/p/PxZ0.jpg)
 
   ---
 

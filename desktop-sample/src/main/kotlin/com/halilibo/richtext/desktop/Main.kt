@@ -189,6 +189,9 @@ private val sampleMarkdown = """
   ## Images smaller than the width should center
   ![](https://cdn.nostr.build/p/4a84.png)
 
+  ## On LineHeight bug, the image below goes over this text. 
+  ![](https://cdn.nostr.build/p/PxZ0.jpg)
+
   ---
 
   ## Emphasis
@@ -198,27 +201,6 @@ private val sampleMarkdown = """
   Strong emphasis, aka bold, with **asterisks** or __underscores__.
 
   Combined emphasis with **asterisks and _underscores_**.
-
-  ## Product Development
-  Most products are super close to alpha release. It’s going to be like popcorn soon.
-
-  Here’s a sneak peek with the Bitcoin Knowledge Project (name is still in progress):
-  ![](https://cdn.nostr.build/p/PxZ0.jpg)
-
-  # Lifestuff
-  * Been helping Brittany a bunch to prepare [Bolli Imports](https://www.bollibears.com/) for [Shambhala](https://www.youtube.com/watch?v=UPQv2G0AMHo)
-  ![](https://cdn.nostr.build/p/Wgdk.webp)
-
-  * Went camping in Alberta’s crownland. We’re so far north that could still see the silhouette outline of the mountains at midnight. (Image not at midnight lol). Did a bunch of cold dips in the ice cold creek.
-  ![](https://cdn.nostr.build/p/6KZ2.webp)
-
-  Image [link](nostr:note13aleezg5xkmqskshlkh5nnzh243xfjchq52acfqxghe7pws2e9lsx5rxzz)
-
-  * Hit up the Calgary Stampede. Ate nasty food. Saw big majestic horses.
-  ![](https://cdn.nostr.build/p/BmZ0.webp)
-
-  * Wrote part of this with my feet in a bucket of ice water. This one hurt life hell for some reason. Usually not this bad.
-  ![](https://cdn.nostr.build/p/QEwP.webp)
 
   ---
 
