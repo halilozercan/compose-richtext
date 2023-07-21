@@ -14,5 +14,6 @@ internal expect fun RemoteImage(
   url: String,
   contentDescription: String?,
   modifier: Modifier = Modifier,
-  contentScale: ContentScale
+  contentScale: ContentScale,
+  onClickImg: ((url: String) -> Unit)?
 )

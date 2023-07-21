@@ -82,7 +82,12 @@ fun main(): Unit = singleWindowApplication(
               .verticalScroll(rememberScrollState()),
             style = richTextStyle
           ) {
-            Markdown(content = text)
+            Markdown(
+              content = text,
+              onImgClicked = {
+                println("Click img: $it")
+              }
+            )
           }
         }
       }

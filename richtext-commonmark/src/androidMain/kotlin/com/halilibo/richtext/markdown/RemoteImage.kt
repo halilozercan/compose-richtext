@@ -1,6 +1,7 @@
 package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -29,7 +30,8 @@ internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
   modifier: Modifier,
-  contentScale: ContentScale
+  contentScale: ContentScale,
+  onClickImg: ((url: String) -> Unit)?
 ) {
   val painter = rememberAsyncImagePainter(
     ImageRequest.Builder(LocalContext.current)
@@ -72,10 +74,16 @@ internal actual fun RemoteImage(
       }
     }
 
+    val realModifier by remember(onClickImg, url) {
+      derivedStateOf {
+        if (onClickImg == null) sizeModifier else sizeModifier.clickable { onClickImg(url) }
+      }
+    }
+
     Image(
       painter = painter,
       contentDescription = contentDescription,
-      modifier = sizeModifier,
+      modifier = realModifier,
       contentScale = contentScale
     )
   }
