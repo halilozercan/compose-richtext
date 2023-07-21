@@ -46,6 +46,7 @@ import com.halilibo.richtext.ui.string.richTextString
  *
  * @param content Markdown text. No restriction on length.
  * @param markdownParseOptions Options for the Markdown parser.
+ * @param onImgClicked A function to invoke when a picture is clicked from rendered content.
  * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
  */
 @Composable
