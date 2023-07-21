@@ -52,9 +52,11 @@ import com.halilibo.richtext.ui.string.richTextString
 public fun RichTextScope.Markdown(
   content: String,
   markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
-  onLinkClicked: ((String) -> Unit)? = null
+  onImgClicked: ((String) -> Unit)? = null,
+  onLinkClicked: ((String) -> Unit)? = null,
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
+  val onImgClickedState = rememberUpdatedState(onImgClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
   // see https://issuetracker.google.com/issues/172366483
   val realLinkClickedHandler = onLinkClickedState.value ?: LocalUriHandler.current.let {
@@ -62,7 +64,7 @@ public fun RichTextScope.Markdown(
       { url -> it.openUri(url) }
     }
   }
-  CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
+  CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler, LocalOnImgClicked provides onImgClickedState.value) {
     val markdownAst = parsedMarkdownAst(text = content, options = markdownParseOptions)
     RecursiveRenderMarkdownAst(astNode = markdownAst)
   }
@@ -206,3 +208,6 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
  */
 internal val LocalOnLinkClicked =
   compositionLocalOf<(String) -> Unit> { error("OnLinkClicked is not provided") }
+
+internal val LocalOnImgClicked =
+  compositionLocalOf<((String) -> Unit)?> { error("OnImgClicked is not provided") }

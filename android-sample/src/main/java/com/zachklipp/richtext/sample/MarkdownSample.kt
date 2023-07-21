@@ -109,6 +109,9 @@ import com.halilibo.richtext.ui.resolveDefaults
                 markdownParseOptions = markdownParseOptions,
                 onLinkClicked = {
                   Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                },
+                onImgClicked = {
+                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 }
               )
             }

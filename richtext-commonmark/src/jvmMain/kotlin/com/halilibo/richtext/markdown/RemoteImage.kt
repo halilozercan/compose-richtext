@@ -1,9 +1,12 @@
 package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -24,7 +27,8 @@ internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
   modifier: Modifier,
-  contentScale: ContentScale
+  contentScale: ContentScale,
+  onClickImg: ((url: String) -> Unit)?
 ) {
   val image by produceState<ImageBitmap?>(null, url) {
     loadFullImage(url)?.let {
@@ -33,10 +37,16 @@ internal actual fun RemoteImage(
   }
 
   if (image != null) {
+    val realModifier by remember(onClickImg, url) {
+      derivedStateOf {
+        if (onClickImg == null) modifier else modifier.clickable { onClickImg(url) }
+      }
+    }
+
     Image(
       bitmap = image!!,
       contentDescription = contentDescription,
-      modifier = modifier,
+      modifier = realModifier,
       contentScale = contentScale
     )
   }

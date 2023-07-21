@@ -58,9 +58,10 @@ import com.halilibo.richtext.ui.string.withFormat
 @Composable
 internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier = Modifier) {
   val onLinkClicked = LocalOnLinkClicked.current
+  val onImgClicked = LocalOnImgClicked.current
   // Assume that only RichText nodes reside below this level.
-  val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, onLinkClicked)
+  val richText = remember(astNode, onLinkClicked, onImgClicked) {
+    computeRichTextString(astNode, onLinkClicked, onImgClicked)
   }
 
   Text(text = richText, modifier = modifier)
@@ -68,7 +69,8 @@ internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier
 
 private fun computeRichTextString(
   astNode: AstNode,
-  onLinkClicked: (String) -> Unit
+  onLinkClicked: (String) -> Unit,
+  onImgClicked: ((String) -> Unit)?
 ): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
 
@@ -108,7 +110,8 @@ private fun computeRichTextString(
                 url = currentNodeType.destination,
                 contentDescription = currentNodeType.title,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Inside
+                contentScale = ContentScale.Inside,
+                onClickImg = onImgClicked
               )
             }
           )
