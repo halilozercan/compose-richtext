@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -295,7 +296,18 @@ public data class RichTextString internal constructor(
     ) {
       val tag = randomUUID()
       formatObjects["inline:$tag"] = content
+
+      // Resets the style to defaults.
+      //
+      // This is important for inline content because the user might set a global line height
+      // via ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) { ... }
+      // Once set, the line height is fixed for all objects and any inline content (like images)
+      // will expand over the text. Since this is not a text section, it should be fine.
+      //
+      // Fixed line height seems to only affect mobile.
+      builder.pushStyle(ParagraphStyle())
       builder.appendInlineContent(tag, alternateText)
+      builder.pop()
     }
 
     /**
