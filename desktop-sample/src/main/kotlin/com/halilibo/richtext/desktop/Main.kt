@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -26,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.singleWindowApplication
 import com.halilibo.richtext.markdown.Markdown
@@ -76,13 +79,15 @@ fun main(): Unit = singleWindowApplication(
                 .padding(8.dp)
             )
           }
-          MaterialRichText(
-            modifier = Modifier
-              .weight(1f)
-              .verticalScroll(rememberScrollState()),
-            style = richTextStyle
-          ) {
-            Markdown(content = text)
+          ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
+            MaterialRichText(
+              modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState()),
+              style = richTextStyle
+            ) {
+              Markdown(content = text)
+            }
           }
         }
       }
@@ -175,6 +180,18 @@ private val sampleMarkdown = """
   #### Header 4
   ##### Header 5
   ###### Header 6
+  ---
+
+  ## Full-bleed Image
+  
+  ![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png)
+  
+  ## Images smaller than the width should center
+  ![](https://cdn.nostr.build/p/4a84.png)
+
+  On LineHeight bug, the image below goes over this text. 
+  ![](https://cdn.nostr.build/p/PxZ0.jpg)
+
   ---
 
   ## Emphasis

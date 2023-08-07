@@ -7,13 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
@@ -23,7 +23,6 @@ private val DEFAULT_IMAGE_SIZE = 64.dp
 /**
  * Implementation of RemoteImage by using Coil library for Android.
  */
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 internal actual fun RemoteImage(
   url: String,
@@ -41,7 +40,7 @@ internal actual fun RemoteImage(
 
   val density = LocalDensity.current
 
-  BoxWithConstraints {
+  BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
     val sizeModifier by remember(density, painter) {
       derivedStateOf {
         val painterIntrinsicSize = painter.state.painter?.intrinsicSize
