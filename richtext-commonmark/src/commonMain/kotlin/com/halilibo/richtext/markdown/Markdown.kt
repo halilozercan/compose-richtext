@@ -40,6 +40,7 @@ import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.string.InlineContent
 import com.halilibo.richtext.ui.string.Text
 import com.halilibo.richtext.ui.string.richTextString
+import org.commonmark.node.Node
 
 /**
  * A composable that renders Markdown content using RichText.
@@ -54,6 +55,21 @@ public fun RichTextScope.Markdown(
   markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
+  val markdown = parsedMarkdown(text = content, options = markdownParseOptions)
+  markdown?.let { Markdown(it, onLinkClicked) }
+}
+
+/**
+ * A composable that renders Markdown node using RichText.
+ *
+ * @param content CommonMark node to render.
+ * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
+ */
+@Composable
+public fun RichTextScope.Markdown(
+  content: Node,
+  onLinkClicked: ((String) -> Unit)? = null
+) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
   // see https://issuetracker.google.com/issues/172366483
@@ -63,10 +79,15 @@ public fun RichTextScope.Markdown(
     }
   }
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    val markdownAst = parsedMarkdownAst(text = content, options = markdownParseOptions)
-    RecursiveRenderMarkdownAst(astNode = markdownAst)
+    RecursiveRenderMarkdownAst(astNode = content.toAstNode())
   }
 }
+
+/**
+ * Convert CommonMark [Node] to [AstNode].
+ */
+@Composable
+internal expect fun Node.toAstNode(): AstNode?
 
 /**
  * Parse markdown content and return Abstract Syntax Tree(AST).
@@ -76,7 +97,7 @@ public fun RichTextScope.Markdown(
  * @param options Options for the Markdown parser.
  */
 @Composable
-internal expect fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode?
+internal expect fun parsedMarkdown(text: String, options: MarkdownParseOptions): Node?
 
 /**
  * When parsed, markdown content or any other rich text can be represented as a tree.
