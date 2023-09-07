@@ -186,10 +186,10 @@ internal fun convert(
   return newNode
 }
 
-internal fun Node.convert() = convert(this)
+internal actual fun Node.toAstNode() = convert(this)
 
 @Composable
-internal actual fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode? {
+public actual fun parsedMarkdown(text: String, options: MarkdownParseOptions): Node? {
   val parser = remember(options) {
     Parser.builder()
       .extensions(
@@ -202,10 +202,9 @@ internal actual fun parsedMarkdownAst(text: String, options: MarkdownParseOption
       .build()
   }
 
-  val astRootNode by produceState<AstNode?>(null, text, parser) {
-    value = parser.parse(text).convert()
+  val rootNode by produceState<Node?>(null, text, parser) {
+    value = parser.parse(text)
   }
 
-  return astRootNode
+  return rootNode
 }
-

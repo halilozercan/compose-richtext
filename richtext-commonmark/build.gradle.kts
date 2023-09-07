@@ -18,6 +18,7 @@ kotlin {
       dependencies {
         implementation(compose.runtime)
         implementation(compose.foundation)
+        api(Commonmark.core)
         api(project(":richtext-ui"))
       }
     }
@@ -28,7 +29,6 @@ kotlin {
       dependencies {
         implementation(Compose.coil)
 
-        implementation(Commonmark.core)
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
         implementation(Commonmark.autolink)
@@ -41,7 +41,6 @@ kotlin {
         implementation(compose.desktop.currentOs)
         implementation(Network.okHttp)
 
-        implementation(Commonmark.core)
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
         implementation(Commonmark.autolink)
