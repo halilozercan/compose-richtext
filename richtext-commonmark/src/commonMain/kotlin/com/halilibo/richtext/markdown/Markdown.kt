@@ -42,6 +42,11 @@ import com.halilibo.richtext.ui.string.Text
 import com.halilibo.richtext.ui.string.richTextString
 import org.commonmark.node.Node
 
+public typealias ContentOverride = @Composable RichTextScope.(
+  node: AstNode,
+  visitChildren: @Composable (node: AstNode) -> Unit,
+) -> Boolean
+
 /**
  * A composable that renders Markdown content using RichText.
  *
@@ -53,10 +58,11 @@ import org.commonmark.node.Node
 public fun RichTextScope.Markdown(
   content: String,
   markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
-  onLinkClicked: ((String) -> Unit)? = null
+  onLinkClicked: ((String) -> Unit)? = null,
+  contentOverride: ContentOverride? = null,
 ) {
   val markdown = parsedMarkdown(text = content, options = markdownParseOptions)
-  markdown?.let { Markdown(it, onLinkClicked) }
+  markdown?.let { Markdown(it, onLinkClicked, contentOverride) }
 }
 
 /**
@@ -68,7 +74,8 @@ public fun RichTextScope.Markdown(
 @Composable
 public fun RichTextScope.Markdown(
   content: Node,
-  onLinkClicked: ((String) -> Unit)? = null
+  onLinkClicked: ((String) -> Unit)? = null,
+  contentOverride: ContentOverride? = null,
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
@@ -79,7 +86,7 @@ public fun RichTextScope.Markdown(
     }
   }
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    RecursiveRenderMarkdownAst(astNode = content.toAstNode())
+    RecursiveRenderMarkdownAst(astNode = content.toAstNode(), contentOverride)
   }
 }
 
@@ -126,14 +133,21 @@ internal expect fun parsedMarkdown(text: String, options: MarkdownParseOptions):
  */
 @Suppress("IMPLICIT_CAST_TO_ANY")
 @Composable
-internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
+internal fun RichTextScope.RecursiveRenderMarkdownAst(
+  astNode: AstNode?,
+  contentOverride: ContentOverride?,
+) {
   astNode ?: return
 
+  if (contentOverride?.invoke(this, astNode) { visitChildren(it, contentOverride) } == true) {
+    return
+  }
+
   when (val astNodeType = astNode.type) {
-    is AstDocument -> visitChildren(node = astNode)
+    is AstDocument -> visitChildren(node = astNode, contentOverride)
     is AstBlockQuote -> {
       BlockQuote {
-        visitChildren(astNode)
+        visitChildren(astNode, contentOverride)
       }
     }
     is AstBulletList -> {
@@ -141,7 +155,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()
       ) {
-        visitChildren(it)
+        visitChildren(it, contentOverride)
       }
     }
     is AstOrderedList -> {
@@ -149,7 +163,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         listType = Ordered,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
-        visitChildren(astListItem)
+        visitChildren(astListItem, contentOverride)
       }
     }
     is AstThematicBreak -> {
@@ -214,9 +228,9 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
  * @param node Root ASTNode whose children will be visited.
  */
 @Composable
-internal fun RichTextScope.visitChildren(node: AstNode?) {
+internal fun RichTextScope.visitChildren(node: AstNode?, contentOverride: ContentOverride?) {
   node?.childrenSequence()?.forEach {
-    RecursiveRenderMarkdownAst(astNode = it)
+    RecursiveRenderMarkdownAst(astNode = it, contentOverride)
   }
 }
 

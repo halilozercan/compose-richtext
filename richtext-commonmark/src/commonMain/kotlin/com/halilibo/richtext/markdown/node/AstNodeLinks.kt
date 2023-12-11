@@ -6,7 +6,7 @@ import androidx.compose.runtime.Immutable
  * All the pointers that can exist for a node in an AST.
  */
 @Immutable
-internal data class AstNodeLinks(
+public data class AstNodeLinks(
   var parent: AstNode? = null,
   var firstChild: AstNode? = null,
   var lastChild: AstNode? = null,
