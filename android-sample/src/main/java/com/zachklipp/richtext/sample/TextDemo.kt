@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.halilibo.richtext.ui.material.MaterialRichText
+import com.halilibo.richtext.ui.material.RichText
 import com.halilibo.richtext.ui.string.InlineContent
 import com.halilibo.richtext.ui.string.RichTextString.Builder
 import com.halilibo.richtext.ui.string.RichTextString.Format
@@ -96,7 +96,7 @@ import kotlinx.coroutines.launch
       }
     }
   }
-  MaterialRichText {
+  RichText {
     Text(text)
   }
 }

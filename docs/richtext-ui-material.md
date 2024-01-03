@@ -7,42 +7,26 @@ Library that makes RichText compatible with Material design in Compose.
 
 ## Gradle
 
-```groovy
+```kotlin
 dependencies {
-  implementation "com.halilibo.compose-richtext:richtext-ui-material:${richtext_version}"
+  implementation("com.halilibo.compose-richtext:richtext-ui-material:${richtext_version}")
 }
 ```
 
 ## Usage
 
-Material RichText library offers 2 different ways of integrating Material design with RichText in your app.
+Material RichText library provides a single composable called `RichText` which automatically passes
+down Material theming attributes to `BasicRichText`. 
 
-### [`MaterialRichText`](../api/richtext-ui-material/com.halilibo.richtext.ui.material/-material-rich-text.html)
+### [`RichText`](../api/richtext-ui-material/com.halilibo.richtext.ui.material/-rich-text.html)
 
-`MaterialRichText` composable wraps around regular `RichText` while introducing the necessary integration
-dependencies. `MaterialRichText` shares the exact arguments with regular `RichText`.
+`RichText` composable wraps around regular `BasicRichText` while introducing the necessary integration
+dependencies. `RichText` shares the exact arguments with regular `BasicRichText`.
 
 ```kotlin
-MaterialRichText(modifier = Modifier.background(color = Color.White)) {
+RichText(modifier = Modifier.background(color = Color.White)) {
   Heading(0, "Paragraphs")
   Text("Simple paragraph.")
   ...
-}
-```
-
-### [`SetupMaterialRichText`](../api/richtext-ui-material/com.halilibo.richtext.ui.material/-setup-material-rich-text.html)
-
-If the whole application is written in Compose or contains large Compose trees, it would be ideal to call this function right after applying the Material Theme.
-Then, calling `MaterialRichText` or `RichText` would have no difference.
-
-```kotlin
-MaterialTheme(...) {
-  SetupMaterialRichText {
-    RichText(modifier = Modifier.background(color = Color.White)) {
-      Heading(0, "Paragraphs")
-      Text("Simple paragraph.")
-      ...
-    }
-  }
 }
 ```

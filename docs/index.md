@@ -6,8 +6,8 @@
 Compose Richtext is a collection of Compose libraries for working with rich text formatting and
 documents. 
 
-`richtext-ui`, `richtext-commonmark`, and `richtext-material-ui` are Kotlin Multiplatform(KMP) Compose Libraries.
-All 3 of these modules can be used in Android and Desktop Compose apps. 
+`richtext-ui`, `richtext-commonmark`, and `richtext-ui-material`|`richtext-ui-material3` are Kotlin Multiplatform(KMP) Compose Libraries.
+All these modules can be used in Android and Desktop Compose apps. 
 
 Each library is documented separately, see the navigation menu for the list. This site also includes
 an API reference.
@@ -22,9 +22,9 @@ an API reference.
 
 These libraries are published to Maven Central, so just add a Gradle dependency:
 
-```groovy
+```kotlin
 dependencies {
-  implementation "com.halilibo.compose-richtext:<LIBRARY-ARTIFACT>:${richtext_version}"
+  implementation("com.halilibo.compose-richtext:<LIBRARY-ARTIFACT>:${richtext_version}")
 }
 ```
 

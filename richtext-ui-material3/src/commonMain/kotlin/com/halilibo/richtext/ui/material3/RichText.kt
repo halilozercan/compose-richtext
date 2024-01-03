@@ -7,26 +7,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
-import com.halilibo.richtext.ui.RichText
+import com.halilibo.richtext.ui.BasicRichText
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
-import com.halilibo.richtext.ui.RichTextThemeIntegration
+import com.halilibo.richtext.ui.RichTextThemeProvider
 
 /**
  * RichText implementation that integrates with Material 3 design.
  *
  * If the consumer app has small composition trees or only uses RichText in
  * a single place, it would be ideal to call this function instead of wrapping
- * everything under [SetupMaterial3RichText].
+ * everything under [RichTextMaterialTheme].
  */
 @Composable
-public fun Material3RichText(
+public fun RichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
   children: @Composable RichTextScope.() -> Unit
 ) {
-  SetupMaterial3RichText {
-    RichText(
+  RichTextMaterialTheme {
+    BasicRichText(
       modifier = modifier,
       style = style,
       children = children
@@ -35,29 +35,25 @@ public fun Material3RichText(
 }
 
 /**
- * Wraps the given [child] with Material Theme integration for [RichText].
+ * Wraps the given [child] with Material Theme integration for [BasicRichText].
  *
  * This function also keeps track of the parent context by using CompositionLocals
  * to not apply Material Theming if it already exists in the current composition.
- *
- * If the whole application is written in Compose or contains large Compose trees,
- * it would be ideal to call this function right after applying the Material Theme.
- * Then, calling [Material3RichText] or [RichText] would have no difference.
  */
 @Composable
-public fun SetupMaterial3RichText(
+internal fun RichTextMaterialTheme(
   child: @Composable () -> Unit
 ) {
   val isApplied = LocalMaterialThemingApplied.current
 
   if (!isApplied) {
-    RichTextThemeIntegration(
-      textStyle = { LocalTextStyle.current },
-      contentColor = { LocalContentColor.current },
-      ProvideTextStyle = { textStyle, content ->
+    RichTextThemeProvider(
+      textStyleProvider = { LocalTextStyle.current },
+      contentColorProvider = { LocalContentColor.current },
+      textStyleBackProvider = { textStyle, content ->
         ProvideTextStyle(textStyle, content)
       },
-      ProvideContentColor = { color, content ->
+      contentColorBackProvider = { color, content ->
         CompositionLocalProvider(LocalContentColor provides color) {
           content()
         }
