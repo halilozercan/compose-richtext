@@ -28,7 +28,7 @@ import com.halilibo.richtext.ui.ListType.Unordered
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.Table
-import com.halilibo.richtext.ui.material.MaterialRichText
+import com.halilibo.richtext.ui.material.RichText
 
 @Preview(widthDp = 300, heightDp = 1000)
 @Composable fun RichTextDemoOnWhite() {
@@ -50,7 +50,7 @@ import com.halilibo.richtext.ui.material.MaterialRichText
   style: RichTextStyle? = null,
   header: String = ""
 ) {
-  MaterialRichText(
+  RichText(
     modifier = Modifier.padding(8.dp),
     style = style
   ) {

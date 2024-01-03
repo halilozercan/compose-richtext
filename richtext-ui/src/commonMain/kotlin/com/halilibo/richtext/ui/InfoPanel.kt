@@ -102,7 +102,7 @@ public fun RichTextScope.InfoPanel(
 
   val resolvedTextStyle = currentTextStyle.merge(infoPanelTextStyle)
 
-  ProvideTextStyle(resolvedTextStyle) {
+  textStyleBackProvider(resolvedTextStyle) {
     Box(modifier = backgroundModifier.padding(infoPanelStyle.contentPadding!!)) {
       content()
     }

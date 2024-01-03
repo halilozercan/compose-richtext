@@ -39,13 +39,13 @@ internal val LocalInternalContentColor = compositionLocalOf { Color.Black }
  * The current [TextStyle].
  */
 internal val RichTextScope.currentTextStyle: TextStyle
-  @Composable get() = textStyle()
+  @Composable get() = textStyleProvider()
 
 /**
  * The current content [Color].
  */
 internal val RichTextScope.currentContentColor: Color
-  @Composable get() = contentColor()
+  @Composable get() = contentColorProvider()
 
 /**
  * Intended for preview composables.

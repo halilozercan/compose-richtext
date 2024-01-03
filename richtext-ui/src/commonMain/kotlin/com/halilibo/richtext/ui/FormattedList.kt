@@ -215,7 +215,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
       }
     },
     itemForIndex = { index ->
-      RichText(style = currentRichTextStyle.copy(paragraphSpacing = listStyle.itemSpacing)) {
+      BasicRichText(style = currentRichTextStyle.copy(paragraphSpacing = listStyle.itemSpacing)) {
         CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
