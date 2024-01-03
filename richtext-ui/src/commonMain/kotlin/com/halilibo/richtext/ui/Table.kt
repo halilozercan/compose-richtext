@@ -2,7 +2,6 @@
 
 package com.halilibo.richtext.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -17,9 +16,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.halilibo.richtext.ui.BlockQuote
 import kotlin.math.max
 
 /**
@@ -122,8 +119,8 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         add(headerRow.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            ProvideTextStyle(headerStyle) {
-              RichText(
+            textStyleBackProvider(headerStyle) {
+              BasicRichText(
                 modifier = cellModifier,
                 children = cell
               )
@@ -136,7 +133,7 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            RichText(
+            BasicRichText(
               modifier = cellModifier,
               children = cell
             )

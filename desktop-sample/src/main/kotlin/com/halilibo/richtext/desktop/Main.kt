@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -35,10 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.singleWindowApplication
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.ui.CodeBlockStyle
-import com.halilibo.richtext.ui.RichText
 import com.halilibo.richtext.ui.RichTextStyle
-import com.halilibo.richtext.ui.Table
-import com.halilibo.richtext.ui.material.MaterialRichText
+import com.halilibo.richtext.ui.material.RichText
 import com.halilibo.richtext.ui.resolveDefaults
 
 fun main(): Unit = singleWindowApplication(
@@ -80,7 +77,7 @@ fun main(): Unit = singleWindowApplication(
             )
           }
           ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
-            MaterialRichText(
+            RichText(
               modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState()),

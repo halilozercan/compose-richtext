@@ -12,16 +12,18 @@ for quick start. There is also Material3 flavor at [RichText UI Material3](../ri
 
 ## Gradle
 
-```groovy
+```kotlin
 dependencies {
-  implementation "com.halilibo.compose-richtext:richtext-ui:${richtext_version}"
+  implementation("com.halilibo.compose-richtext:richtext-ui:${richtext_version}")
 }
 ```
 
-## [`RichText`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text.html)
+## [`BasicRichText`](../api/richtext-ui/com.halilibo.richtext.ui/-basic-rich-text.html)
 
 Richtext UI does not depend on Material artifact of Compose. Design agnostic API allows anyone
 to adopt RichText UI and its extensions like Markdown to their own design and typography systems.
+Hence, just like `foundation` and `material` modules of Compose, this library also names the 
+building block with `Basic` prefix.
 
 If you are planning to adopt RichText within your design system, please go ahead and check out [`RichText Material`](../richtext-ui-material/index.html)
 for inspiration.
@@ -31,9 +33,9 @@ for inspiration.
 `RichTextScope` is a context wrapper around composables that integrate and play well within RichText
 content. 
 
-## [`RichTextThemeIntegration`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-theme-integration.html)
+## [`RichTextThemeProvider`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-theme-provider.html)
 
-Entry point for integrating app's own typography and theme system with RichText.
+Entry point for integrating app's own typography and theme system with BasicRichText.
 
 API for this integration is highly influenced by how compose-material theming
 is designed. RichText library assumes that almost all Theme/Design systems would
@@ -49,7 +51,7 @@ Open the `Demo.kt` file in the `sample` module to play with this. Although the m
 uses Material integrated version of `RichText`, they share exactly the same API.
 
 ```kotlin
-RichText(
+BasicRichText(
   modifier = Modifier.background(color = Color.White)
 ) {
   Heading(0, "Paragraphs")

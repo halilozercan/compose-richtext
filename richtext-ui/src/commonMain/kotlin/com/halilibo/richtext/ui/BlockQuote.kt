@@ -71,7 +71,7 @@ public interface BlockQuoteGutter {
 
   Layout(content = {
     with(gutter) { drawGutter() }
-    RichText(
+    BasicRichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),
       children = children
     )

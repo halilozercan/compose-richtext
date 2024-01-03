@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.em
 import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.markdown.MarkdownParseOptions
 import com.halilibo.richtext.ui.RichTextStyle
-import com.halilibo.richtext.ui.material.MaterialRichText
+import com.halilibo.richtext.ui.material.RichText
 import com.halilibo.richtext.ui.resolveDefaults
 
 @Preview
@@ -104,7 +104,7 @@ import com.halilibo.richtext.ui.resolveDefaults
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
             ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
-              MaterialRichText(
+              RichText(
                 style = richTextStyle,
                 modifier = Modifier.padding(8.dp),
               ) {

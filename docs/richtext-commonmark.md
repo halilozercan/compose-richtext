@@ -8,9 +8,9 @@ library/spec to parse, and `richtext-ui` to render.
 
 ## Gradle
 
-```groovy
+```kotlin
 dependencies {
-  implementation "com.halilibo.compose-richtext:richtext-commonmark:${richtext_version}"
+  implementation("com.halilibo.compose-richtext:richtext-commonmark:${richtext_version}")
 }
 ```
 
@@ -18,10 +18,6 @@ dependencies {
 
 The simplest way to render markdown is just pass a string to the [`Markdown`](../api/richtext-commonmark/com.halilibo.richtext.markdown/-markdown.html)
 composable under RichText scope:
-
-!!! warning
-    Markdown composable has recently changed to be an extension on [RichTextScope](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-scope/index.html) instead
-    of being a separate entry composable.
 
 ~~~kotlin
 RichText(
@@ -75,7 +71,6 @@ val markdownParseOptions = MarkdownParseOptions.Default.copy(
 )
 
 Markdown(
-  markdownParseOptions = markdownParseOptions,
-  ...
+  markdownParseOptions = markdownParseOptions
 )
 ```
