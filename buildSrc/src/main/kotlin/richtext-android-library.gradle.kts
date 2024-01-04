@@ -32,4 +32,10 @@ android {
   composeOptions {
     kotlinCompilerExtensionVersion = Compose.compilerVersion
   }
+
+  publishing {
+    singleVariant("release") {
+      withSourcesJar()
+    }
+  }
 }

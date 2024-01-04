@@ -13,7 +13,7 @@ repositories {
 kotlin {
   jvm()
   android {
-    publishLibraryVariants("release", "debug")
+    publishLibraryVariants("release")
     compilations.all {
       kotlinOptions.jvmTarget = "11"
     }
