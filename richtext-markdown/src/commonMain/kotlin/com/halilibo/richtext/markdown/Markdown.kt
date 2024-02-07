@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import com.halilibo.richtext.markdown.node.AstBlockQuote
-import com.halilibo.richtext.markdown.node.AstBulletList
+import com.halilibo.richtext.markdown.node.AstUnorderedList
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstFencedCodeBlock
 import com.halilibo.richtext.markdown.node.AstHeading
@@ -42,41 +42,26 @@ import com.halilibo.richtext.ui.string.Text
 import com.halilibo.richtext.ui.string.richTextString
 
 /**
- * A composable that renders Markdown content using RichText.
+ * A composable that renders Markdown content pointed by [astNode] into this [RichTextScope].
  *
- * @param content Markdown text. No restriction on length.
- * @param markdownParseOptions Options for the Markdown parser.
+ * @param astNode Root node of Markdown tree. This can be obtained via a parser.
  * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
  */
 @Composable
 public fun RichTextScope.Markdown(
-  content: String,
-  markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
+  astNode: AstNode,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
-  // Can't use UriHandlerAmbient.current::openUri here,
-  // see https://issuetracker.google.com/issues/172366483
   val realLinkClickedHandler = onLinkClickedState.value ?: LocalUriHandler.current.let {
     remember {
       { url -> it.openUri(url) }
     }
   }
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    val markdownAst = parsedMarkdownAst(text = content, options = markdownParseOptions)
-    RecursiveRenderMarkdownAst(astNode = markdownAst)
+    RecursiveRenderMarkdownAst(astNode = astNode)
   }
 }
-
-/**
- * Parse markdown content and return Abstract Syntax Tree(AST).
- * Composable is efficient thanks to remember construct.
- *
- * @param text Markdown text to be parsed.
- * @param options Options for the Markdown parser.
- */
-@Composable
-internal expect fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode?
 
 /**
  * When parsed, markdown content or any other rich text can be represented as a tree.
@@ -115,7 +100,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         visitChildren(astNode)
       }
     }
-    is AstBulletList -> {
+    is AstUnorderedList -> {
       FormattedList(
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()

@@ -1,5 +1,6 @@
 package com.halilibo.richtext.markdown
 
+import com.halilibo.richtext.commonmark.convert
 import com.halilibo.richtext.markdown.node.AstImage
 import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.markdown.node.AstNodeLinks
