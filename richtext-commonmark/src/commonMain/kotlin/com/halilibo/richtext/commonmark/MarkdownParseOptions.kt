@@ -1,4 +1,4 @@
-package com.halilibo.richtext.markdown
+package com.halilibo.richtext.commonmark
 
 /**
  * Allows configuration of the Markdown parser
