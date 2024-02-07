@@ -195,6 +195,16 @@ private val sampleMarkdown = """
   * Unordered list can use asterisks
   - Or minuses
   + Or pluses
+<!-- -->
+  2. Ordered list starting with `2.`
+  3. Another item
+<!-- -->
+  0. Ordered list starting with `0.`
+<!-- -->
+  003. Ordered list starting with `003.`
+<!-- -->
+  -1. Starting with `-1.` should not be list
+
 
   ---
 

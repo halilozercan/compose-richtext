@@ -126,7 +126,8 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
     is AstOrderedList -> {
       FormattedList(
         listType = Ordered,
-        items = astNode.childrenSequence().toList()
+        items = astNode.childrenSequence().toList(),
+        startIndex = astNodeType.startNumber - 1,
       ) { astListItem ->
         visitChildren(astListItem)
       }
