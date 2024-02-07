@@ -186,6 +186,7 @@ internal fun convert(
   return newNode
 }
 
+@Composable
 internal actual fun Node.toAstNode() = convert(this)
 
 @Composable
