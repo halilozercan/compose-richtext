@@ -1,6 +1,7 @@
 package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -23,6 +24,7 @@ import javax.imageio.ImageIO
 internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
+  onClick: (() -> Unit)?,
   modifier: Modifier,
   contentScale: ContentScale
 ) {
@@ -36,7 +38,7 @@ internal actual fun RemoteImage(
     Image(
       bitmap = image!!,
       contentDescription = contentDescription,
-      modifier = modifier,
+      modifier = if (onClick == null) modifier else modifier.clickable(onClick = onClick),
       contentScale = contentScale
     )
   }

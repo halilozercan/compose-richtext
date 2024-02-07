@@ -104,11 +104,16 @@ private fun computeRichTextString(
                 IntSize(128.dp.roundToPx(), 128.dp.roundToPx())
               }
             ) {
+              val parentDestination = currentNode.links.firstParentOrNull<AstLink>()?.destination
               RemoteImage(
                 url = currentNodeType.destination,
                 contentDescription = currentNodeType.title,
                 modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Inside
+                contentScale = ContentScale.Inside,
+                onClick = when (parentDestination) {
+                  null -> null
+                  else -> {{ onLinkClicked(parentDestination) }}
+                },
               )
             }
           )
