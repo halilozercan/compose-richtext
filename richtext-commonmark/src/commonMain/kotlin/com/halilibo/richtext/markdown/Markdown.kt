@@ -171,7 +171,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
     }
     is AstHeading -> {
       Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode, Modifier.semantics { heading() } )
+        MarkdownRichText(astNode, contentOverride, Modifier.semantics { heading() } )
       }
     }
     is AstIndentedCodeBlock -> {
@@ -192,10 +192,10 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
       /* no-op */
     }
     is AstParagraph -> {
-      MarkdownRichText(astNode)
+      MarkdownRichText(astNode, contentOverride)
     }
     is AstTableRoot -> {
-      RenderTable(astNode)
+      RenderTable(astNode, contentOverride)
     }
     // This should almost never happen. All the possible text
     // nodes must be under either Heading, Paragraph or CustomNode

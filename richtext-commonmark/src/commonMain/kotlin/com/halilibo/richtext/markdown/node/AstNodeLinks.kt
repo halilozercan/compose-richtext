@@ -14,6 +14,15 @@ public data class AstNodeLinks(
   var next: AstNode? = null
 ) {
 
+  internal inline fun <reified T : AstNodeType> firstParentOrNull(): T? {
+    var parent = this.parent
+    while (parent != null) {
+      if (parent.type is T) return parent.type as T
+      parent = parent.links.parent
+    }
+    return null
+  }
+
   /**
    * Stop infinite loop and only check towards bottom-right direction
    */

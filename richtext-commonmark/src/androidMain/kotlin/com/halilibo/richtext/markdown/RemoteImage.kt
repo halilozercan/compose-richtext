@@ -1,6 +1,7 @@
 package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ private val DEFAULT_IMAGE_SIZE = 64.dp
 internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
+  onClick: (() -> Unit)?,
   modifier: Modifier,
   contentScale: ContentScale
 ) {
@@ -40,7 +42,9 @@ internal actual fun RemoteImage(
 
   val density = LocalDensity.current
 
-  BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+  BoxWithConstraints(
+    modifier = if (onClick == null) modifier else modifier.clickable(onClick = onClick),
+    contentAlignment = Alignment.Center) {
     val sizeModifier by remember(density, painter) {
       derivedStateOf {
         val painterIntrinsicSize = painter.state.painter?.intrinsicSize

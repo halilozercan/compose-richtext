@@ -56,18 +56,23 @@ import com.halilibo.richtext.ui.string.withFormat
  * @param astNode Root node to accept as Text Content container.
  */
 @Composable
-internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier = Modifier) {
+internal fun RichTextScope.MarkdownRichText(
+  astNode: AstNode,
+  contentOverride: ContentOverride?,
+  modifier: Modifier = Modifier
+) {
   val onLinkClicked = LocalOnLinkClicked.current
   // Assume that only RichText nodes reside below this level.
   val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, onLinkClicked)
+    computeRichTextString(astNode, contentOverride, onLinkClicked)
   }
 
   Text(text = richText, modifier = modifier)
 }
 
-private fun computeRichTextString(
+private fun RichTextScope.computeRichTextString(
   astNode: AstNode,
+  contentOverride: ContentOverride?,
   onLinkClicked: (String) -> Unit
 ): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
@@ -93,10 +98,12 @@ private fun computeRichTextString(
           }
           null
         }
+
         is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
         is AstStrikethrough -> richTextStringBuilder.pushFormat(
           RichTextString.Format.Strikethrough
         )
+
         is AstImage -> {
           richTextStringBuilder.appendInlineContent(
             content = InlineContent(
@@ -104,36 +111,51 @@ private fun computeRichTextString(
                 IntSize(128.dp.roundToPx(), 128.dp.roundToPx())
               }
             ) {
-              RemoteImage(
-                url = currentNodeType.destination,
-                contentDescription = currentNodeType.title,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Inside
-              )
+              if (contentOverride?.invoke(this@computeRichTextString, currentNode) {} != true) {
+                val parentDestination = currentNode.links.firstParentOrNull<AstLink>()?.destination
+                RemoteImage(
+                  url = currentNodeType.destination,
+                  contentDescription = currentNodeType.title,
+                  modifier = Modifier.fillMaxWidth(),
+                  contentScale = ContentScale.Inside,
+                  onClick = when (parentDestination) {
+                    null -> null
+                    else -> {
+                      { onLinkClicked(parentDestination) }
+                    }
+                  },
+                )
+              }
             }
           )
           null
         }
+
         is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
           onClick = { onLinkClicked(currentNodeType.destination) }
         ))
+
         is AstSoftLineBreak -> {
           richTextStringBuilder.append(" ")
           null
         }
+
         is AstHardLineBreak -> {
           richTextStringBuilder.append("\n")
           null
         }
+
         is AstStrongEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Bold)
         is AstText -> {
           richTextStringBuilder.append(currentNodeType.literal)
           null
         }
+
         is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
           RichTextString.Format.Link(
             onClick = { onLinkClicked(currentNodeType.destination) }
           ))
+
         else -> null
       }
 
