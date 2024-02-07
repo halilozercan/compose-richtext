@@ -1,11 +1,6 @@
-package com.halilibo.richtext.markdown
+package com.halilibo.richtext.commonmark
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
 import com.halilibo.richtext.markdown.node.AstBlockQuote
-import com.halilibo.richtext.markdown.node.AstBulletList
 import com.halilibo.richtext.markdown.node.AstCode
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstEmphasis
@@ -35,6 +30,7 @@ import com.halilibo.richtext.markdown.node.AstTableRoot
 import com.halilibo.richtext.markdown.node.AstTableRow
 import com.halilibo.richtext.markdown.node.AstText
 import com.halilibo.richtext.markdown.node.AstThematicBreak
+import com.halilibo.richtext.markdown.node.AstUnorderedList
 import org.commonmark.ext.autolink.AutolinkExtension
 import org.commonmark.ext.gfm.strikethrough.Strikethrough
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
@@ -47,7 +43,6 @@ import org.commonmark.ext.gfm.tables.TableCell.Alignment.RIGHT
 import org.commonmark.ext.gfm.tables.TableHead
 import org.commonmark.ext.gfm.tables.TableRow
 import org.commonmark.ext.gfm.tables.TablesExtension
-import org.commonmark.ext.image.attributes.ImageAttributesExtension
 import org.commonmark.node.BlockQuote
 import org.commonmark.node.BulletList
 import org.commonmark.node.Code
@@ -91,7 +86,7 @@ internal fun convert(
 
   val newNodeType: AstNodeType? = when (node) {
     is BlockQuote -> AstBlockQuote
-    is BulletList -> AstBulletList(bulletMarker = node.bulletMarker)
+    is BulletList -> AstUnorderedList(bulletMarker = node.bulletMarker)
     is Code -> AstCode(literal = node.literal)
     is Document -> AstDocument
     is Emphasis -> AstEmphasis(delimiter = node.openingDelimiter)
@@ -187,27 +182,30 @@ internal fun convert(
   return newNode
 }
 
-internal fun Node.convert() = convert(this)
+public actual class CommonmarkAstNodeParser actual constructor(
+  options: MarkdownParseOptions
+) {
 
-@Composable
-internal actual fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode? {
-  val parser = remember(options) {
-    Parser.builder()
-      .extensions(
-        listOfNotNull(
-          TablesExtension.create(),
-          StrikethroughExtension.create(),
-          ImageAttributesExtension.create(),
-          if (options.autolink) AutolinkExtension.create() else null
-        )
+  private val parser = Parser.builder()
+    .extensions(
+      listOfNotNull(
+        TablesExtension.create(),
+        StrikethroughExtension.create(),
+        if (options.autolink) AutolinkExtension.create() else null
       )
-      .build()
-  }
+    )
+    .build()
 
-  val astRootNode by produceState<AstNode?>(null, text, parser) {
-    value = parser.parse(text).convert()
-  }
+  public actual fun parse(text: String): AstNode {
+    val commonmarkNode = parser.parse(text)
+      ?: throw IllegalArgumentException(
+        "Could not parse the given text content into a meaningful Markdown representation!"
+      )
 
-  return astRootNode
+    return convert(commonmarkNode)
+      ?: throw IllegalArgumentException(
+        "Could not convert the generated Commonmark Node into an ASTNode!"
+      )
+  }
 }
 

@@ -6,7 +6,7 @@
 Compose Richtext is a collection of Compose libraries for working with rich text formatting and
 documents. 
 
-`richtext-ui`, `richtext-commonmark`, and `richtext-ui-material`|`richtext-ui-material3` are Kotlin Multiplatform(KMP) Compose Libraries.
+`richtext-ui`, `richtext-markdown`, `richtext-commonmark`, and `richtext-ui-material`|`richtext-ui-material3` are Kotlin Multiplatform(KMP) Compose Libraries.
 All these modules can be used in Android and Desktop Compose apps. 
 
 Each library is documented separately, see the navigation menu for the list. This site also includes
