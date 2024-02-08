@@ -41,7 +41,7 @@ String to an `AstNode` that represents the Markdown tree.
     )
     // ...
   
-    RichTextScope.Markdown(astNode)
+    RichTextScope.BasicMarkdown(astNode)
 ```
 
 ## Rendering

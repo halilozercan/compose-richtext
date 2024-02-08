@@ -43,12 +43,13 @@ import com.halilibo.richtext.ui.string.richTextString
 
 /**
  * A composable that renders Markdown content pointed by [astNode] into this [RichTextScope].
+ * Designed to be a building block that should be wrapped with a specific parser.
  *
  * @param astNode Root node of Markdown tree. This can be obtained via a parser.
  * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
  */
 @Composable
-public fun RichTextScope.Markdown(
+public fun RichTextScope.BasicMarkdown(
   astNode: AstNode,
   onLinkClicked: ((String) -> Unit)? = null
 ) {
@@ -186,7 +187,7 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
 }
 
 /**
- * An internal ambient to pass through OnLinkClicked function from root [Markdown] composable
+ * An internal ambient to pass through OnLinkClicked function from root [BasicMarkdown] composable
  * to children that render links. Although being explicit is preferred, recursive calls to
  * [visitChildren] increases verbosity with each extra argument.
  */

@@ -1,4 +1,3 @@
-@file:JvmName("CodeBlockAndroid")
 package com.halilibo.richtext.ui
 
 import androidx.compose.foundation.horizontalScroll
