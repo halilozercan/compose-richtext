@@ -51,7 +51,7 @@ subprojects {
         allWarningsAsErrors = true
       }
 
-      freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+      freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xexpect-actual-classes")
     }
   }
 

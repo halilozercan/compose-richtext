@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import com.halilibo.richtext.markdown.Markdown
+import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.commonmark.MarkdownParseOptions.Companion
 import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.ui.RichTextScope
@@ -35,7 +35,7 @@ public fun RichTextScope.Markdown(
   }
 
   astRootNode?.let {
-    Markdown(astNode = it, onLinkClicked = onLinkClicked)
+    BasicMarkdown(astNode = it, onLinkClicked = onLinkClicked)
   }
 }
 

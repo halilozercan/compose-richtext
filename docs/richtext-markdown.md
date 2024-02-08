@@ -3,7 +3,11 @@
 [![Android Library](https://img.shields.io/badge/Platform-Android-green.svg?style=for-the-badge)](https://developer.android.com/studio/build/dependencies)
 [![JVM Library](https://img.shields.io/badge/Platform-JVM-red.svg?style=for-the-badge)](https://kotlinlang.org/docs/mpp-intro.html)
 
-Library for rendering Markdown tree defined as an `AstNode`. 
+Library for rendering Markdown tree that is defined as an `AstNode`. This module would be useless
+for someone who is looking to just render a Markdown string. Please take a look to 
+`richtext-commonmark` for such features. `richtext-markdown` behaves as sort of a building block.
+You can create your own parser or use 3rd party ones that converts any Markdown string to an 
+`AstNode` tree.
 
 ## Gradle
 
@@ -12,13 +16,6 @@ dependencies {
   implementation("com.halilibo.compose-richtext:richtext-markdown:${richtext_version}")
 }
 ```
-
-## Usage
-
-`richtext-markdown` module renders a given Markdown Abstract Syntax Tree. It accepts a root 
-`AstNode`. However, this library does not include a parser to convert a regular Markdown String into
-an `AstNode`. Please refer to `richtext-commonmark` for a sample implementation or a quick way to
-render Markdown.
 
 ## Rendering
 
@@ -29,6 +26,7 @@ composable under RichText scope:
 RichText(
   modifier = Modifier.padding(16.dp)
 ) {
+  // requires richtext-commonmark module.
   val parser = remember(options) { CommonmarkAstNodeParser(options) }
   val astNode = remember(parser) {
     parser.parse(
@@ -49,6 +47,6 @@ RichText(
         """.trimIndent()
     )
   }
-  Markdown(astNode)
+  BasicMarkdown(astNode)
 }
 ~~~
