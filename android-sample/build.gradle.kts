@@ -1,6 +1,7 @@
 plugins {
   id("com.android.application")
   kotlin("android")
+  id("org.jetbrains.compose") version Compose.desktopVersion
 }
 
 android {
@@ -36,8 +37,8 @@ dependencies {
   implementation(project(":slideshow"))
   implementation(AndroidX.appcompat)
   implementation(Compose.activity)
-  implementation(Compose.foundation)
-  implementation(Compose.icons)
-  implementation(Compose.material)
-  implementation(Compose.tooling)
+  implementation(compose.foundation)
+  implementation(compose.materialIconsExtended)
+  implementation(compose.material)
+  implementation(compose.uiTooling)
 }

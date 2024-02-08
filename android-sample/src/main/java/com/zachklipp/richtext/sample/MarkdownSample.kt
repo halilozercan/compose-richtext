@@ -30,8 +30,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.halilibo.richtext.commonmark.Markdown
+import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
 import com.halilibo.richtext.commonmark.MarkdownParseOptions
+import com.halilibo.richtext.markdown.Markdown
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material.RichText
 import com.halilibo.richtext.ui.resolveDefaults
@@ -104,13 +105,19 @@ import com.halilibo.richtext.ui.resolveDefaults
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
             ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
+              val parser = remember(markdownParseOptions) {
+                CommonmarkAstNodeParser(markdownParseOptions)
+              }
+              val astNode = remember(parser) {
+                parser.parse(sampleMarkdown)
+              }
+
               RichText(
                 style = richTextStyle,
                 modifier = Modifier.padding(8.dp),
               ) {
                 Markdown(
-                  content = sampleMarkdown,
-                  markdownParseOptions = markdownParseOptions,
+                  astNode = astNode,
                   onLinkClicked = {
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                   }
