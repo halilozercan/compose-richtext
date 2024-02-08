@@ -43,14 +43,21 @@ import com.halilibo.richtext.ui.string.Text
 import com.halilibo.richtext.ui.string.richTextString
 import org.commonmark.node.Node
 
+/**
+ * Overrides block content such as code blocks.
+ */
 public typealias ContentOverride = @Composable (
   node: AstNode,
   visitChildren: @Composable (node: AstNode) -> Unit,
 ) -> Boolean
 
+/**
+ * Overrides content that is inline in a paragraph such as a link, or text.
+ */
 public typealias InlineContentOverride = RichTextScope.(
   node: AstNode,
   richTextStringBuilder: RichTextString.Builder,
+  onClick: (() -> Unit)?,
 ) -> InlineContent?
 
 /**

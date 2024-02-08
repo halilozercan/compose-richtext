@@ -28,7 +28,6 @@ private val DEFAULT_IMAGE_SIZE = 64.dp
 internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
-  onClick: (() -> Unit)?,
   modifier: Modifier,
   contentScale: ContentScale
 ) {
@@ -43,7 +42,7 @@ internal actual fun RemoteImage(
   val density = LocalDensity.current
 
   BoxWithConstraints(
-    modifier = if (onClick == null) modifier else modifier.clickable(onClick = onClick),
+    modifier = modifier,
     contentAlignment = Alignment.Center) {
     val sizeModifier by remember(density, painter) {
       derivedStateOf {

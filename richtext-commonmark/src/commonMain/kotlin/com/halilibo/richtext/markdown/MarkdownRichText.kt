@@ -91,8 +91,14 @@ private fun RichTextScope.computeRichTextString(
     iteratorStack = iteratorStack.drop(1)
 
     if (!isVisited) {
+      val parentLink = currentNode.links.firstParentOrNull<AstLink>()
       val newFormatIndex =
-        when (val override = inlineContentOverride?.invoke(this, currentNode, richTextStringBuilder)) {
+        when (val override = inlineContentOverride?.invoke(
+          this,
+          currentNode,
+          richTextStringBuilder,
+          if (parentLink == null) null else {{ onLinkClicked(parentLink.destination) }},
+        )) {
           null -> when (val currentNodeType = currentNode.type) {
             is AstCode -> {
               richTextStringBuilder.withFormat(RichTextString.Format.Code) {
@@ -113,18 +119,11 @@ private fun RichTextScope.computeRichTextString(
                     IntSize(128.dp.roundToPx(), 128.dp.roundToPx())
                   }
                 ) {
-                  val parentLink = currentNode.links.firstParentOrNull<AstLink>()
                   RemoteImage(
                     url = currentNodeType.destination,
                     contentDescription = currentNodeType.title,
                     modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.Inside,
-                    onClick = when (parentLink) {
-                      null -> null
-                      else -> {
-                        { onLinkClicked(parentLink.destination) }
-                      }
-                    },
                   )
 
                 }

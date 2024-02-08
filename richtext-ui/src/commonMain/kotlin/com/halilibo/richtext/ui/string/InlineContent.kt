@@ -2,8 +2,6 @@
 
 package com.halilibo.richtext.ui.string
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.Placeholder
@@ -45,7 +42,6 @@ public class InlineContent(
 @Composable internal fun manageInlineTextContents(
   inlineContents: Map<String, InlineContent>,
   textConstraints: Constraints,
-  onClick: (() -> Unit)?,
 ): Map<String, InlineTextContent> {
   val density = LocalDensity.current
 
@@ -54,7 +50,6 @@ public class InlineContent(
       content,
       Constraints(maxWidth = textConstraints.maxWidth, maxHeight = textConstraints.maxHeight),
       density,
-      onClick,
     )
   }
 }
@@ -69,7 +64,6 @@ public class InlineContent(
   content: InlineContent,
   contentConstraints: Constraints,
   density: Density,
-  onClick: (() -> Unit)?,
 ): InlineTextContent {
   var size by remember {
     mutableStateOf(
@@ -88,19 +82,7 @@ public class InlineContent(
     )
 
     return InlineTextContent(placeholder) { alternateText ->
-      val wrappedContents = @Composable {
-        when (onClick) {
-          null -> content.content(density, alternateText)
-          else -> Box(
-            modifier = Modifier
-              .clickable(onClick = onClick)
-          ) {
-            content.content(density, alternateText)
-          }
-        }
-      }
-
-      Layout(content = wrappedContents) { measurables, _ ->
+      Layout(content = { content.content(density, alternateText) }) { measurables, _ ->
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.

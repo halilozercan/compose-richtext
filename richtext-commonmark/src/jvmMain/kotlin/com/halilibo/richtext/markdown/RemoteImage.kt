@@ -24,7 +24,6 @@ import javax.imageio.ImageIO
 internal actual fun RemoteImage(
   url: String,
   contentDescription: String?,
-  onClick: (() -> Unit)?,
   modifier: Modifier,
   contentScale: ContentScale
 ) {
@@ -38,7 +37,7 @@ internal actual fun RemoteImage(
     Image(
       bitmap = image!!,
       contentDescription = contentDescription,
-      modifier = if (onClick == null) modifier else modifier.clickable(onClick = onClick),
+      modifier = modifier,
       contentScale = contentScale
     )
   }
