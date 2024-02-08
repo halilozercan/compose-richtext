@@ -10,7 +10,10 @@ import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.Table
 
 @Composable
-internal fun RichTextScope.RenderTable(node: AstNode, contentOverride: ContentOverride?) {
+internal fun RichTextScope.RenderTable(
+  node: AstNode,
+  inlineContentOverride: InlineContentOverride?,
+) {
   Table(
     headerRow = {
       node.filterChildrenType<AstTableHeader>()
@@ -20,7 +23,7 @@ internal fun RichTextScope.RenderTable(node: AstNode, contentOverride: ContentOv
         ?.filterChildrenType<AstTableCell>()
         ?.forEach { tableCell ->
           cell {
-            MarkdownRichText(tableCell, contentOverride)
+            MarkdownRichText(tableCell, inlineContentOverride)
           }
         }
     }
@@ -33,7 +36,7 @@ internal fun RichTextScope.RenderTable(node: AstNode, contentOverride: ContentOv
           tableRow.filterChildrenType<AstTableCell>()
             .forEach { tableCell ->
               cell {
-                MarkdownRichText(tableCell, contentOverride)
+                MarkdownRichText(tableCell, inlineContentOverride)
               }
             }
         }

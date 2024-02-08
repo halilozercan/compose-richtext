@@ -37,9 +37,12 @@ public fun RichTextScope.Text(
   val inlineContents = remember(text) { text.getInlineContents() }
 
   BoxWithConstraints(modifier = modifier) {
+    val inlineLink = annotated.getConsumableAnnotations(text.formatObjects, 0)
+      .firstOrNull()
     val inlineTextContents = manageInlineTextContents(
       inlineContents = inlineContents,
-      textConstraints = constraints
+      textConstraints = constraints,
+      onClick = if (inlineLink == null) null else {{ inlineLink.onClick() }}
     )
 
     ClickableText(
@@ -50,10 +53,10 @@ public fun RichTextScope.Text(
       overflow = overflow,
       maxLines = maxLines,
       isOffsetClickable = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset).any()
+        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceIn(0, annotated.length - 1)).any()
       },
       onClick = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset)
+        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceIn(0, annotated.length - 1))
           .firstOrNull()
           ?.let { link -> link.onClick() }
       }
