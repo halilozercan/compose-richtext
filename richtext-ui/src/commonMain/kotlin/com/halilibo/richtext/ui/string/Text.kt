@@ -50,10 +50,17 @@ public fun RichTextScope.Text(
       overflow = overflow,
       maxLines = maxLines,
       isOffsetClickable = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceIn(0, annotated.length - 1)).any()
+        // When you click past the end of the string, the offset is where the caret should be
+        // placed. However, when it is at the end, offset == text.length but parent links will at
+        // most end at length - 1. So we need to coerce the offset to be at most length - 1.
+        // This fixes an image where only the left side of an image wrapped with a link was only
+        // clickable on the left side.
+        // However, if a paragraph ends with a link, the link will be clickable past the
+        // end of the last line.
+        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1)).any()
       },
       onClick = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceIn(0, annotated.length - 1))
+        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1))
           .firstOrNull()
           ?.let { link -> link.onClick() }
       }
