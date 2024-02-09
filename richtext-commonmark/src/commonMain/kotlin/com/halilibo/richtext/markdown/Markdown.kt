@@ -38,14 +38,27 @@ import com.halilibo.richtext.ui.ListType.Ordered
 import com.halilibo.richtext.ui.ListType.Unordered
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.string.InlineContent
+import com.halilibo.richtext.ui.string.RichTextString
 import com.halilibo.richtext.ui.string.Text
 import com.halilibo.richtext.ui.string.richTextString
 import org.commonmark.node.Node
 
-public typealias ContentOverride = @Composable RichTextScope.(
+/**
+ * Overrides block content such as code blocks.
+ */
+public typealias ContentOverride = @Composable (
   node: AstNode,
   visitChildren: @Composable (node: AstNode) -> Unit,
 ) -> Boolean
+
+/**
+ * Overrides content that is inline in a paragraph such as a link, or text.
+ */
+public typealias InlineContentOverride = RichTextScope.(
+  node: AstNode,
+  richTextStringBuilder: RichTextString.Builder,
+  onClick: (() -> Unit)?,
+) -> InlineContent?
 
 /**
  * A composable that renders Markdown content using RichText.
@@ -60,9 +73,10 @@ public fun RichTextScope.Markdown(
   markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
   onLinkClicked: ((String) -> Unit)? = null,
   contentOverride: ContentOverride? = null,
+  inlineContentOverride: InlineContentOverride? = null,
 ) {
   val markdown = parsedMarkdown(text = content, options = markdownParseOptions)
-  markdown?.let { Markdown(it, onLinkClicked, contentOverride) }
+  markdown?.let { Markdown(it, onLinkClicked, contentOverride, inlineContentOverride) }
 }
 
 /**
@@ -76,6 +90,7 @@ public fun RichTextScope.Markdown(
   content: Node,
   onLinkClicked: ((String) -> Unit)? = null,
   contentOverride: ContentOverride? = null,
+  inlineContentOverride: InlineContentOverride? = null,
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
@@ -86,7 +101,7 @@ public fun RichTextScope.Markdown(
     }
   }
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    RecursiveRenderMarkdownAst(astNode = content.toAstNode(), contentOverride)
+    RecursiveRenderMarkdownAst(content.toAstNode(), contentOverride, inlineContentOverride)
   }
 }
 
@@ -136,50 +151,60 @@ internal expect fun parsedMarkdown(text: String, options: MarkdownParseOptions):
 internal fun RichTextScope.RecursiveRenderMarkdownAst(
   astNode: AstNode?,
   contentOverride: ContentOverride?,
+  inlineContentOverride: InlineContentOverride?,
 ) {
   astNode ?: return
 
-  if (contentOverride?.invoke(this, astNode) { visitChildren(it, contentOverride) } == true) {
+  if (contentOverride?.invoke(astNode) {
+      visitChildren(it, contentOverride, inlineContentOverride)
+    } == true) {
     return
   }
 
   when (val astNodeType = astNode.type) {
-    is AstDocument -> visitChildren(node = astNode, contentOverride)
+    is AstDocument -> visitChildren(node = astNode, contentOverride, inlineContentOverride)
     is AstBlockQuote -> {
       BlockQuote {
-        visitChildren(astNode, contentOverride)
+        visitChildren(astNode, contentOverride, inlineContentOverride)
       }
     }
+
     is AstBulletList -> {
       FormattedList(
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()
       ) {
-        visitChildren(it, contentOverride)
+        visitChildren(it, contentOverride, inlineContentOverride)
       }
     }
+
     is AstOrderedList -> {
       FormattedList(
         listType = Ordered,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
-        visitChildren(astListItem, contentOverride)
+        visitChildren(astListItem, contentOverride, inlineContentOverride)
       }
     }
+
     is AstThematicBreak -> {
       HorizontalRule()
     }
+
     is AstHeading -> {
       Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode, contentOverride, Modifier.semantics { heading() } )
+        MarkdownRichText(astNode, inlineContentOverride, Modifier.semantics { heading() })
       }
     }
+
     is AstIndentedCodeBlock -> {
       CodeBlock(text = astNodeType.literal.trim())
     }
+
     is AstFencedCodeBlock -> {
       CodeBlock(text = astNodeType.literal.trim())
     }
+
     is AstHtmlBlock -> {
       Text(text = richTextString {
         appendInlineContent(content = InlineContent {
@@ -187,15 +212,18 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
         })
       })
     }
+
     is AstLinkReferenceDefinition -> {
       // TODO(halilozercan)
       /* no-op */
     }
+
     is AstParagraph -> {
-      MarkdownRichText(astNode, contentOverride)
+      MarkdownRichText(astNode, inlineContentOverride)
     }
+
     is AstTableRoot -> {
-      RenderTable(astNode, contentOverride)
+      RenderTable(astNode, inlineContentOverride)
     }
     // This should almost never happen. All the possible text
     // nodes must be under either Heading, Paragraph or CustomNode
@@ -206,13 +234,16 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
       println("Unexpected raw text while traversing the Abstract Syntax Tree.")
       Text(richTextString { append(astNodeType.literal) })
     }
+
     is AstListItem -> {
       println("MarkdownRichText: Unexpected AstListItem while traversing the Abstract Syntax Tree.")
     }
+
     is AstInlineNodeType -> {
       // ignore
       println("MarkdownRichText: Unexpected AstInlineNodeType $astNodeType while traversing the Abstract Syntax Tree.")
     }
+
     AstTableBody,
     AstTableHeader,
     AstTableRow,
@@ -228,9 +259,13 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
  * @param node Root ASTNode whose children will be visited.
  */
 @Composable
-internal fun RichTextScope.visitChildren(node: AstNode?, contentOverride: ContentOverride?) {
+internal fun RichTextScope.visitChildren(
+  node: AstNode?,
+  contentOverride: ContentOverride?,
+  inlineContentOverride: InlineContentOverride?,
+) {
   node?.childrenSequence()?.forEach {
-    RecursiveRenderMarkdownAst(astNode = it, contentOverride)
+    RecursiveRenderMarkdownAst(astNode = it, contentOverride, inlineContentOverride)
   }
 }
 

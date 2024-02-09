@@ -58,13 +58,13 @@ import com.halilibo.richtext.ui.string.withFormat
 @Composable
 internal fun RichTextScope.MarkdownRichText(
   astNode: AstNode,
-  contentOverride: ContentOverride?,
+  inlineContentOverride: InlineContentOverride?,
   modifier: Modifier = Modifier
 ) {
   val onLinkClicked = LocalOnLinkClicked.current
   // Assume that only RichText nodes reside below this level.
   val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, contentOverride, onLinkClicked)
+    computeRichTextString(astNode, inlineContentOverride, onLinkClicked)
   }
 
   Text(text = richText, modifier = modifier)
@@ -72,7 +72,7 @@ internal fun RichTextScope.MarkdownRichText(
 
 private fun RichTextScope.computeRichTextString(
   astNode: AstNode,
-  contentOverride: ContentOverride?,
+  inlineContentOverride: InlineContentOverride?,
   onLinkClicked: (String) -> Unit
 ): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
@@ -91,73 +91,79 @@ private fun RichTextScope.computeRichTextString(
     iteratorStack = iteratorStack.drop(1)
 
     if (!isVisited) {
-      val newFormatIndex = when (val currentNodeType = currentNode.type) {
-        is AstCode -> {
-          richTextStringBuilder.withFormat(RichTextString.Format.Code) {
-            append(currentNodeType.literal)
-          }
-          null
-        }
-
-        is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
-        is AstStrikethrough -> richTextStringBuilder.pushFormat(
-          RichTextString.Format.Strikethrough
-        )
-
-        is AstImage -> {
-          richTextStringBuilder.appendInlineContent(
-            content = InlineContent(
-              initialSize = {
-                IntSize(128.dp.roundToPx(), 128.dp.roundToPx())
+      val parentLink = currentNode.links.firstParentOrNull<AstLink>()
+      val newFormatIndex =
+        when (val override = inlineContentOverride?.invoke(
+          this,
+          currentNode,
+          richTextStringBuilder,
+          if (parentLink == null) null else {{ onLinkClicked(parentLink.destination) }},
+        )) {
+          null -> when (val currentNodeType = currentNode.type) {
+            is AstCode -> {
+              richTextStringBuilder.withFormat(RichTextString.Format.Code) {
+                append(currentNodeType.literal)
               }
-            ) {
-              if (contentOverride?.invoke(this@computeRichTextString, currentNode) {} != true) {
-                val parentDestination = currentNode.links.firstParentOrNull<AstLink>()?.destination
-                RemoteImage(
-                  url = currentNodeType.destination,
-                  contentDescription = currentNodeType.title,
-                  modifier = Modifier.fillMaxWidth(),
-                  contentScale = ContentScale.Inside,
-                  onClick = when (parentDestination) {
-                    null -> null
-                    else -> {
-                      { onLinkClicked(parentDestination) }
-                    }
-                  },
-                )
-              }
+              null
             }
-          )
-          null
+
+            is AstEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Italic)
+            is AstStrikethrough -> richTextStringBuilder.pushFormat(
+              RichTextString.Format.Strikethrough
+            )
+
+            is AstImage -> {
+              richTextStringBuilder.appendInlineContent(
+                content = InlineContent(
+                  initialSize = {
+                    IntSize(128.dp.roundToPx(), 128.dp.roundToPx())
+                  }
+                ) {
+                  RemoteImage(
+                    url = currentNodeType.destination,
+                    contentDescription = currentNodeType.title,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Inside,
+                  )
+
+                }
+              )
+              null
+            }
+
+            is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
+              onClick = { onLinkClicked(currentNodeType.destination) }
+            ))
+
+            is AstSoftLineBreak -> {
+              richTextStringBuilder.append(" ")
+              null
+            }
+
+            is AstHardLineBreak -> {
+              richTextStringBuilder.append("\n")
+              null
+            }
+
+            is AstStrongEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Bold)
+            is AstText -> {
+              richTextStringBuilder.append(currentNodeType.literal)
+              null
+            }
+
+            is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
+              RichTextString.Format.Link(
+                onClick = { onLinkClicked(currentNodeType.destination) }
+              ))
+
+            else -> null
+          }
+
+          else -> {
+            richTextStringBuilder.appendInlineContent(content = override)
+            null
+          }
         }
-
-        is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
-          onClick = { onLinkClicked(currentNodeType.destination) }
-        ))
-
-        is AstSoftLineBreak -> {
-          richTextStringBuilder.append(" ")
-          null
-        }
-
-        is AstHardLineBreak -> {
-          richTextStringBuilder.append("\n")
-          null
-        }
-
-        is AstStrongEmphasis -> richTextStringBuilder.pushFormat(RichTextString.Format.Bold)
-        is AstText -> {
-          richTextStringBuilder.append(currentNodeType.literal)
-          null
-        }
-
-        is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
-          RichTextString.Format.Link(
-            onClick = { onLinkClicked(currentNodeType.destination) }
-          ))
-
-        else -> null
-      }
 
       iteratorStack = iteratorStack.addFirst(
         AstNodeTraversalEntry(

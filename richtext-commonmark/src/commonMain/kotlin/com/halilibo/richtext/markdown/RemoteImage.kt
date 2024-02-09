@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 internal expect fun RemoteImage(
   url: String,
   contentDescription: String?,
-  onClick: (() -> Unit)?,
   modifier: Modifier = Modifier,
   contentScale: ContentScale
 )

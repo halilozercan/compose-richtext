@@ -41,7 +41,7 @@ public class InlineContent(
  */
 @Composable internal fun manageInlineTextContents(
   inlineContents: Map<String, InlineContent>,
-  textConstraints: Constraints
+  textConstraints: Constraints,
 ): Map<String, InlineTextContent> {
   val density = LocalDensity.current
 
@@ -49,7 +49,7 @@ public class InlineContent(
     reifyInlineContent(
       content,
       Constraints(maxWidth = textConstraints.maxWidth, maxHeight = textConstraints.maxHeight),
-      density
+      density,
     )
   }
 }
@@ -63,7 +63,7 @@ public class InlineContent(
 @Composable private fun reifyInlineContent(
   content: InlineContent,
   contentConstraints: Constraints,
-  density: Density
+  density: Density,
 ): InlineTextContent {
   var size by remember {
     mutableStateOf(
@@ -82,7 +82,7 @@ public class InlineContent(
     )
 
     return InlineTextContent(placeholder) { alternateText ->
-      Layout(content = { content.content(this, alternateText) }) { measurables, _ ->
+      Layout(content = { content.content(density, alternateText) }) { measurables, _ ->
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.
