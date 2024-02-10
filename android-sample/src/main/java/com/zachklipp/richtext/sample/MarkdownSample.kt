@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,8 +32,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import com.halilibo.richtext.markdown.Markdown
-import com.halilibo.richtext.markdown.MarkdownParseOptions
+import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
+import com.halilibo.richtext.commonmark.MarkdownParseOptions
+import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material.RichText
 import com.halilibo.richtext.ui.resolveDefaults
@@ -41,6 +44,7 @@ import com.halilibo.richtext.ui.resolveDefaults
   MarkdownSample()
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable fun MarkdownSample() {
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
@@ -70,29 +74,29 @@ import com.halilibo.richtext.ui.resolveDefaults
         // Config
         Card(elevation = 4.dp) {
           Column {
-            CheckboxPreference(
-              onClick = {
-                isDarkModeEnabled = !isDarkModeEnabled
-              },
-              checked = isDarkModeEnabled,
-              label = "Dark Mode"
-            )
-
-            CheckboxPreference(
-              onClick = {
-                isWordWrapEnabled = !isWordWrapEnabled
-              },
-              checked = isWordWrapEnabled,
-              label = "Word Wrap"
-            )
-
-            CheckboxPreference(
-              onClick = {
-                isAutolinkEnabled = !isAutolinkEnabled
-              },
-              checked = isAutolinkEnabled,
-              label = "Autolink"
-            )
+            FlowRow {
+              CheckboxPreference(
+                onClick = {
+                  isDarkModeEnabled = !isDarkModeEnabled
+                },
+                checked = isDarkModeEnabled,
+                label = "Dark Mode"
+              )
+              CheckboxPreference(
+                onClick = {
+                  isWordWrapEnabled = !isWordWrapEnabled
+                },
+                checked = isWordWrapEnabled,
+                label = "Word Wrap"
+              )
+              CheckboxPreference(
+                onClick = {
+                  isAutolinkEnabled = !isAutolinkEnabled
+                },
+                checked = isAutolinkEnabled,
+                label = "Autolink"
+              )
+            }
 
             RichTextStyleConfig(
               richTextStyle = richTextStyle,
@@ -104,13 +108,20 @@ import com.halilibo.richtext.ui.resolveDefaults
         SelectionContainer {
           Column(Modifier.verticalScroll(rememberScrollState())) {
             ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
+              val parser = remember(markdownParseOptions) {
+                CommonmarkAstNodeParser(markdownParseOptions)
+              }
+
+              val astNode = remember(parser) {
+                parser.parse(sampleMarkdown)
+              }
+
               RichText(
                 style = richTextStyle,
                 modifier = Modifier.padding(8.dp),
               ) {
-                Markdown(
-                  content = sampleMarkdown,
-                  markdownParseOptions = markdownParseOptions,
+                BasicMarkdown(
+                  astNode = astNode,
                   onLinkClicked = {
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                   }

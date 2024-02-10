@@ -28,10 +28,6 @@ kotlin {
     }
     val jvmMain by getting {
       kotlin.srcDir("src/commonJvmAndroid/kotlin")
-      dependencies {
-        // requires installing https://plugins.jetbrains.com/plugin/16541-compose-multiplatform-ide-support
-        implementation(Compose.desktopPreview)
-      }
     }
   }
 }

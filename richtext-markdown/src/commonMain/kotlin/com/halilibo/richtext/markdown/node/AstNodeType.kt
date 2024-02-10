@@ -23,32 +23,50 @@ import com.halilibo.richtext.ui.string.RichTextString
  * nodes are about styling(bold, italic, strikethrough, code). The rest contains links, images,
  * html content, and of course raw text.
  */
-internal sealed class AstNodeType
+public sealed class AstNodeType
 
 //region AstBlockNodeType
 
-internal sealed class AstBlockNodeType: AstNodeType()
+public sealed class AstBlockNodeType: AstNodeType()
 
 //region AstContainerBlockNodeType
 
-internal sealed class AstContainerBlockNodeType: AstBlockNodeType()
+/**
+ * Defines a subtype of Block Node that can contain other nodes.
+ */
+public sealed class AstContainerBlockNodeType: AstBlockNodeType()
 
+/**
+ * Usually defines the root of a markdown document.
+ */
 @Immutable
-internal object AstDocument : AstContainerBlockNodeType()
+public object AstDocument : AstContainerBlockNodeType()
 
+/**
+ * A block quote container that will indent its contents relative to its own indentation.
+ */
 @Immutable
-internal object AstBlockQuote : AstContainerBlockNodeType()
+public object AstBlockQuote : AstContainerBlockNodeType()
 
+/**
+ * Ordered or Unordered list item.
+ */
 @Immutable
-internal object AstListItem : AstContainerBlockNodeType()
+public object AstListItem : AstContainerBlockNodeType()
 
+/**
+ * A list type that marks its items with bullets to signify a lack of order.
+ */
 @Immutable
-internal data class AstBulletList(
+public data class AstUnorderedList(
   val bulletMarker: Char
 ) : AstContainerBlockNodeType()
 
+/**
+ * A list type that uses numbers to mark its items.
+ */
 @Immutable
-internal data class AstOrderedList(
+public data class AstOrderedList(
   val startNumber: Int,
   val delimiter: Char
 ) : AstContainerBlockNodeType()
@@ -57,23 +75,26 @@ internal data class AstOrderedList(
 
 //region AstLeafBlockNodeType
 
-internal sealed class AstLeafBlockNodeType: AstBlockNodeType()
+/**
+ * Defines a subtype of Block Node that can only contain plain text and full-length annotations.
+ */
+public sealed class AstLeafBlockNodeType: AstBlockNodeType()
 
 @Immutable
-internal object AstThematicBreak : AstLeafBlockNodeType()
+public object AstThematicBreak : AstLeafBlockNodeType()
 
 @Immutable
-internal data class AstHeading(
+public data class AstHeading(
   val level: Int
 ) : AstLeafBlockNodeType()
 
 @Immutable
-internal data class AstIndentedCodeBlock(
+public data class AstIndentedCodeBlock(
   val literal: String
 ) : AstLeafBlockNodeType()
 
 @Immutable
-internal data class AstFencedCodeBlock(
+public data class AstFencedCodeBlock(
   val fenceChar: Char,
   val fenceLength: Int,
   val fenceIndent: Int,
@@ -82,19 +103,19 @@ internal data class AstFencedCodeBlock(
 ) : AstLeafBlockNodeType()
 
 @Immutable
-internal data class AstHtmlBlock(
+public data class AstHtmlBlock(
   val literal: String
 ) : AstLeafBlockNodeType()
 
 @Immutable
-internal data class AstLinkReferenceDefinition(
+public data class AstLinkReferenceDefinition(
   val label: String,
   val destination: String,
   val title: String
 ) : AstLeafBlockNodeType()
 
 @Immutable
-internal object AstParagraph : AstLeafBlockNodeType()
+public object AstParagraph : AstLeafBlockNodeType()
 
 //endregion
 
@@ -102,48 +123,56 @@ internal object AstParagraph : AstLeafBlockNodeType()
 
 //region AstInlineNodeType
 
-internal sealed class AstInlineNodeType: AstNodeType()
+/**
+ * Defines a node type that can only apply to inline content.
+ */
+public sealed class AstInlineNodeType: AstNodeType()
 
 @Immutable
-internal data class AstCode(
+public data class AstCode(
   val literal: String
 ) : AstInlineNodeType()
 
 @Immutable
-internal data class AstEmphasis(
+public data class AstEmphasis(
   private val delimiter: String
 ) : AstInlineNodeType()
 
 @Immutable
-internal data class AstStrongEmphasis(
+public data class AstStrongEmphasis(
   private val delimiter: String
 ) : AstInlineNodeType()
 
 @Immutable
-internal data class AstLink(
+public data class AstStrikethrough(
+  val delimiter: String
+) : AstInlineNodeType()
+
+@Immutable
+public data class AstLink(
   val destination: String,
   val title: String
 ) : AstInlineNodeType()
 
 @Immutable
-internal data class AstImage(
+public data class AstImage(
   val title: String,
   val destination: String
 ) : AstInlineNodeType()
 
 @Immutable
-internal data class AstHtmlInline(
+public data class AstHtmlInline(
   val literal: String
 ) : AstInlineNodeType()
 
 @Immutable
-internal object AstHardLineBreak : AstInlineNodeType()
+public object AstHardLineBreak : AstInlineNodeType()
 
 @Immutable
-internal object AstSoftLineBreak : AstInlineNodeType()
+public object AstSoftLineBreak : AstInlineNodeType()
 
 @Immutable
-internal data class AstText(
+public data class AstText(
   val literal: String
 ) : AstInlineNodeType()
 
