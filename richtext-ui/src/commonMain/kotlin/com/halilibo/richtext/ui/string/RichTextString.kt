@@ -216,7 +216,7 @@ public data class RichTextString internal constructor(
       ) = richTextStyle.codeStyle
     }
 
-    public data class Link(val onClick: () -> Unit) : Format() {
+    public data class Link(val destination: String) : Format() {
       override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color

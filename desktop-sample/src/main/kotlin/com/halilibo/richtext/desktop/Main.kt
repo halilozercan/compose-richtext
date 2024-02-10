@@ -80,7 +80,10 @@ fun main(): Unit = singleWindowApplication(
               modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState()),
-              style = richTextStyle
+              style = richTextStyle,
+              linkClickHandler = {
+                println("Link clicked destination=$it")
+              }
             ) {
               Markdown(content = text)
             }

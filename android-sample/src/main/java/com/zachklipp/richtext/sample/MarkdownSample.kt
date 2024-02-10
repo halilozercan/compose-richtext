@@ -118,14 +118,12 @@ import com.halilibo.richtext.ui.resolveDefaults
 
               RichText(
                 style = richTextStyle,
+                linkClickHandler = {
+                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                },
                 modifier = Modifier.padding(8.dp),
               ) {
-                BasicMarkdown(
-                  astNode = astNode,
-                  onLinkClicked = {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                  }
-                )
+                BasicMarkdown(astNode)
               }
             }
           }
