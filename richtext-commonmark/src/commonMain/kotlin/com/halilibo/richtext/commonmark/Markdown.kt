@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.commonmark.MarkdownParseOptions.Companion
+import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.ui.RichTextScope
 
@@ -19,8 +19,7 @@ import com.halilibo.richtext.ui.RichTextScope
 @Composable
 public fun RichTextScope.Markdown(
   content: String,
-  markdownParseOptions: MarkdownParseOptions = Companion.Default,
-  onLinkClicked: ((String) -> Unit)? = null
+  markdownParseOptions: MarkdownParseOptions = Companion.Default
 ) {
   val commonmarkAstNodeParser = remember(markdownParseOptions) {
     CommonmarkAstNodeParser(markdownParseOptions)
@@ -35,7 +34,7 @@ public fun RichTextScope.Markdown(
   }
 
   astRootNode?.let {
-    BasicMarkdown(astNode = it, onLinkClicked = onLinkClicked)
+    BasicMarkdown(astNode = it)
   }
 }
 

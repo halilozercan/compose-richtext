@@ -57,19 +57,15 @@ import com.halilibo.richtext.ui.string.withFormat
  */
 @Composable
 internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier = Modifier) {
-  val onLinkClicked = LocalOnLinkClicked.current
   // Assume that only RichText nodes reside below this level.
-  val richText = remember(astNode, onLinkClicked) {
-    computeRichTextString(astNode, onLinkClicked)
+  val richText = remember(astNode) {
+    computeRichTextString(astNode)
   }
 
   Text(text = richText, modifier = modifier)
 }
 
-private fun computeRichTextString(
-  astNode: AstNode,
-  onLinkClicked: (String) -> Unit
-): RichTextString {
+private fun computeRichTextString(astNode: AstNode): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
 
   // Modified pre-order traversal with pushFormat, popFormat support.
@@ -115,7 +111,7 @@ private fun computeRichTextString(
           null
         }
         is AstLink -> richTextStringBuilder.pushFormat(RichTextString.Format.Link(
-          onClick = { onLinkClicked(currentNodeType.destination) }
+          destination = currentNodeType.destination
         ))
         is AstSoftLineBreak -> {
           richTextStringBuilder.append(" ")
@@ -131,9 +127,7 @@ private fun computeRichTextString(
           null
         }
         is AstLinkReferenceDefinition -> richTextStringBuilder.pushFormat(
-          RichTextString.Format.Link(
-            onClick = { onLinkClicked(currentNodeType.destination) }
-          ))
+          RichTextString.Format.Link(destination = currentNodeType.destination))
         else -> null
       }
 
