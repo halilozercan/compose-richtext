@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
       appendPreviewSentence(Superscript)
       appendPreviewSentence(Code)
       appendPreviewSentence(
-        Link { toggleLink = !toggleLink },
+        Link(""),
         if (toggleLink) "clicked link" else "link"
       )
       append("Here, ")
@@ -96,7 +96,7 @@ import kotlinx.coroutines.launch
       }
     }
   }
-  RichText {
+  RichText(linkClickHandler = { toggleLink = !toggleLink }) {
     Text(text)
   }
 }

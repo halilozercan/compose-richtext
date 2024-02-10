@@ -1,16 +1,10 @@
 package com.halilibo.richtext.markdown
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import com.halilibo.richtext.markdown.node.AstBlockQuote
-import com.halilibo.richtext.markdown.node.AstUnorderedList
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstFencedCodeBlock
 import com.halilibo.richtext.markdown.node.AstHeading
@@ -29,6 +23,7 @@ import com.halilibo.richtext.markdown.node.AstTableRoot
 import com.halilibo.richtext.markdown.node.AstTableRow
 import com.halilibo.richtext.markdown.node.AstText
 import com.halilibo.richtext.markdown.node.AstThematicBreak
+import com.halilibo.richtext.markdown.node.AstUnorderedList
 import com.halilibo.richtext.ui.BlockQuote
 import com.halilibo.richtext.ui.CodeBlock
 import com.halilibo.richtext.ui.FormattedList
@@ -46,22 +41,10 @@ import com.halilibo.richtext.ui.string.richTextString
  * Designed to be a building block that should be wrapped with a specific parser.
  *
  * @param astNode Root node of Markdown tree. This can be obtained via a parser.
- * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
  */
 @Composable
-public fun RichTextScope.BasicMarkdown(
-  astNode: AstNode,
-  onLinkClicked: ((String) -> Unit)? = null
-) {
-  val onLinkClickedState = rememberUpdatedState(onLinkClicked)
-  val realLinkClickedHandler = onLinkClickedState.value ?: LocalUriHandler.current.let {
-    remember {
-      { url -> it.openUri(url) }
-    }
-  }
-  CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    RecursiveRenderMarkdownAst(astNode = astNode)
-  }
+public fun RichTextScope.BasicMarkdown(astNode: AstNode) {
+  RecursiveRenderMarkdownAst(astNode)
 }
 
 /**
@@ -185,11 +168,3 @@ internal fun RichTextScope.visitChildren(node: AstNode?) {
     RecursiveRenderMarkdownAst(astNode = it)
   }
 }
-
-/**
- * An internal ambient to pass through OnLinkClicked function from root [BasicMarkdown] composable
- * to children that render links. Although being explicit is preferred, recursive calls to
- * [visitChildren] increases verbosity with each extra argument.
- */
-internal val LocalOnLinkClicked =
-  compositionLocalOf<(String) -> Unit> { error("OnLinkClicked is not provided") }
