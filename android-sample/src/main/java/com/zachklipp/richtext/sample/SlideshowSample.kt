@@ -11,7 +11,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -22,7 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.ListType.Ordered
-import com.halilibo.richtext.ui.material.RichText
+import com.halilibo.richtext.ui.material3.RichText
 import com.zachklipp.richtext.ui.slideshow.BodySlide
 import com.zachklipp.richtext.ui.slideshow.NavigableContentContainer
 import com.zachklipp.richtext.ui.slideshow.SlideDivider
