@@ -1,139 +1,132 @@
-package com.halilibo.richtext.desktop
+package com.zachklipp.richtext.sample
 
-import androidx.compose.foundation.LocalScrollbarStyle
-import androidx.compose.foundation.background
-import androidx.compose.foundation.defaultScrollbarStyle
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.LeadingIconTab
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Slider
 import androidx.compose.material.Surface
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.singleWindowApplication
 import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
-import com.halilibo.richtext.commonmark.Markdown
+import com.halilibo.richtext.commonmark.MarkdownParseOptions
 import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstNode
-import com.halilibo.richtext.ui.CodeBlockStyle
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.currentRichTextStyle
 import com.halilibo.richtext.ui.material.RichText
 import com.halilibo.richtext.ui.resolveDefaults
 
-fun main(): Unit = singleWindowApplication(
-  title = "RichText KMP"
-) {
-  var richTextStyle by remember {
-    mutableStateOf(
-      RichTextStyle(
-        codeBlockStyle = CodeBlockStyle(wordWrap = true)
-      ).resolveDefaults()
+@Preview
+@Composable private fun LazyMarkdownSamplePreview() {
+  LazyMarkdownSample()
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable fun LazyMarkdownSample() {
+  var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
+  var isDarkModeEnabled by remember { mutableStateOf(false) }
+  var isWordWrapEnabled by remember { mutableStateOf(true) }
+  var markdownParseOptions by remember { mutableStateOf(MarkdownParseOptions.Default) }
+  var isAutolinkEnabled by remember { mutableStateOf(true) }
+
+  LaunchedEffect(isWordWrapEnabled) {
+    richTextStyle = richTextStyle.copy(
+      codeBlockStyle = richTextStyle.codeBlockStyle!!.copy(
+        wordWrap = isWordWrapEnabled
+      )
+    )
+  }
+  LaunchedEffect(isAutolinkEnabled) {
+    markdownParseOptions = markdownParseOptions.copy(
+      autolink = isAutolinkEnabled
     )
   }
 
-  Surface {
-    CompositionLocalProvider(
-      LocalScrollbarStyle provides defaultScrollbarStyle().copy(
-        hoverColor = Color.DarkGray,
-        unhoverColor = Color.Gray
-      )
-    ) {
-      SelectionContainer {
-        var text by remember { mutableStateOf(sampleMarkdown) }
-        Row(
-          modifier = Modifier
-            .padding(32.dp)
-            .fillMaxSize(),
-          horizontalArrangement = Arrangement.spacedBy(32.dp)
-        ) {
-          Column(modifier = Modifier.weight(1f)) {
-            RichTextStyleConfig(richTextStyle = richTextStyle, onChanged = { richTextStyle = it })
-            BasicTextField(
-              value = text,
-              onValueChange = { text = it },
-              maxLines = Int.MAX_VALUE,
-              modifier = Modifier
-                .fillMaxHeight()
-                .background(Color.LightGray)
-                .padding(8.dp)
+  val colors = if (isDarkModeEnabled) darkColors() else lightColors()
+  val context = LocalContext.current
+
+  MaterialTheme(colors = colors) {
+    Surface {
+      Column {
+        // Config
+        Card(elevation = 4.dp) {
+          Column {
+            FlowRow {
+              CheckboxPreference(
+                onClick = {
+                  isDarkModeEnabled = !isDarkModeEnabled
+                },
+                checked = isDarkModeEnabled,
+                label = "Dark Mode"
+              )
+              CheckboxPreference(
+                onClick = {
+                  isWordWrapEnabled = !isWordWrapEnabled
+                },
+                checked = isWordWrapEnabled,
+                label = "Word Wrap"
+              )
+              CheckboxPreference(
+                onClick = {
+                  isAutolinkEnabled = !isAutolinkEnabled
+                },
+                checked = isAutolinkEnabled,
+                label = "Autolink"
+              )
+            }
+
+            RichTextStyleConfig(
+              richTextStyle = richTextStyle,
+              onChanged = { richTextStyle = it }
             )
           }
+        }
+
+        SelectionContainer {
           ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
-            var selectedTab by remember { mutableStateOf(0) }
-            Column(Modifier.weight(1f)) {
-              DisableSelection {
-                TabRow(selectedTab) {
-                  LeadingIconTab(
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
-                    text = { Text("Normal") },
-                    icon = { Icon(Icons.Default.Info, "") })
-                  LeadingIconTab(
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
-                    text = { Text("Lazy") },
-                    icon = { Icon(Icons.Default.Favorite, "") })
-                }
-              }
-              if (selectedTab == 0) {
-                RichText(
-                  modifier = Modifier.verticalScroll(rememberScrollState()),
-                  style = richTextStyle,
-                  linkClickHandler = {
-                    println("Link clicked destination=$it")
-                  }
-                ) {
-                  Markdown(content = text)
-                }
-              } else {
-                val parser = remember { CommonmarkAstNodeParser() }
+            val parser = remember(markdownParseOptions) {
+              CommonmarkAstNodeParser(markdownParseOptions)
+            }
 
-                val astNode = remember(parser) {
-                  parser.parse(sampleMarkdown)
-                }
+            val astNode = remember(parser) {
+              parser.parse(sampleMarkdown)
+            }
 
-                RichText(
-                  style = richTextStyle,
-                  linkClickHandler = {
-                    println("Link clicked destination=$it")
-                  }
-                ) {
-                  LazyMarkdown(astNode)
-                }
-              }
+            RichText(
+              style = richTextStyle,
+              linkClickHandler = {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+              },
+              modifier = Modifier.padding(8.dp),
+            ) {
+              LazyMarkdown(astNode)
             }
           }
         }
@@ -178,73 +171,21 @@ fun RichTextScope.LazyMarkdown(astNode: AstNode) {
 }
 
 @Composable
-fun RichTextStyleConfig(
-  richTextStyle: RichTextStyle,
-  onChanged: (RichTextStyle) -> Unit
+private fun CheckboxPreference(
+  onClick: () -> Unit,
+  checked: Boolean,
+  label: String
 ) {
-  Column(modifier = Modifier.fillMaxWidth()) {
-    Row {
-      Column(Modifier.weight(1f)) {
-        Text("Paragraph spacing:\n${richTextStyle.paragraphSpacing}")
-        Slider(
-          value = richTextStyle.paragraphSpacing!!.value,
-          valueRange = 0f..20f,
-          onValueChange = {
-            onChanged(richTextStyle.copy(paragraphSpacing = it.sp))
-          }
-        )
-      }
-      Column(Modifier.weight(1f)) {
-        Text("List item spacing:\n${richTextStyle.listStyle!!.itemSpacing}")
-        Slider(
-          value = richTextStyle.listStyle!!.itemSpacing!!.value,
-          valueRange = 0f..20f,
-          onValueChange = {
-            onChanged(
-              richTextStyle.copy(
-                listStyle = richTextStyle.listStyle!!.copy(
-                  itemSpacing = it.sp
-                )
-              )
-            )
-          }
-        )
-      }
-    }
-    Row {
-      Column(Modifier.weight(1f)) {
-        Text("Table cell padding:\n${richTextStyle.tableStyle!!.cellPadding}")
-        Slider(
-          value = richTextStyle.tableStyle!!.cellPadding!!.value,
-          valueRange = 0f..20f,
-          onValueChange = {
-            onChanged(
-              richTextStyle.copy(
-                tableStyle = richTextStyle.tableStyle!!.copy(
-                  cellPadding = it.sp
-                )
-              )
-            )
-          }
-        )
-      }
-      Column(Modifier.weight(1f)) {
-        Text("Table border width padding:\n${richTextStyle.tableStyle!!.borderStrokeWidth!!}")
-        Slider(
-          value = richTextStyle.tableStyle!!.borderStrokeWidth!!,
-          valueRange = 0f..20f,
-          onValueChange = {
-            onChanged(
-              richTextStyle.copy(
-                tableStyle = richTextStyle.tableStyle!!.copy(
-                  borderStrokeWidth = it
-                )
-              )
-            )
-          }
-        )
-      }
-    }
+  Row(
+    Modifier.clickable(onClick = onClick),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Checkbox(
+      checked = checked,
+      onCheckedChange = { onClick() },
+    )
+    Text(label)
   }
 }
 
@@ -263,18 +204,15 @@ private val sampleMarkdown = """
   ##### Header 5
   ###### Header 6
   ---
-
+  
   ## Full-bleed Image
-  
   ![](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1920px-Image_created_with_a_mobile_phone.png)
-  
+
   ## Images smaller than the width should center
   ![](https://cdn.nostr.build/p/4a84.png)
-
+  
   On LineHeight bug, the image below goes over this text. 
   ![](https://cdn.nostr.build/p/PxZ0.jpg)
-
-  ---
 
   ## Emphasis
 
@@ -303,6 +241,16 @@ private val sampleMarkdown = """
   * Unordered list can use asterisks
   - Or minuses
   + Or pluses
+<!-- -->
+  2. Ordered list starting with `2.`
+  3. Another item
+<!-- -->
+  0. Ordered list starting with `0.`
+<!-- -->
+  003. Ordered list starting with `003.`
+<!-- -->
+  -1. Starting with `-1.` should not be list
+
 
   ---
 
@@ -384,7 +332,9 @@ private val sampleMarkdown = """
 
   ## Images
   
-  Inline-style: 
+  Inline-style:
+   
+  ![random image](https://picsum.photos/seed/picsum/400/400)
   
   ![random image](https://picsum.photos/seed/picsum/400/400 "Text 1")
   
