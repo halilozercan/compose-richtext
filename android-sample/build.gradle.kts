@@ -33,12 +33,12 @@ android {
 dependencies {
   implementation(project(":printing"))
   implementation(project(":richtext-commonmark"))
-  implementation(project(":richtext-ui-material"))
+  implementation(project(":richtext-ui-material3"))
   implementation(project(":slideshow"))
   implementation(AndroidX.appcompat)
   implementation(Compose.activity)
   implementation(compose.foundation)
   implementation(compose.materialIconsExtended)
-  implementation(compose.material)
+  implementation(compose.material3)
   implementation(compose.uiTooling)
 }

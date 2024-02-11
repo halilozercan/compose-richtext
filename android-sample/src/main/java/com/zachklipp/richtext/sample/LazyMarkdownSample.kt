@@ -10,14 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,10 +27,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
 import com.halilibo.richtext.commonmark.MarkdownParseOptions
 import com.halilibo.richtext.markdown.BasicMarkdown
@@ -40,7 +37,7 @@ import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.currentRichTextStyle
-import com.halilibo.richtext.ui.material.RichText
+import com.halilibo.richtext.ui.material3.RichText
 import com.halilibo.richtext.ui.resolveDefaults
 
 @Preview
@@ -69,14 +66,14 @@ import com.halilibo.richtext.ui.resolveDefaults
     )
   }
 
-  val colors = if (isDarkModeEnabled) darkColors() else lightColors()
+  val colors = if (isDarkModeEnabled) darkColorScheme() else lightColorScheme()
   val context = LocalContext.current
 
-  MaterialTheme(colors = colors) {
+  SampleTheme(colorScheme = colors) {
     Surface {
       Column {
         // Config
-        Card(elevation = 4.dp) {
+        Card(elevation = CardDefaults.elevatedCardElevation()) {
           Column {
             FlowRow {
               CheckboxPreference(
@@ -110,24 +107,22 @@ import com.halilibo.richtext.ui.resolveDefaults
         }
 
         SelectionContainer {
-          ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
-            val parser = remember(markdownParseOptions) {
-              CommonmarkAstNodeParser(markdownParseOptions)
-            }
+          val parser = remember(markdownParseOptions) {
+            CommonmarkAstNodeParser(markdownParseOptions)
+          }
 
-            val astNode = remember(parser) {
-              parser.parse(sampleMarkdown)
-            }
+          val astNode = remember(parser) {
+            parser.parse(sampleMarkdown)
+          }
 
-            RichText(
-              style = richTextStyle,
-              linkClickHandler = {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-              },
-              modifier = Modifier.padding(8.dp),
-            ) {
-              LazyMarkdown(astNode)
-            }
+          RichText(
+            style = richTextStyle,
+            linkClickHandler = {
+              Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            },
+            modifier = Modifier.padding(8.dp),
+          ) {
+            LazyMarkdown(astNode)
           }
         }
       }

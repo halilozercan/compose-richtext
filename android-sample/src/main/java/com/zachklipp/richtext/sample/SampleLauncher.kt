@@ -8,15 +8,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,9 +54,9 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
-  MaterialTheme(colors = darkColors()) {
+  SampleTheme(colorScheme = darkColorScheme()) {
     Scaffold(
       topBar = {
         TopAppBar(title = { Text("Samples") })
@@ -67,11 +65,10 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
       LazyColumn(modifier = Modifier.padding(contentPadding)) {
         itemsIndexed(Samples) { index, (title, sampleContent) ->
           ListItem(
-            Modifier.clickable(onClick = { onSampleClicked(index) }),
-            icon = { SamplePreview(sampleContent) }
-          ) {
-            Text(title)
-          }
+            headlineContent = { Text(title) },
+            modifier = Modifier.clickable(onClick = { onSampleClicked(index) }),
+            leadingContent = { SamplePreview(sampleContent) }
+          )
         }
       }
     }
@@ -90,7 +87,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
         transformOrigin = TransformOrigin(0f, 0f)
       ),
   ) {
-    MaterialTheme(colors = lightColors()) {
+    SampleTheme(colorScheme = darkColorScheme()) {
       Surface(content = content)
     }
   }

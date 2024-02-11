@@ -91,48 +91,46 @@ fun main(): Unit = singleWindowApplication(
                 .padding(8.dp)
             )
           }
-          ProvideTextStyle(TextStyle(lineHeight = 1.3.em)) {
-            var selectedTab by remember { mutableStateOf(0) }
-            Column(Modifier.weight(1f)) {
-              DisableSelection {
-                TabRow(selectedTab) {
-                  LeadingIconTab(
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
-                    text = { Text("Normal") },
-                    icon = { Icon(Icons.Default.Info, "") })
-                  LeadingIconTab(
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
-                    text = { Text("Lazy") },
-                    icon = { Icon(Icons.Default.Favorite, "") })
-                }
+          var selectedTab by remember { mutableStateOf(0) }
+          Column(Modifier.weight(1f)) {
+            DisableSelection {
+              TabRow(selectedTab) {
+                LeadingIconTab(
+                  selected = selectedTab == 0,
+                  onClick = { selectedTab = 0 },
+                  text = { Text("Normal") },
+                  icon = { Icon(Icons.Default.Info, "") })
+                LeadingIconTab(
+                  selected = selectedTab == 1,
+                  onClick = { selectedTab = 1 },
+                  text = { Text("Lazy") },
+                  icon = { Icon(Icons.Default.Favorite, "") })
               }
-              if (selectedTab == 0) {
-                RichText(
-                  modifier = Modifier.verticalScroll(rememberScrollState()),
-                  style = richTextStyle,
-                  linkClickHandler = {
-                    println("Link clicked destination=$it")
-                  }
-                ) {
-                  Markdown(content = text)
+            }
+            if (selectedTab == 0) {
+              RichText(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                style = richTextStyle,
+                linkClickHandler = {
+                  println("Link clicked destination=$it")
                 }
-              } else {
-                val parser = remember { CommonmarkAstNodeParser() }
+              ) {
+                Markdown(content = text)
+              }
+            } else {
+              val parser = remember { CommonmarkAstNodeParser() }
 
-                val astNode = remember(parser) {
-                  parser.parse(sampleMarkdown)
-                }
+              val astNode = remember(parser) {
+                parser.parse(sampleMarkdown)
+              }
 
-                RichText(
-                  style = richTextStyle,
-                  linkClickHandler = {
-                    println("Link clicked destination=$it")
-                  }
-                ) {
-                  LazyMarkdown(astNode)
+              RichText(
+                style = richTextStyle,
+                linkClickHandler = {
+                  println("Link clicked destination=$it")
                 }
+              ) {
+                LazyMarkdown(astNode)
               }
             }
           }

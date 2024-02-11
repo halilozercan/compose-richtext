@@ -18,17 +18,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material.icons.outlined.Print
-import androidx.compose.material.lightColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.ListType.Unordered
-import com.halilibo.richtext.ui.material.RichText
+import com.halilibo.richtext.ui.material3.RichText
 import com.zachklipp.richtext.ui.printing.Printable
 import com.zachklipp.richtext.ui.printing.PrintableController
 import com.zachklipp.richtext.ui.printing.hideWhenPrinting
@@ -190,8 +190,8 @@ private val LargeGap = 96.dp
         Dp.Infinity to LargeGap
       )
     ) {
-      MaterialTheme(
-        colors = lightColors(
+      SampleTheme(
+        colorScheme = lightColorScheme(
           primary = Color.Black,
           secondary = Color(0x20, 0x79, 0xc7)
         )
@@ -205,7 +205,7 @@ private val LargeGap = 96.dp
 @Composable private fun Title(text: String) {
   Text(
     text,
-    style = MaterialTheme.typography.h3,
+    style = MaterialTheme.typography.headlineMedium,
     fontFamily = FontFamily.Serif,
     fontWeight = Bold
   )
@@ -247,7 +247,7 @@ private val LargeGap = 96.dp
       uppercaseTitle,
       color = Color(0x20, 0x79, 0xc7),
       fontWeight = Bold,
-      style = MaterialTheme.typography.caption,
+      style = MaterialTheme.typography.labelMedium,
       modifier = Modifier
         .keepOnPageWithNext()
         .padding(top = 32.dp, bottom = 8.dp)
