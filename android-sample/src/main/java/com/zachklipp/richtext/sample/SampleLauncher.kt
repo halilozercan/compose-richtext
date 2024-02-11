@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
   "Markdown Demo" to @Composable { MarkdownSample() },
+  "Lazy Markdown Demo" to @Composable { LazyMarkdownSample() },
   "Pagination" to @Composable { PagedSample() },
   "Printable Document" to @Composable { DocumentSample() },
   "Slideshow" to @Composable { SlideshowSample() },
