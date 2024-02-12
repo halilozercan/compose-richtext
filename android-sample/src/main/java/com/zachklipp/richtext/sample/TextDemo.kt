@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.halilibo.richtext.ui.material.RichText
+import com.halilibo.richtext.ui.material3.RichText
 import com.halilibo.richtext.ui.string.InlineContent
 import com.halilibo.richtext.ui.string.RichTextString.Builder
 import com.halilibo.richtext.ui.string.RichTextString.Format

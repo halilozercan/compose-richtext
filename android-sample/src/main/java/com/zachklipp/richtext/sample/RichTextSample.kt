@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Slider
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,13 +38,13 @@ import com.halilibo.richtext.ui.resolveDefaults
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
 
-  val colors = if (isDarkModeEnabled) darkColors() else lightColors()
+  val colors = if (isDarkModeEnabled) darkColorScheme() else lightColorScheme()
 
-  MaterialTheme(colors = colors) {
+  SampleTheme(colorScheme = colors) {
     Surface {
       Column {
         // Config
-        Card(elevation = 4.dp) {
+        Card(elevation = CardDefaults.elevatedCardElevation()) {
           Column {
             Row(
               Modifier
