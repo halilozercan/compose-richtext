@@ -1,5 +1,6 @@
 package com.halilibo.richtext.markdown
 
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
@@ -88,8 +89,13 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
       FormattedList(
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()
-      ) {
-        visitChildren(it)
+      ) { astListItem ->
+        // if this list item has no child, it should at least emit a single pixel layout.
+        if (astListItem.links.firstChild == null) {
+          BasicText("")
+        } else {
+          visitChildren(astListItem)
+        }
       }
     }
     is AstOrderedList -> {
@@ -98,7 +104,12 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
         items = astNode.childrenSequence().toList(),
         startIndex = astNodeType.startNumber - 1,
       ) { astListItem ->
-        visitChildren(astListItem)
+        // if this list item has no child, it should at least emit a single pixel layout.
+        if (astListItem.links.firstChild == null) {
+          BasicText("")
+        } else {
+          visitChildren(astListItem)
+        }
       }
     }
     is AstThematicBreak -> {
