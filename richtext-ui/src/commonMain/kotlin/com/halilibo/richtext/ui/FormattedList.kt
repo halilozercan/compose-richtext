@@ -293,8 +293,8 @@ private val LocalListLevel = compositionLocalOf { 0 }
           layoutDirection = layoutDirection
         )
 
-        prefix.place(prefixOffset.x, y + prefixOffset.y)
-        item.place(widestPrefix.width, y)
+        prefix.placeRelative(prefixOffset.x, y + prefixOffset.y)
+        item.placeRelative(widestPrefix.width, y)
         y += rowHeight
       }
     }
