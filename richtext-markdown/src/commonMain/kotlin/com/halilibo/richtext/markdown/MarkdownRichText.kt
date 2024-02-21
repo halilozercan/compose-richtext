@@ -56,7 +56,7 @@ import com.halilibo.richtext.ui.string.withFormat
  * @param astNode Root node to accept as Text Content container.
  */
 @Composable
-internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier = Modifier) {
+public fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier = Modifier) {
   // Assume that only RichText nodes reside below this level.
   val richText = remember(astNode) {
     computeRichTextString(astNode)
@@ -65,7 +65,7 @@ internal fun RichTextScope.MarkdownRichText(astNode: AstNode, modifier: Modifier
   Text(text = richText, modifier = modifier)
 }
 
-private fun computeRichTextString(astNode: AstNode): RichTextString {
+public fun computeRichTextString(astNode: AstNode): RichTextString {
   val richTextStringBuilder = RichTextString.Builder()
 
   // Modified pre-order traversal with pushFormat, popFormat support.

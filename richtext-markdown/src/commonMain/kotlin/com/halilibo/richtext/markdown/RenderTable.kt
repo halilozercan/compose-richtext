@@ -10,7 +10,7 @@ import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.Table
 
 @Composable
-internal fun RichTextScope.RenderTable(node: AstNode) {
+public fun RichTextScope.RenderTable(node: AstNode) {
   Table(
     headerRow = {
       node.filterChildrenType<AstTableHeader>()

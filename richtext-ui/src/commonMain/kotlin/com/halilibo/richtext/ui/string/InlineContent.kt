@@ -39,7 +39,7 @@ public class InlineContent(
  * the core Text composable. Whenever any of the contents resize themselves, or if the map changes,
  * a new map will be returned with updated [Placeholder]s.
  */
-@Composable internal fun manageInlineTextContents(
+@Composable public fun manageInlineTextContents(
   inlineContents: Map<String, InlineContent>,
   textConstraints: Constraints
 ): Map<String, InlineTextContent> {

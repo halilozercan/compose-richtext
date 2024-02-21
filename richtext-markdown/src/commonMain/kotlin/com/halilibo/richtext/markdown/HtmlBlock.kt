@@ -7,4 +7,4 @@ import androidx.compose.runtime.Composable
  * We are leaving HTML rendering to platform side.
  */
 @Composable
-internal expect fun HtmlBlock(content: String)
+public expect fun HtmlBlock(content: String)

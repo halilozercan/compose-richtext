@@ -38,20 +38,20 @@ internal val LocalInternalContentColor = compositionLocalOf { Color.Black }
 /**
  * The current [TextStyle].
  */
-internal val RichTextScope.currentTextStyle: TextStyle
+public val RichTextScope.currentTextStyle: TextStyle
   @Composable get() = textStyleProvider()
 
 /**
  * The current content [Color].
  */
-internal val RichTextScope.currentContentColor: Color
+public val RichTextScope.currentContentColor: Color
   @Composable get() = contentColorProvider()
 
 /**
  * Intended for preview composables.
  */
 @Composable
-internal fun RichTextScope.Text(
+public fun RichTextScope.Text(
   text: String,
   modifier: Modifier = Modifier,
   onTextLayout: (TextLayoutResult) -> Unit = {},
@@ -74,7 +74,7 @@ internal fun RichTextScope.Text(
 }
 
 @Composable
-internal fun RichTextScope.Text(
+public fun RichTextScope.Text(
   text: AnnotatedString,
   modifier: Modifier = Modifier,
   onTextLayout: (TextLayoutResult) -> Unit = {},

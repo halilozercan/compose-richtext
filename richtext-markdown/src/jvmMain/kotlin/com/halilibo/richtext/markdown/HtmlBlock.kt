@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 
 @Composable
-internal actual fun HtmlBlock(content: String) {
+public actual fun HtmlBlock(content: String) {
   DisposableEffect(Unit) {
     println("Html blocks are rendered literally in Compose Desktop!")
     onDispose {  }

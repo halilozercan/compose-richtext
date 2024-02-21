@@ -26,7 +26,9 @@ public data class CodeBlockStyle(
   val textStyle: TextStyle? = null,
   val modifier: Modifier? = null,
   val padding: TextUnit? = null,
-  val wordWrap: Boolean? = null
+  val wordWrap: Boolean? = null,
+  val actionTextStyle: TextStyle? = null,
+  val actionBarModifier: Modifier = Modifier.background(Color.LightGray)
 ) {
   public companion object {
     public val Default: CodeBlockStyle = CodeBlockStyle()
@@ -46,7 +48,9 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
   textStyle = textStyle ?: DefaultCodeBlockTextStyle,
   modifier = modifier ?: DefaultCodeBlockModifier,
   padding = padding ?: DefaultCodeBlockPadding,
-  wordWrap = wordWrap ?: DefaultCodeWordWrap
+  wordWrap = wordWrap ?: DefaultCodeWordWrap,
+  actionTextStyle = actionTextStyle ?: DefaultCodeBlockTextStyle,
+  actionBarModifier = actionBarModifier
 )
 
 /**
@@ -101,7 +105,8 @@ internal fun CodeBlockStyle.resolveDefaults() = CodeBlockStyle(
  * Desktop composable adds an optional horizontal scrollbar.
  */
 @Composable
-internal expect fun RichTextScope.CodeBlockLayout(
+public expect fun RichTextScope.CodeBlockLayout(
+  modifier: Modifier = Modifier,
   wordWrap: Boolean,
   children: @Composable RichTextScope.(Modifier) -> Unit
 )

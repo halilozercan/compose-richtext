@@ -40,7 +40,7 @@ internal val LocalRichTextThemeConfiguration: ProvidableCompositionLocal<RichTex
 internal val RichTextScope.textStyleProvider: @Composable () -> TextStyle
   @Composable get() = LocalRichTextThemeConfiguration.current.textStyleProvider
 
-internal val RichTextScope.textStyleBackProvider: @Composable (TextStyle, @Composable () -> Unit) -> Unit
+public val RichTextScope.textStyleBackProvider: @Composable (TextStyle, @Composable () -> Unit) -> Unit
   @Composable get() = LocalRichTextThemeConfiguration.current.textStyleBackProvider
 
 internal val RichTextScope.contentColorProvider: @Composable () -> Color

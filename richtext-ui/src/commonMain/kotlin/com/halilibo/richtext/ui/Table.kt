@@ -30,9 +30,12 @@ import kotlin.math.max
 @Immutable
 public data class TableStyle(
   val headerTextStyle: TextStyle? = null,
+  val contentTextStyle: TextStyle? = null,
+  val headerBackgroundColor: Color? = null,
   val cellPadding: TextUnit? = null,
   val borderColor: Color? = null,
-  val borderStrokeWidth: Float? = null
+  val borderStrokeWidth: Float? = null,
+  val tableModifier: Modifier? = null
 ) {
   public companion object {
     public val Default: TableStyle = TableStyle()
@@ -40,15 +43,21 @@ public data class TableStyle(
 }
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
+private val DefaultTableContentTextStyle = TextStyle(fontWeight = FontWeight.Normal)
+private val DefaultTableModifier = Modifier
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Unspecified
+private val DefaultHeaderBackgroundColor = Color.Unspecified
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
-    headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
-    cellPadding = cellPadding ?: DefaultCellPadding,
-    borderColor = borderColor ?: DefaultBorderColor,
-    borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
+  headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
+  contentTextStyle = contentTextStyle ?: DefaultTableContentTextStyle,
+  cellPadding = cellPadding ?: DefaultCellPadding,
+  borderColor = borderColor ?: DefaultBorderColor,
+  headerBackgroundColor = headerBackgroundColor ?: DefaultHeaderBackgroundColor,
+  borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth,
+  tableModifier = tableModifier ?: DefaultTableModifier
 )
 
 public interface RichTextTableRowScope {
@@ -100,17 +109,20 @@ public fun RichTextScope.Table(
   }
   val columns = remember(header, rows) {
     max(
-        header?.cells?.size ?: 0,
-        rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
+      header?.cells?.size ?: 0,
+      rows.maxByOrNull { it.cells.size }?.cells?.size ?: 0
     )
   }
   val headerStyle = currentTextStyle.merge(tableStyle.headerTextStyle)
+  val contentStyle = currentTextStyle.merge(tableStyle.contentTextStyle)
+  val tableModifier = tableStyle.tableModifier ?: modifier
+  val headerBackgroundColor = tableStyle.headerBackgroundColor ?: Color.Unspecified
   val cellPadding = with(LocalDensity.current) {
     tableStyle.cellPadding!!.toDp()
   }
   val cellModifier = Modifier
-      .clipToBounds()
-      .padding(cellPadding)
+    .clipToBounds()
+    .padding(cellPadding)
 
   val styledRows = remember(header, rows, cellModifier) {
     buildList {
@@ -133,10 +145,12 @@ public fun RichTextScope.Table(
         @Suppress("RemoveExplicitTypeArguments")
         row.cells.map<@Composable RichTextScope.() -> Unit, @Composable () -> Unit> { cell ->
           @Composable {
-            BasicRichText(
-              modifier = cellModifier,
-              children = cell
-            )
+            textStyleBackProvider(contentStyle) {
+              BasicRichText(
+                modifier = cellModifier,
+                children = cell
+              )
+            }
           }
         }
       }
@@ -145,18 +159,19 @@ public fun RichTextScope.Table(
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   SimpleTableLayout(
-      columns = columns,
-      rows = styledRows,
-      cellSpacing = tableStyle.borderStrokeWidth!!,
-      drawDecorations = { layoutResult ->
-        Modifier.drawTableBorders(
-            rowOffsets = layoutResult.rowOffsets,
-            columnOffsets = layoutResult.columnOffsets,
-            borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
-            borderStrokeWidth = tableStyle.borderStrokeWidth
-        )
-      },
-      modifier = modifier
+    columns = columns,
+    rows = styledRows,
+    cellSpacing = tableStyle.borderStrokeWidth!!,
+    headerBackgroundColor = headerBackgroundColor,
+    drawDecorations = { layoutResult ->
+      Modifier.drawTableBorders(
+        rowOffsets = layoutResult.rowOffsets,
+        columnOffsets = layoutResult.columnOffsets,
+        borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
+        borderStrokeWidth = tableStyle.borderStrokeWidth
+      )
+    },
+    modifier = modifier.then(tableModifier)
   )
 }
 
@@ -169,20 +184,20 @@ private fun Modifier.drawTableBorders(
   // Draw horizontal borders.
   rowOffsets.forEach { position ->
     drawLine(
-        borderColor,
-        start = Offset(0f, position),
-        end = Offset(size.width, position),
-        borderStrokeWidth
+      borderColor,
+      start = Offset(0f, position),
+      end = Offset(size.width, position),
+      borderStrokeWidth
     )
   }
 
   // Draw vertical borders.
   columnOffsets.forEach { position ->
     drawLine(
-        borderColor,
-        Offset(position, 0f),
-        Offset(position, size.height),
-        borderStrokeWidth
+      borderColor,
+      Offset(position, 0f),
+      Offset(position, size.height),
+      borderStrokeWidth
     )
   }
 }

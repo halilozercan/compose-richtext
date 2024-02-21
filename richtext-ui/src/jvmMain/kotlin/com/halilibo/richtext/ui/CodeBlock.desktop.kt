@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 private val LocalScrollbarEnabled = compositionLocalOf { true }
 
 @Composable
-internal actual fun RichTextScope.CodeBlockLayout(
+public actual fun RichTextScope.CodeBlockLayout(
+  modifier: Modifier,
   wordWrap: Boolean,
   children: @Composable RichTextScope.(Modifier) -> Unit
 ) {

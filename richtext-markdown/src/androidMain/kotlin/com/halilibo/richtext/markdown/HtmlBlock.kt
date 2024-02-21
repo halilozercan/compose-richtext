@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
 
 @Composable
-internal actual fun HtmlBlock(content: String) {
+public actual fun HtmlBlock(content: String) {
   AndroidView(
     factory = { context ->
       // TODO: pass current styling to legacy TextView

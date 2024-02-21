@@ -62,7 +62,7 @@ public data class RichTextStringStyle(
     )
   }
 
-  internal fun resolveDefaults(): RichTextStringStyle =
+  public fun resolveDefaults(): RichTextStringStyle =
     RichTextStringStyle(
       boldStyle = boldStyle ?: Bold.DefaultStyle,
       italicStyle = italicStyle ?: Italic.DefaultStyle,
@@ -109,7 +109,7 @@ public data class RichTextString internal constructor(
       toRichTextString()
     }
 
-  internal fun toAnnotatedString(
+  public fun toAnnotatedString(
     style: RichTextStringStyle,
     contentColor: Color
   ): AnnotatedString =
@@ -126,7 +126,7 @@ public data class RichTextString internal constructor(
       }
     }
 
-  internal fun getInlineContents(): Map<String, InlineContent> =
+  public fun getInlineContents(): Map<String, InlineContent> =
     formatObjects.asSequence()
       .mapNotNull { (tag, format) ->
         tag.removePrefix("inline:")
@@ -204,7 +204,7 @@ public data class RichTextString internal constructor(
     }
 
     public object Code : Format("code") {
-      internal val DefaultStyle = SpanStyle(
+      public val DefaultStyle: SpanStyle = SpanStyle(
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Medium,
         background = DefaultCodeBlockBackgroundColor

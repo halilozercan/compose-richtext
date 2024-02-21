@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.constrain
@@ -33,6 +36,7 @@ internal fun SimpleTableLayout(
   columns: Int,
   rows: List<List<@Composable () -> Unit>>,
   drawDecorations: (TableLayoutResult) -> Modifier,
+  headerBackgroundColor: Color,
   cellSpacing: Float,
   modifier: Modifier
 ) {
@@ -76,6 +80,22 @@ internal fun SimpleTableLayout(
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()
       val columnOffsets = mutableListOf<Float>()
+
+      // Draw the header background if the first row exists.
+      rowHeights.firstOrNull()?.let { firstRowHeight ->
+        subcompose("header-background") {
+          Box(
+            modifier = Modifier.drawBehind {
+              drawRect(
+                color = headerBackgroundColor,
+                size = Size(tableWidth.toFloat(), firstRowHeight + cellSpacing)
+              )
+            }
+          )
+        }.single()
+          .measure(Constraints.fixed(tableWidth, tableHeight))
+          .placeRelative(0, 0)
+      }
 
       rowPlaceables.forEachIndexed { rowIndex, cellPlaceables ->
         rowOffsets += y - cellSpacing / 2f
