@@ -165,9 +165,7 @@ public abstract class PrintableController {
     onDispose { controller.unregisterComposable(printable) }
   }
 
-  BoxWithConstraints {
-    Box(modifier) { content() }
-  }
+  Box(modifier) { content() }
 }
 
 private tailrec fun Context.findComponentActivity(): ComponentActivity? {
