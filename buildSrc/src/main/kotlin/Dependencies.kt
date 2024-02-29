@@ -32,7 +32,7 @@ val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 object Compose {
   val version = "1.5.4"
   val compilerVersion = "1.5.8"
-  val desktopVersion = "1.5.12"
+  val desktopVersion = "1.6.0"
   val activity = "androidx.activity:activity-compose:1.7.2"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
   val multiplatformUiUtil = "org.jetbrains.compose.ui:ui-util:$desktopVersion"
