@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SlideshowTheme</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>compose-richtext</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":slideshow:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageids="slideshow::com.zachklipp.richtext.ui.slideshow/SlideshowTheme/SlideshowTheme/#androidx.compose.ui.graphics.Color#androidx.compose.ui.graphics.Color#androidx.compose.ui.text.TextStyle#androidx.compose.ui.text.TextStyle#androidx.compose.ui.text.TextStyle#androidx.compose.ui.text.TextStyle#androidx.compose.ui.text.TextStyle#androidx.compose.ui.unit.Dp#kotlin.Float/PointingToDeclaration//-1855402697">
+  <div class="breadcrumbs"><a href="../../index.html">slideshow</a><span class="delimiter">/</span><a href="../index.html">com.zachklipp.richtext.ui.slideshow</a><span class="delimiter">/</span><a href="index.html">SlideshowTheme</a><span class="delimiter">/</span><span class="current">SlideshowTheme</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Slideshow</span><wbr><span><span>Theme</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":slideshow:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">contentColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token operator"> = </span>Color.White<span class="token punctuation">, </span></span><span class="parameter ">backgroundColor<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html">Color</a><span class="token operator"> = </span>Color.DarkGray<span class="token punctuation">, </span></span><span class="parameter ">baseTextStyle<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a><span class="token operator"> = </span>TextStyle(fontSize = 18.sp)<span class="token punctuation">, </span></span><span class="parameter ">titleStyle<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a><span class="token operator"> = </span>TextStyle(
+    fontSize = 48.sp,
+    textAlign = Center,
+    fontWeight = FontWeight.Bold
+  )<span class="token punctuation">, </span></span><span class="parameter ">subtitleStyle<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a><span class="token operator"> = </span>TextStyle(
+    fontSize = 36.sp,
+    textAlign = Center
+  )<span class="token punctuation">, </span></span><span class="parameter ">headerStyle<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a><span class="token operator"> = </span>TextStyle(fontSize = 28.sp)<span class="token punctuation">, </span></span><span class="parameter ">footerStyle<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a><span class="token operator"> = </span>TextStyle(fontSize = 12.sp)<span class="token punctuation">, </span></span><span class="parameter ">gap<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/unit/Dp.html">Dp</a><span class="token operator"> = </span>16.dp<span class="token punctuation">, </span></span><span class="parameter ">aspectRatio<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html">Float</a><span class="token operator"> = </span>16 / 9f</span></span><span class="token punctuation">)</span></div><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>content</span><wbr><span><span>Color</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default color used for text and <a href="../-slide-divider.html">SlideDivider</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>background</span><wbr><span><span>Color</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Color used as the background for slides.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>base</span><wbr><span>Text</span><wbr><span><span>Style</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a> used for all slide content. Some scaffolds use other styles from the theme for certain slots.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>title</span><wbr><span><span>Style</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a> used for <a href="../-title-slide.html">TitleSlide</a> titles.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>subtitle</span><wbr><span><span>Style</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a> used for <a href="../-title-slide.html">TitleSlide</a> subtitles.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>header</span><wbr><span><span>Style</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a> used for <a href="../-body-slide.html">BodySlide</a> headers.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>footer</span><wbr><span><span>Style</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/text/TextStyle.html">TextStyle</a> used for <a href="../-body-slide.html">BodySlide</a> footers.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>gap</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Default margins used for <a href="../-body-slide.html">BodySlide</a>s and spacing between header, body, and footer.</p></div></div></div></div><div class="table-row" data-filterable-current=":slideshow:dokkaHtmlPartial/release" data-filterable-set=":slideshow:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>aspect</span><wbr><span><span>Ratio</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The aspect ratio for the entire slideshow.</p></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+

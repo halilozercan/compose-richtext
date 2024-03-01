@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ComposePrintAdapter</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>compose-richtext</span>            </a>    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":printing:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="printing::com.zachklipp.richtext.ui.printing/ComposePrintAdapter///PointingToDeclaration//-806750050">
+  <div class="breadcrumbs"><a href="../../index.html">printing</a><span class="delimiter">/</span><a href="../index.html">com.zachklipp.richtext.ui.printing</a><span class="delimiter">/</span><span class="current">ComposePrintAdapter</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Compose</span><wbr><span>Print</span><wbr><span><span>Adapter</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":printing:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ComposePrintAdapter</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/activity/ComponentActivity.html">ComponentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">documentName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">pageModifier<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token operator"> = </span>Modifier<span class="token punctuation">, </span></span><span class="parameter ">pageDpi<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>DefaultPageDpi<span class="token punctuation">, </span></span><span class="parameter ">printBreakpoints<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">mainContext<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a><span class="token operator"> = </span>Dispatchers.Main<span class="token punctuation">, </span></span><span class="parameter ">ioDispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token operator"> = </span>Dispatchers.IO<span class="token punctuation">, </span></span><span class="parameter ">content<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span> : <a href="../-coroutine-print-document-adapter/index.html">CoroutinePrintDocumentAdapter</a></div><p class="paragraph">A <a href="https://developer.android.com/reference/kotlin/android/print/PrintDocumentAdapter.html">PrintDocumentAdapter</a> that prints a composable function. The composable content is paginated as best-effort to avoid cutting off composables in the middle (see <a href="../-paged.html">Paged</a>).</p><p class="paragraph">Long blocks of text and subcompositions are not fully supported: the paginator will try to not split them, but if they don't fit on a page, they will be split arbitrarily.</p><p class="paragraph">See <a href="../../../printing/com.zachklipp.richtext.ui.printing/index.html">composeToPdf</a> for details on how the composable is actually written to the PDF.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>activity</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://developer.android.com/reference/kotlin/androidx/activity/ComponentActivity.html">ComponentActivity</a> used to create various printing resources.</p></div></div></div></div><div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>document</span><wbr><span><span>Name</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The file name that will be reported to the printing system, e.g. to use as the default for the Save to PDF virtual printer.</p></div></div></div></div><div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>page</span><wbr><span><span>Modifier</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A <a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a> that will be applied to each individual page of the printed content. <a href="../responsive-padding.html">responsivePadding</a> is a good choice.</p></div></div></div></div><div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>page</span><wbr><span><span>Dpi</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The resolution to use for the <code class="lang-kotlin">Density</code> of the composable.</p></div></div></div></div><div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>print</span><wbr><span><span>Breakpoints</span></span></u></div></span></div><div><div class="title"><p class="paragraph">If true, horizontal lines are drawn at each breakpoint for debugging. False by default.</p></div></div></div></div><div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>main</span><wbr><span><span>Context</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a> to interact with the composable and view system on.</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1887945708%2FConstructors%2F-806750050" anchor-label="ComposePrintAdapter" id="1887945708%2FConstructors%2F-806750050" data-filterable-set=":printing:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-compose-print-adapter.html"><span>Compose</span><wbr><span>Print</span><wbr><span><span>Adapter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1887945708%2FConstructors%2F-806750050"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":printing:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/activity/ComponentActivity.html">ComponentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">documentName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">pageModifier<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/compose/ui/Modifier.html">Modifier</a><span class="token operator"> = </span>Modifier<span class="token punctuation">, </span></span><span class="parameter ">pageDpi<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>DefaultPageDpi<span class="token punctuation">, </span></span><span class="parameter ">printBreakpoints<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">mainContext<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.coroutines/-coroutine-context/index.html">CoroutineContext</a><span class="token operator"> = </span>Dispatchers.Main<span class="token punctuation">, </span></span><span class="parameter ">ioDispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token operator"> = </span>Dispatchers.IO<span class="token punctuation">, </span></span><span class="parameter ">content<span class="token operator">: </span><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html"><span class="token annotation builtin">Composable</span></a>&nbsp;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-805402539%2FFunctions%2F-806750050" anchor-label="onFinish" id="-805402539%2FFunctions%2F-806750050" data-filterable-set=":printing:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-coroutine-print-document-adapter/on-finish.html"><span>on</span><wbr><span><span>Finish</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-805402539%2FFunctions%2F-806750050"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":printing:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-coroutine-print-document-adapter/on-finish.html"><span class="token function">onFinish</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2064796676%2FFunctions%2F-806750050" anchor-label="onLayout" id="2064796676%2FFunctions%2F-806750050" data-filterable-set=":printing:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-layout.html"><span>on</span><wbr><span><span>Layout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2064796676%2FFunctions%2F-806750050"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":printing:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="on-layout.html"><span class="token function">onLayout</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">oldAttributes<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintAttributes.html">PrintAttributes</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">newAttributes<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintAttributes.html">PrintAttributes</a><span class="token punctuation">, </span></span><span class="parameter ">extras<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/Bundle.html">Bundle</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintDocumentInfo.html">PrintDocumentInfo</a></div><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-coroutine-print-document-adapter/on-layout.html"><span class="token function">onLayout</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">oldAttributes<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintAttributes.html">PrintAttributes</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">newAttributes<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintAttributes.html">PrintAttributes</a><span class="token punctuation">, </span></span><span class="parameter ">cancellationSignal<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/CancellationSignal.html">CancellationSignal</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintDocumentAdapter.LayoutResultCallback.html">PrintDocumentAdapter.LayoutResultCallback</a><span class="token punctuation">, </span></span><span class="parameter ">extras<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/Bundle.html">Bundle</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-232570847%2FFunctions%2F-806750050" anchor-label="onStart" id="-232570847%2FFunctions%2F-806750050" data-filterable-set=":printing:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-coroutine-print-document-adapter/index.html#-232570847%2FFunctions%2F-806750050"><span>on</span><wbr><span><span>Start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-232570847%2FFunctions%2F-806750050"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":printing:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-coroutine-print-document-adapter/index.html#-232570847%2FFunctions%2F-806750050"><span class="token function">onStart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1631146555%2FFunctions%2F-806750050" anchor-label="onWrite" id="-1631146555%2FFunctions%2F-806750050" data-filterable-set=":printing:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":printing:dokkaHtmlPartial/release" data-filterable-set=":printing:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-write.html"><span>on</span><wbr><span><span>Write</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1631146555%2FFunctions%2F-806750050"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":printing:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="on-write.html"><span class="token function">onWrite</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">pages<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="https://developer.android.com/reference/kotlin/android/print/PageRange.html">PageRange</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">destination<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/ParcelFileDescriptor.html">ParcelFileDescriptor</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="https://developer.android.com/reference/kotlin/android/print/PageRange.html">PageRange</a><span class="token operator">&gt;</span></div><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-coroutine-print-document-adapter/on-write.html"><span class="token function">onWrite</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">pages<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="https://developer.android.com/reference/kotlin/android/print/PageRange.html">PageRange</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">destination<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/ParcelFileDescriptor.html">ParcelFileDescriptor</a><span class="token punctuation">, </span></span><span class="parameter ">cancellationSignal<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/CancellationSignal.html">CancellationSignal</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/print/PrintDocumentAdapter.WriteResultCallback.html">PrintDocumentAdapter.WriteResultCallback</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+
