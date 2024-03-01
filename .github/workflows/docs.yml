@@ -2,12 +2,12 @@ name: Doc Site
 
 on:
   release:
-    # Only build docs when a new release is created, so the API docs don't get out of date.
+    # Build docs when a new release is created, so the API docs don't get out of date.
     types: [ published ]
   push:
     branches:
-      # Build the branch that introduced this config, for testing.
-      - zachklipp/mkdocs
+      # A specific branch to only update docs without going through a release cycle
+      - docs
 
 jobs:
   deploy:
