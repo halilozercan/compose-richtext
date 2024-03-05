@@ -27,11 +27,6 @@ kotlin {
       dependencies {
         implementation(Compose.coil)
         implementation(Compose.annotatedText)
-
-        implementation(Commonmark.core)
-        implementation(Commonmark.tables)
-        implementation(Commonmark.strikethrough)
-        implementation(Commonmark.autolink)
       }
     }
 
@@ -39,11 +34,6 @@ kotlin {
       dependencies {
         implementation(compose.desktop.currentOs)
         implementation(Network.okHttp)
-
-        implementation(Commonmark.core)
-        implementation(Commonmark.tables)
-        implementation(Commonmark.strikethrough)
-        implementation(Commonmark.autolink)
       }
     }
 

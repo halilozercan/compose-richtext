@@ -18,7 +18,6 @@ kotlin {
       dependencies {
         implementation(compose.runtime)
         implementation(compose.foundation)
-        implementation(Compose.multiplatformUiUtil)
       }
     }
     val commonTest by getting

@@ -4,11 +4,11 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 > **Warning**
-> compose-richtext library and all its modules are very experimental and undermaintained. The roadmap is unclear at the moment. Thanks for your patience. Fork option is available as always.
+> compose-richtext library and all its modules are very experimental. The roadmap is unclear at the moment. Thanks for your patience. Fork option is available as always.
 
 A collection of Compose libraries for working with rich text formatting and documents.
 
-`richtext-ui`, `richtext-commonmark`, and `richtext-material-ui` are Kotlin Multiplatform Compose Libraries.
+Aside from `printing`, and `slideshow`, all modules are Kotlin Multiplatform Compose Libraries.
 
 This repo is currently very experimental and really just proofs-of-concept: there are no tests and some things
 might be broken or very non-performant.

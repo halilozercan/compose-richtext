@@ -4,7 +4,7 @@
 [![JVM Library](https://img.shields.io/badge/Platform-JVM-red.svg?style=for-the-badge)](https://kotlinlang.org/docs/mpp-intro.html)
 
 Library for parsing and rendering Markdown in Compose using [CommonMark](https://github.com/commonmark/commonmark-java)
-library/spec to parse, and `richtext-ui` to render.
+library/spec to parse, and `richtext-markdown` to render.
 
 ## Gradle
 

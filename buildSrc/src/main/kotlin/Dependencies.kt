@@ -4,10 +4,7 @@ object BuildPlugins {
 }
 
 object AndroidX {
-  val activity = "androidx.activity:activity:1.5.0-rc01"
-  val annotations = "androidx.annotation:annotation:1.1.0"
   val appcompat = "androidx.appcompat:appcompat:1.3.0"
-  val material = "com.google.android.material:material:1.1.0"
 }
 
 object Network {
@@ -30,13 +27,11 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val version = "1.5.4"
   val compilerVersion = "1.5.8"
   val desktopVersion = "1.6.0"
   val activity = "androidx.activity:activity-compose:1.8.2"
   val annotatedText = "io.github.aghajari:AnnotatedText:1.0.3"
-  val toolingData = "androidx.compose.ui:ui-tooling-data:$version"
-  val multiplatformUiUtil = "org.jetbrains.compose.ui:ui-util:$desktopVersion"
+  val toolingData = "androidx.compose.ui:ui-tooling-data:1.6.0"
   val coil = "io.coil-kt:coil-compose:2.5.0"
 }
 
