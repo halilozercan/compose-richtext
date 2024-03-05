@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import com.halilibo.richtext.markdown.node.AstBlockNodeType
 import com.halilibo.richtext.markdown.node.AstBlockQuote
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstFencedCodeBlock
@@ -42,10 +43,40 @@ import com.halilibo.richtext.ui.string.richTextString
  * Designed to be a building block that should be wrapped with a specific parser.
  *
  * @param astNode Root node of Markdown tree. This can be obtained via a parser.
+ * @param astBlockNodeComposer An interceptor to take control of composing any block type node's
+ * rendering. Use it to render images, html text, tables with your own components.
  */
 @Composable
-public fun RichTextScope.BasicMarkdown(astNode: AstNode) {
-  RecursiveRenderMarkdownAst(astNode)
+public fun RichTextScope.BasicMarkdown(
+  astNode: AstNode,
+  astBlockNodeComposer: AstBlockNodeComposer? = null
+) {
+  RecursiveRenderMarkdownAst(astNode, astBlockNodeComposer)
+}
+
+/**
+ * An interface used to intercept block type AstNode rendering logic to inject custom composables
+ * for nodes that satisfy [predicate].
+ */
+public interface AstBlockNodeComposer {
+
+  /**
+   * Returns true if [Compose] function would handle this [astBlockNodeType].
+   */
+  public fun predicate(astBlockNodeType: AstBlockNodeType): Boolean
+
+  /**
+   * A composable that's responsible for composing the given [astNode] if its [AstNode.type]
+   * returned true from [predicate]. This composable should also decide when and where to render
+   * its children, then call [visitChildren] with a reference to which node's children to visit.
+   * This is not an enforced behavior but unknowingly failing to do so can cause loss of
+   * information during rendering.
+   */
+  @Composable
+  public fun RichTextScope.Compose(
+    astNode: AstNode,
+    visitChildren: @Composable (AstNode) -> Unit
+  )
 }
 
 /**
@@ -73,99 +104,144 @@ public fun RichTextScope.BasicMarkdown(astNode: AstNode) {
  *
  * @param astNode Root node to start rendering.
  */
-@Suppress("IMPLICIT_CAST_TO_ANY")
 @Composable
-internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
+internal fun RichTextScope.RecursiveRenderMarkdownAst(
+  astNode: AstNode?,
+  astNodeComposer: AstBlockNodeComposer?
+) {
   astNode ?: return
 
-  when (val astNodeType = astNode.type) {
-    is AstDocument -> visitChildren(node = astNode)
-    is AstBlockQuote -> {
-      BlockQuote {
-        visitChildren(astNode)
+  if (astNodeComposer != null &&
+    astNode.type is AstBlockNodeType &&
+    astNodeComposer.predicate(astNode.type)
+  ) {
+    with(astNodeComposer) {
+      Compose(astNode) {
+        renderChildren(astNode, astNodeComposer)
       }
     }
-    is AstUnorderedList -> {
-      FormattedList(
-        listType = Unordered,
-        items = astNode.filterChildrenType<AstListItem>().toList()
-      ) { astListItem ->
-        // if this list item has no child, it should at least emit a single pixel layout.
-        if (astListItem.links.firstChild == null) {
-          BasicText("")
-        } else {
-          visitChildren(astListItem)
+  } else {
+    with(DefaultAstNodeComposer) {
+      Compose(
+        astNode = astNode,
+        visitChildren = {
+          renderChildren(astNode, astNodeComposer)
+        }
+      )
+    }
+  }
+}
+
+private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
+  override fun predicate(astBlockNodeType: AstBlockNodeType): Boolean = true
+
+  @Composable
+  override fun RichTextScope.Compose(
+    astNode: AstNode,
+    visitChildren: @Composable (AstNode) -> Unit
+  ) {
+    when (val astNodeType = astNode.type) {
+      is AstDocument -> visitChildren(astNode)
+      is AstBlockQuote -> {
+        BlockQuote {
+          visitChildren(astNode)
         }
       }
-    }
-    is AstOrderedList -> {
-      FormattedList(
-        listType = Ordered,
-        items = astNode.childrenSequence().toList(),
-        startIndex = astNodeType.startNumber - 1,
-      ) { astListItem ->
-        // if this list item has no child, it should at least emit a single pixel layout.
-        if (astListItem.links.firstChild == null) {
-          BasicText("")
-        } else {
-          visitChildren(astListItem)
+
+      is AstUnorderedList -> {
+        FormattedList(
+          listType = Unordered,
+          items = astNode.filterChildrenType<AstListItem>().toList()
+        ) { astListItem ->
+          // if this list item has no child, it should at least emit a single pixel layout.
+          if (astListItem.links.firstChild == null) {
+            BasicText("")
+          } else {
+            visitChildren(astListItem)
+          }
         }
       }
-    }
-    is AstThematicBreak -> {
-      HorizontalRule()
-    }
-    is AstHeading -> {
-      Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode, Modifier.semantics { heading() } )
+
+      is AstOrderedList -> {
+        FormattedList(
+          listType = Ordered,
+          items = astNode.childrenSequence().toList(),
+          startIndex = astNodeType.startNumber - 1,
+        ) { astListItem ->
+          // if this list item has no child, it should at least emit a single pixel layout.
+          if (astListItem.links.firstChild == null) {
+            BasicText("")
+          } else {
+            visitChildren(astListItem)
+          }
+        }
       }
-    }
-    is AstIndentedCodeBlock -> {
-      CodeBlock(text = astNodeType.literal.trim())
-    }
-    is AstFencedCodeBlock -> {
-      CodeBlock(text = astNodeType.literal.trim())
-    }
-    is AstHtmlBlock -> {
-      Text(text = richTextString {
-        appendInlineContent(content = InlineContent {
-          HtmlBlock(astNodeType.literal)
+
+      is AstThematicBreak -> {
+        HorizontalRule()
+      }
+
+      is AstHeading -> {
+        Heading(level = astNodeType.level) {
+          MarkdownRichText(astNode, Modifier.semantics { heading() })
+        }
+      }
+
+      is AstIndentedCodeBlock -> {
+        CodeBlock(text = astNodeType.literal.trim())
+      }
+
+      is AstFencedCodeBlock -> {
+        CodeBlock(text = astNodeType.literal.trim())
+      }
+
+      is AstHtmlBlock -> {
+        Text(text = richTextString {
+          appendInlineContent(content = InlineContent {
+            HtmlBlock(astNodeType.literal)
+          })
         })
-      })
-    }
-    is AstLinkReferenceDefinition -> {
-      // TODO(halilozercan)
-      /* no-op */
-    }
-    is AstParagraph -> {
-      MarkdownRichText(astNode)
-    }
-    is AstTableRoot -> {
-      RenderTable(astNode)
-    }
-    // This should almost never happen. All the possible text
-    // nodes must be under either Heading, Paragraph or CustomNode
-    // In any case, we should include it here to prevent any
-    // non-rendered text problems.
-    is AstText -> {
-      // TODO(halilozercan) use multiplatform compatible stderr logging
-      println("Unexpected raw text while traversing the Abstract Syntax Tree.")
-      Text(richTextString { append(astNodeType.literal) })
-    }
-    is AstListItem -> {
-      println("MarkdownRichText: Unexpected AstListItem while traversing the Abstract Syntax Tree.")
-    }
-    is AstInlineNodeType -> {
-      // ignore
-      println("MarkdownRichText: Unexpected AstInlineNodeType $astNodeType while traversing the Abstract Syntax Tree.")
-    }
-    AstTableBody,
-    AstTableHeader,
-    AstTableRow,
-    is AstTableCell -> {
-      println("MarkdownRichText: Unexpected Table node while traversing the Abstract Syntax Tree.")
-    }
-  }.let {}
+      }
+
+      is AstLinkReferenceDefinition -> {
+        // TODO(halilozercan)
+        /* no-op */
+      }
+
+      is AstParagraph -> {
+        MarkdownRichText(astNode)
+      }
+
+      is AstTableRoot -> {
+        RenderTable(astNode)
+      }
+      // This should almost never happen. All the possible text
+      // nodes must be under either Heading, Paragraph or CustomNode
+      // In any case, we should include it here to prevent any
+      // non-rendered text problems.
+      is AstText -> {
+        // TODO(halilozercan) use multiplatform compatible stderr logging
+        println("Unexpected raw text while traversing the Abstract Syntax Tree.")
+        Text(richTextString { append(astNodeType.literal) })
+      }
+
+      is AstListItem -> {
+        println("MarkdownRichText: Unexpected AstListItem while traversing the Abstract Syntax Tree.")
+      }
+
+      is AstInlineNodeType -> {
+        // ignore
+        println("MarkdownRichText: Unexpected AstInlineNodeType $astNodeType while traversing the Abstract Syntax Tree.")
+      }
+
+      AstTableBody,
+      AstTableHeader,
+      AstTableRow,
+      is AstTableCell -> {
+        println("MarkdownRichText: Unexpected Table node while traversing the Abstract Syntax Tree.")
+      }
+    }.let {}
+  }
 }
 
 /**
@@ -174,8 +250,11 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(astNode: AstNode?) {
  * @param node Root ASTNode whose children will be visited.
  */
 @Composable
-internal fun RichTextScope.visitChildren(node: AstNode?) {
+internal fun RichTextScope.renderChildren(
+  node: AstNode?,
+  astNodeComposer: AstBlockNodeComposer?
+) {
   node?.childrenSequence()?.forEach {
-    RecursiveRenderMarkdownAst(astNode = it)
+    RecursiveRenderMarkdownAst(astNode = it, astNodeComposer = astNodeComposer)
   }
 }

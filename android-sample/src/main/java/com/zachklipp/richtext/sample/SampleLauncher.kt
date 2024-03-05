@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,7 +80,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
 @Composable private fun SamplePreview(content: @Composable () -> Unit) {
   ScreenPreview(
     Modifier
-      .height(50.dp)
+      .size(50.dp)
       .aspectRatio(1f)
       .clipToBounds()
       // "Zoom in" to the top-start corner to make the preview more legible.

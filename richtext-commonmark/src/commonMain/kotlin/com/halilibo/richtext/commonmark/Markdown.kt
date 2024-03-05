@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import com.halilibo.richtext.commonmark.MarkdownParseOptions.Companion
+import com.halilibo.richtext.markdown.AstBlockNodeComposer
 import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.ui.RichTextScope
@@ -14,12 +14,14 @@ import com.halilibo.richtext.ui.RichTextScope
  *
  * @param content Markdown text. No restriction on length.
  * @param markdownParseOptions Options for the Markdown parser.
- * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
+ * @param astBlockNodeComposer An interceptor to take control of composing any block type node's
+ * rendering. Use it to render images, html text, tables with your own components.
  */
 @Composable
 public fun RichTextScope.Markdown(
   content: String,
-  markdownParseOptions: MarkdownParseOptions = Companion.Default
+  markdownParseOptions: CommonMarkdownParseOptions = CommonMarkdownParseOptions.Default,
+  astBlockNodeComposer: AstBlockNodeComposer? = null
 ) {
   val commonmarkAstNodeParser = remember(markdownParseOptions) {
     CommonmarkAstNodeParser(markdownParseOptions)
@@ -34,7 +36,7 @@ public fun RichTextScope.Markdown(
   }
 
   astRootNode?.let {
-    BasicMarkdown(astNode = it)
+    BasicMarkdown(astNode = it, astBlockNodeComposer = astBlockNodeComposer)
   }
 }
 
@@ -42,7 +44,7 @@ public fun RichTextScope.Markdown(
  * A helper class that can convert any text content into an ASTNode tree and return its root.
  */
 public expect class CommonmarkAstNodeParser(
-  options: MarkdownParseOptions = MarkdownParseOptions.Default
+  options: CommonMarkdownParseOptions = CommonMarkdownParseOptions.Default
 ) {
 
   /**

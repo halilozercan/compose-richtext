@@ -1,6 +1,6 @@
 object BuildPlugins {
   // keep in sync with buildSrc/build.gradle.kts
-  val androidGradlePlugin = "com.android.tools.build:gradle:8.2.0"
+  val androidGradlePlugin = "com.android.tools.build:gradle:8.7.0"
 }
 
 object AndroidX {
@@ -13,7 +13,7 @@ object Network {
 
 object Kotlin {
   // keep in sync with buildSrc/build.gradle.kts
-  val version = "1.9.22"
+  val version = "2.0.21"
   val binaryCompatibilityValidatorPlugin = "org.jetbrains.kotlinx:binary-compatibility-validator:0.9.0"
   val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
 
@@ -27,10 +27,8 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val compilerVersion = "1.5.8"
-  val desktopVersion = "1.6.0"
+  val desktopVersion = "1.7.1"
   val activity = "androidx.activity:activity-compose:1.8.2"
-  val annotatedText = "io.github.aghajari:AnnotatedText:1.0.3"
   val toolingData = "androidx.compose.ui:ui-tooling-data:1.6.0"
   val coil = "io.coil-kt:coil-compose:2.5.0"
 }

@@ -32,9 +32,16 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.halilibo.richtext.commonmark.CommonMarkdownParseOptions
 import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
-import com.halilibo.richtext.commonmark.MarkdownParseOptions
+import com.halilibo.richtext.markdown.AstBlockNodeComposer
 import com.halilibo.richtext.markdown.BasicMarkdown
+import com.halilibo.richtext.markdown.node.AstBlockNodeType
+import com.halilibo.richtext.markdown.node.AstHeading
+import com.halilibo.richtext.markdown.node.AstNode
+import com.halilibo.richtext.ui.Heading
+import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.material3.RichText
 import com.halilibo.richtext.ui.resolveDefaults
@@ -49,7 +56,7 @@ import com.halilibo.richtext.ui.resolveDefaults
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
   var isWordWrapEnabled by remember { mutableStateOf(true) }
-  var markdownParseOptions by remember { mutableStateOf(MarkdownParseOptions.Default) }
+  var markdownParseOptions by remember { mutableStateOf(CommonMarkdownParseOptions.Default) }
   var isAutolinkEnabled by remember { mutableStateOf(true) }
   var isRtl by remember { mutableStateOf(false) }
 
@@ -133,12 +140,31 @@ import com.halilibo.richtext.ui.resolveDefaults
                 },
                 modifier = Modifier.padding(8.dp),
               ) {
-                BasicMarkdown(astNode)
+                BasicMarkdown(astNode, HeadingAstBlockNodeComposer)
               }
             }
           }
         }
       }
+    }
+  }
+}
+
+val HeadingAstBlockNodeComposer = object : AstBlockNodeComposer {
+  override fun predicate(astBlockNodeType: AstBlockNodeType): Boolean {
+    return astBlockNodeType is AstHeading
+  }
+
+  @Composable override fun RichTextScope.Compose(
+    astNode: AstNode,
+    visitChildren: @Composable (AstNode) -> Unit
+  ) {
+    val headingNode = astNode.type as? AstHeading ?: return
+    Column {
+      Heading(level = headingNode.level) {
+        visitChildren(astNode)
+      }
+      Text("Custom rendering is used for this heading!", fontSize = 8.sp)
     }
   }
 }
