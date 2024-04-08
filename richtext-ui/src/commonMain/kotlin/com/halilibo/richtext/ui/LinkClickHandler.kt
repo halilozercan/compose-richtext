@@ -1,5 +1,7 @@
 package com.halilibo.richtext.ui
 
+import androidx.compose.runtime.CompositionLocal
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 
 /**
@@ -14,4 +16,4 @@ public fun interface LinkClickHandler {
  * An internal composition local to pass through LinkClickHandler from root [BasicRichText]
  * composable to children that render links.
  */
-public val LocalLinkClickHandler = compositionLocalOf<LinkClickHandler?> { null }
+public val LocalLinkClickHandler: ProvidableCompositionLocal<LinkClickHandler?> = compositionLocalOf<LinkClickHandler?> { null }
