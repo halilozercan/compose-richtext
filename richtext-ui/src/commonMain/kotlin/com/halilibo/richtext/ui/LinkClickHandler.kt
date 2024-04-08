@@ -14,4 +14,4 @@ public fun interface LinkClickHandler {
  * An internal composition local to pass through LinkClickHandler from root [BasicRichText]
  * composable to children that render links.
  */
-internal val LocalLinkClickHandler = compositionLocalOf<LinkClickHandler?> { null }
+public val LocalLinkClickHandler = compositionLocalOf<LinkClickHandler?> { null }
