@@ -187,13 +187,7 @@ public actual class CommonmarkAstNodeParser actual constructor(
 ) {
 
   private val parser = Parser.builder()
-    .extensions(
-      listOfNotNull(
-        TablesExtension.create(),
-        StrikethroughExtension.create(),
-        if (options.autolink) AutolinkExtension.create() else null
-      )
-    )
+    .extensions(options.extensions)
     .build()
 
   public actual fun parse(text: String): AstNode {
