@@ -14,7 +14,7 @@ public data class AstNodeLinks(
   var next: AstNode? = null
 ) {
 
-  internal inline fun <reified T : AstNodeType> firstParentOrNull(): T? {
+  public inline fun <reified T : AstNodeType> firstParentOrNull(): T? {
     var parent = this.parent
     while (parent != null) {
       if (parent.type is T) return parent.type as T

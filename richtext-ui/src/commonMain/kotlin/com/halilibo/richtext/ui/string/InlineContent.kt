@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
  * text line.
  */
 public class InlineContent(
+  internal val renderOnNewLine: Boolean = false,
   internal val initialSize: (Density.() -> IntSize)? = null,
   internal val placeholderVerticalAlign: PlaceholderVerticalAlign = AboveBaseline,
   internal val content: @Composable Density.(alternateText: String) -> Unit

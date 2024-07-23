@@ -53,12 +53,18 @@ public typealias ContentOverride = @Composable (
 
 /**
  * Overrides content that is inline in a paragraph such as a link, or text.
+ *
+ * @param defaultContent Call this function if you want to render the default content for this node.
+ *
+ * @return the last formatIndex from any richTextStringBuilder if you pushed a style to the builder
+ * and you want it to be popped when the node leaves the rendering scope.
  */
 public typealias InlineContentOverride = RichTextScope.(
   node: AstNode,
   richTextStringBuilder: RichTextString.Builder,
-  onClick: (() -> Unit)?,
-) -> InlineContent?
+  defaultContent: () -> Int?,
+  onLinkClicked: (String) -> Unit,
+) -> Int?
 
 /**
  * A composable that renders Markdown content using RichText.

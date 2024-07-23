@@ -7,6 +7,8 @@ import androidx.compose.runtime.remember
 import com.halilibo.richtext.markdown.node.AstBlockQuote
 import com.halilibo.richtext.markdown.node.AstBulletList
 import com.halilibo.richtext.markdown.node.AstCode
+import com.halilibo.richtext.markdown.node.AstCustomBlock
+import com.halilibo.richtext.markdown.node.AstCustomNode
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstEmphasis
 import com.halilibo.richtext.markdown.node.AstFencedCodeBlock
@@ -165,8 +167,8 @@ internal fun convert(
     is Strikethrough -> AstStrikethrough(
       node.openingDelimiter
     )
-    is CustomNode -> null
-    is CustomBlock -> null
+    is CustomNode -> AstCustomNode(node)
+    is CustomBlock -> AstCustomBlock(node)
     else -> null
   }
 

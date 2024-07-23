@@ -9,4 +9,7 @@ package com.halilibo.richtext.markdown.node
 public data class AstNode(
   val type: AstNodeType,
   val links: AstNodeLinks
-)
+) {
+  /** Links becomes self-referencing and causes a StackOverflow on toString() */
+  override fun toString(): String = "AstNode(type=$type)"
+}
