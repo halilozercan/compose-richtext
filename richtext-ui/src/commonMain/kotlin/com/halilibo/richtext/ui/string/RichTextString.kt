@@ -305,9 +305,13 @@ public data class RichTextString internal constructor(
       // will expand over the text. Since this is not a text section, it should be fine.
       //
       // Fixed line height seems to only affect mobile.
-      builder.pushStyle(ParagraphStyle())
+      if (content.renderOnNewLine) {
+        builder.pushStyle(ParagraphStyle())
+      }
       builder.appendInlineContent(tag, alternateText)
-      builder.pop()
+      if (content.renderOnNewLine) {
+        builder.pop()
+      }
     }
 
     /**

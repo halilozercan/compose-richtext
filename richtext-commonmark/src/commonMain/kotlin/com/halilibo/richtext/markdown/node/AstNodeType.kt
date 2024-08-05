@@ -2,6 +2,7 @@ package com.halilibo.richtext.markdown.node
 
 import androidx.compose.runtime.Immutable
 import com.halilibo.richtext.ui.string.RichTextString
+import org.commonmark.node.Node
 
 /**
  * Refer to https://spec.commonmark.org/0.30/#precedence
@@ -145,6 +146,16 @@ public object AstSoftLineBreak : AstInlineNodeType()
 @Immutable
 public data class AstText(
   val literal: String
+) : AstInlineNodeType()
+
+@Immutable
+public data class AstCustomNode(
+  val node: Node
+) : AstInlineNodeType()
+
+@Immutable
+public data class AstCustomBlock(
+  val node: Node
 ) : AstInlineNodeType()
 
 //endregion
