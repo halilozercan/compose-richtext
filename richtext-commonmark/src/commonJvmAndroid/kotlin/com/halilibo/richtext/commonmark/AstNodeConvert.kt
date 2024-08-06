@@ -187,25 +187,27 @@ public actual class CommonmarkAstNodeParser actual constructor(
   options: MarkdownParseOptions
 ) {
 
-@Composable
-internal actual fun parsedMarkdownAst(text: String, options: MarkdownParseOptions): AstNode? {
-  val parser = remember(options) {
-    Parser.builder()
-      .extensions(
-        listOfNotNull(
-          TablesExtension.create(),
-          StrikethroughExtension.create(),
-          ImageAttributesExtension.create(),
-          if (options.autolink) AutolinkExtension.create() else null
-        )
+  private val parser = Parser.builder()
+    .extensions(
+      listOfNotNull(
+        TablesExtension.create(),
+        StrikethroughExtension.create(),
+        ImageAttributesExtension.create(),
+        if (options.autolink) AutolinkExtension.create() else null
       )
-      .build()
-  }
+    )
+    .build()
 
-  val astRootNode by produceState<AstNode?>(null, text, parser) {
-    value = parser.parse(text).convert()
-  }
+  public actual fun parse(text: String): AstNode {
+    val commonmarkNode = parser.parse(text)
+      ?: throw IllegalArgumentException(
+        "Could not parse the given text content into a meaningful Markdown representation!"
+      )
 
-  return astRootNode
+    return convert(commonmarkNode)
+      ?: throw IllegalArgumentException(
+        "Could not convert the generated Commonmark Node into an ASTNode!"
+      )
+  }
 }
 
