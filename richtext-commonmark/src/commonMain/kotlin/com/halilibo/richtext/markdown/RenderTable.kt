@@ -13,6 +13,7 @@ import com.halilibo.richtext.ui.Table
 internal fun RichTextScope.RenderTable(
   node: AstNode,
   inlineContentOverride: InlineContentOverride?,
+  markdownRenderOptions: MarkdownRenderOptions,
 ) {
   Table(
     headerRow = {
@@ -23,7 +24,7 @@ internal fun RichTextScope.RenderTable(
         ?.filterChildrenType<AstTableCell>()
         ?.forEach { tableCell ->
           cell {
-            MarkdownRichText(tableCell, inlineContentOverride)
+            MarkdownRichText(tableCell, inlineContentOverride, markdownRenderOptions)
           }
         }
     }
@@ -36,7 +37,7 @@ internal fun RichTextScope.RenderTable(
           tableRow.filterChildrenType<AstTableCell>()
             .forEach { tableCell ->
               cell {
-                MarkdownRichText(tableCell, inlineContentOverride)
+                MarkdownRichText(tableCell, inlineContentOverride, markdownRenderOptions)
               }
             }
         }

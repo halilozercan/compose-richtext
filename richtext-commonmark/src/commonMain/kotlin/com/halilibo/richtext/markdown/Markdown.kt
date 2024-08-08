@@ -77,12 +77,13 @@ public typealias InlineContentOverride = RichTextScope.(
 public fun RichTextScope.Markdown(
   content: String,
   markdownParseOptions: MarkdownParseOptions = MarkdownParseOptions.Default,
+  markdownRenderOptions: MarkdownRenderOptions = MarkdownRenderOptions.Default,
   onLinkClicked: ((String) -> Unit)? = null,
   contentOverride: ContentOverride? = null,
   inlineContentOverride: InlineContentOverride? = null,
 ) {
   val markdown = parsedMarkdown(text = content, options = markdownParseOptions)
-  markdown?.let { Markdown(it, onLinkClicked, contentOverride, inlineContentOverride) }
+  markdown?.let { Markdown(it, onLinkClicked, contentOverride, inlineContentOverride, markdownRenderOptions) }
 }
 
 /**
@@ -97,6 +98,7 @@ public fun RichTextScope.Markdown(
   onLinkClicked: ((String) -> Unit)? = null,
   contentOverride: ContentOverride? = null,
   inlineContentOverride: InlineContentOverride? = null,
+  markdownRenderOptions: MarkdownRenderOptions = MarkdownRenderOptions.Default,
 ) {
   val onLinkClickedState = rememberUpdatedState(onLinkClicked)
   // Can't use UriHandlerAmbient.current::openUri here,
@@ -107,7 +109,7 @@ public fun RichTextScope.Markdown(
     }
   }
   CompositionLocalProvider(LocalOnLinkClicked provides realLinkClickedHandler) {
-    RecursiveRenderMarkdownAst(content.toAstNode(), contentOverride, inlineContentOverride)
+    RecursiveRenderMarkdownAst(content.toAstNode(), contentOverride, inlineContentOverride, markdownRenderOptions)
   }
 }
 
@@ -158,20 +160,21 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
   astNode: AstNode?,
   contentOverride: ContentOverride?,
   inlineContentOverride: InlineContentOverride?,
+  markdownRenderOptions: MarkdownRenderOptions,
 ) {
   astNode ?: return
 
   if (contentOverride?.invoke(astNode) {
-      visitChildren(it, contentOverride, inlineContentOverride)
+      visitChildren(it, contentOverride, inlineContentOverride, markdownRenderOptions)
     } == true) {
     return
   }
 
   when (val astNodeType = astNode.type) {
-    is AstDocument -> visitChildren(node = astNode, contentOverride, inlineContentOverride)
+    is AstDocument -> visitChildren(node = astNode, contentOverride, inlineContentOverride, markdownRenderOptions)
     is AstBlockQuote -> {
       BlockQuote {
-        visitChildren(astNode, contentOverride, inlineContentOverride)
+        visitChildren(astNode, contentOverride, inlineContentOverride, markdownRenderOptions)
       }
     }
 
@@ -180,7 +183,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
         listType = Unordered,
         items = astNode.filterChildrenType<AstListItem>().toList()
       ) {
-        visitChildren(it, contentOverride, inlineContentOverride)
+        visitChildren(it, contentOverride, inlineContentOverride, markdownRenderOptions)
       }
     }
 
@@ -189,7 +192,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
         listType = Ordered,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
-        visitChildren(astListItem, contentOverride, inlineContentOverride)
+        visitChildren(astListItem, contentOverride, inlineContentOverride, markdownRenderOptions)
       }
     }
 
@@ -199,7 +202,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
 
     is AstHeading -> {
       Heading(level = astNodeType.level) {
-        MarkdownRichText(astNode, inlineContentOverride, Modifier.semantics { heading() })
+        MarkdownRichText(astNode, inlineContentOverride, markdownRenderOptions, Modifier.semantics { heading() })
       }
     }
 
@@ -225,11 +228,11 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
     }
 
     is AstParagraph -> {
-      MarkdownRichText(astNode, inlineContentOverride)
+      MarkdownRichText(astNode, inlineContentOverride, markdownRenderOptions)
     }
 
     is AstTableRoot -> {
-      RenderTable(astNode, inlineContentOverride)
+      RenderTable(astNode, inlineContentOverride, markdownRenderOptions)
     }
     // This should almost never happen. All the possible text
     // nodes must be under either Heading, Paragraph or CustomNode
@@ -269,9 +272,15 @@ internal fun RichTextScope.visitChildren(
   node: AstNode?,
   contentOverride: ContentOverride?,
   inlineContentOverride: InlineContentOverride?,
+  markdownRenderOptions: MarkdownRenderOptions,
 ) {
   node?.childrenSequence()?.forEach {
-    RecursiveRenderMarkdownAst(astNode = it, contentOverride, inlineContentOverride)
+    RecursiveRenderMarkdownAst(
+      astNode = it,
+      contentOverride,
+      inlineContentOverride,
+      markdownRenderOptions,
+    )
   }
 }
 

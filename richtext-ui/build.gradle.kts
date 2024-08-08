@@ -11,6 +11,9 @@ repositories {
 android {
   namespace = "com.halilibo.richtext.ui"
 }
+dependencies {
+  implementation("androidx.lifecycle:lifecycle-runtime-compose-android:2.8.4")
+}
 
 kotlin {
   sourceSets {
