@@ -24,6 +24,8 @@ import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.currentContentColor
 import com.halilibo.richtext.ui.currentRichTextStyle
 import com.halilibo.richtext.ui.string.RichTextString.Format
+import com.halilibo.richtext.ui.util.PhraseAnnotatedString
+import com.halilibo.richtext.ui.util.segmentIntoPhrases
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -43,8 +45,9 @@ public fun RichTextScope.Text(
   softWrap: Boolean = true,
   isLeafText: Boolean = true,
   animate: Boolean = false,
-  textFadeInMs: Int = 600,
-  debounceMs: Int = 150,
+  textFadeInMs: Int = 400,
+  debounceMs: Int = 200,
+  delayMs: Int = 100,
   overflow: TextOverflow = TextOverflow.Clip,
   maxLines: Int = Int.MAX_VALUE
 ) {
@@ -63,6 +66,7 @@ public fun RichTextScope.Text(
     debounceMs = debounceMs,
     textFadeInMs = textFadeInMs,
     isLeafText = isLeafText,
+    delayMs = delayMs,
     hasInlineTextContent = inlineContents.isNotEmpty(),
   )
 
@@ -71,7 +75,6 @@ public fun RichTextScope.Text(
       inlineContents = inlineContents,
       textConstraints = constraints,
     )
-
     ClickableText(
       text = animatedText,
       onTextLayout = onTextLayout,
@@ -106,6 +109,7 @@ private fun rememberAnimatedText(
   contentColor: Color,
   debounceMs: Int,
   textFadeInMs: Int,
+  delayMs: Int,
   isLeafText: Boolean,
   hasInlineTextContent: Boolean,
 ): AnnotatedString {
@@ -113,8 +117,8 @@ private fun rememberAnimatedText(
   val animations = remember { mutableStateMapOf<Int, TextAnimation>() }
   val textToRender = remember { mutableStateOf(AnnotatedString("")) }
   if (animate) {
-    val lastAnimatedIndex = remember { mutableIntStateOf(0) }
-    val readyToAnimateText = remember { mutableStateOf(AnnotatedString("")) }
+    val lastAnimationIndex = remember { mutableIntStateOf(-1) }
+    val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
     // In case no changes happen for a while, we'll render after some timeout
     val debouncedTextFlow = remember { MutableStateFlow(AnnotatedString("")) }
     val debouncedText by remember { debouncedTextFlow.debounce(debounceMs.milliseconds) }
@@ -123,39 +127,45 @@ private fun rememberAnimatedText(
     LaunchedEffect(annotated) {
       debouncedTextFlow.value = annotated
       // If we detect a new phrase, kick off the animation now.
-      if (annotated.hasNewPhraseFrom(textToRender.value.text)) {
-        readyToAnimateText.value = annotated
+      val phrases = annotated.segmentIntoPhrases(isComplete = !isLeafText)
+      if (phrases.hasNewPhrasesFrom(readyToAnimateText.value)) {
+        readyToAnimateText.value = phrases
       }
     }
     LaunchedEffect(isLeafText, annotated) {
       if (!isLeafText) {
-        readyToAnimateText.value = annotated
+        readyToAnimateText.value = annotated.segmentIntoPhrases(isComplete = true)
       }
     }
     LaunchedEffect(debouncedText) {
       if (debouncedText.text.isNotEmpty()) {
-        readyToAnimateText.value = debouncedText
+        readyToAnimateText.value = debouncedText.segmentIntoPhrases(isComplete = true)
       }
     }
 
     LaunchedEffect(readyToAnimateText.value) {
-      if (readyToAnimateText.value.text.length >= lastAnimatedIndex.value) {
-        // TODO: split this into phrases.
-        val animationIndex = lastAnimatedIndex.value
-        lastAnimatedIndex.value = readyToAnimateText.value.text.length
-        animations[animationIndex] = TextAnimation(animationIndex, 0f)
-        coroutineScope.launch {
-          textToRender.value = readyToAnimateText.value
-          Animatable(0f).animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = textFadeInMs)
-          ) {
-            animations[animationIndex] = TextAnimation(animationIndex, value)
+      val phrases = readyToAnimateText.value
+      phrases.phraseSegments
+        .filter { it > lastAnimationIndex.value }
+        .forEach { phraseIndex ->
+          animations[phraseIndex] = TextAnimation(phraseIndex, 0f)
+          lastAnimationIndex.value = phraseIndex
+          coroutineScope.launch {
+            textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
+            Animatable(0f).animateTo(
+              targetValue = 1f,
+              animationSpec = tween(
+                durationMillis = textFadeInMs,
+                delayMillis = (animations.size * delayMs).coerceAtMost(2000),
+              )
+            ) {
+              animations[phraseIndex] = TextAnimation(phraseIndex, value)
+            }
+            animations.remove(phraseIndex)
           }
-          animations.remove(animationIndex)
         }
-      } else {
-        textToRender.value = readyToAnimateText.value
+      if (phrases.isComplete) {
+        textToRender.value = phrases.annotatedString
       }
     }
   } else {
@@ -194,22 +204,12 @@ private fun AnnotatedString.animateAlphas(animations: Collection<TextAnimation>,
 }
 
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
-  val newWordsStyles =
-    listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length)) +
-        spanStyles.map { spanstyle ->
-          spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
-        }
+  val newWordsStyles = spanStyles.map { spanstyle ->
+        spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
+      } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
   return AnnotatedString(text, newWordsStyles)
 }
 
-private fun AnnotatedString.hasNewPhraseFrom(rendered: String): Boolean {
-  return when {
-    rendered.count { it == ',' } != this.count { it == ',' } -> true
-    rendered.count { it == '.' } != this.count { it == '.' } -> true
-    this.count { it == ' ' } - rendered.count { it == ' ' } > 4 -> true
-    else -> false
-  }
-}
 
 private fun AnnotatedString.getConsumableAnnotations(textFormatObjects: Map<String, Any>, offset: Int): Sequence<Format.Link> =
   getStringAnnotations(Format.FormatAnnotationScope, offset, offset)

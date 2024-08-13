@@ -71,10 +71,11 @@ internal fun RichTextScope.MarkdownRichText(
   Text(
     text = richText,
     modifier = modifier,
-    isLeafText = astNode.links.next == null,
+    isLeafText = astNode.links.next == null && astNode.links.parent?.links?.next == null,
     animate = markdownRenderOptions.animate,
     textFadeInMs = markdownRenderOptions.textFadeInMs,
     debounceMs = markdownRenderOptions.debounceMs,
+    delayMs = markdownRenderOptions.delayMs,
   )
 }
 
