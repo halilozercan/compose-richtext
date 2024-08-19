@@ -2,6 +2,7 @@ package com.halilibo.richtext.markdown
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,6 +29,8 @@ import com.halilibo.richtext.ui.BlockQuote
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.string.InlineContent
+import com.halilibo.richtext.ui.string.MarkdownAnimationState
+import com.halilibo.richtext.ui.string.RichTextRenderOptions
 import com.halilibo.richtext.ui.string.RichTextString
 import com.halilibo.richtext.ui.string.Text
 import com.halilibo.richtext.ui.string.withFormat
@@ -59,7 +62,8 @@ import com.halilibo.richtext.ui.string.withFormat
 internal fun RichTextScope.MarkdownRichText(
   astNode: AstNode,
   inlineContentOverride: InlineContentOverride?,
-  markdownRenderOptions: MarkdownRenderOptions,
+  richTextRenderOptions: RichTextRenderOptions,
+  markdownAnimationState: MutableState<MarkdownAnimationState>,
   modifier: Modifier = Modifier,
 ) {
   val onLinkClicked = LocalOnLinkClicked.current
@@ -72,10 +76,8 @@ internal fun RichTextScope.MarkdownRichText(
     text = richText,
     modifier = modifier,
     isLeafText = astNode.links.next == null && astNode.links.parent?.links?.next == null,
-    animate = markdownRenderOptions.animate,
-    textFadeInMs = markdownRenderOptions.textFadeInMs,
-    debounceMs = markdownRenderOptions.debounceMs,
-    delayMs = markdownRenderOptions.delayMs,
+    renderOptions = richTextRenderOptions,
+    sharedAnimationState = markdownAnimationState,
   )
 }
 

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,6 +31,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
@@ -44,10 +46,9 @@ public fun RichTextScope.Text(
   onTextLayout: (TextLayoutResult) -> Unit = {},
   softWrap: Boolean = true,
   isLeafText: Boolean = true,
-  animate: Boolean = false,
-  textFadeInMs: Int = 400,
-  debounceMs: Int = 200,
-  delayMs: Int = 100,
+  renderOptions: RichTextRenderOptions = RichTextRenderOptions(),
+  sharedAnimationState: MutableState<MarkdownAnimationState> =
+    mutableIntStateOf(DefaultMarkdownAnimationState),
   overflow: TextOverflow = TextOverflow.Clip,
   maxLines: Int = Int.MAX_VALUE
 ) {
@@ -60,13 +61,11 @@ public fun RichTextScope.Text(
   val inlineContents = remember(text) { text.getInlineContents() }
 
   val animatedText = rememberAnimatedText(
-    animate = animate,
     annotated = annotated,
     contentColor = contentColor,
-    debounceMs = debounceMs,
-    textFadeInMs = textFadeInMs,
+    renderOptions = renderOptions,
     isLeafText = isLeafText,
-    delayMs = delayMs,
+    sharedAnimationState = sharedAnimationState,
     hasInlineTextContent = inlineContents.isNotEmpty(),
   )
 
@@ -101,28 +100,35 @@ public fun RichTextScope.Text(
   }
 }
 
+public typealias MarkdownAnimationState = Int
+// Add a default value
+public val DefaultMarkdownAnimationState: MarkdownAnimationState = 0
+private fun MarkdownAnimationState.addAnimation(): MarkdownAnimationState = this + 1
+private fun MarkdownAnimationState.removeAnimation(): MarkdownAnimationState = this - 1
+private fun MarkdownAnimationState.toDelayMs(defaultDelayMs: Int): Int =
+  (sqrt(this.toDouble()) * defaultDelayMs).toInt()
+
 @Composable
 @OptIn(FlowPreview::class)
 private fun rememberAnimatedText(
-  animate: Boolean,
   annotated: AnnotatedString,
+  renderOptions: RichTextRenderOptions,
   contentColor: Color,
-  debounceMs: Int,
-  textFadeInMs: Int,
-  delayMs: Int,
+  sharedAnimationState: MutableState<MarkdownAnimationState>,
   isLeafText: Boolean,
   hasInlineTextContent: Boolean,
 ): AnnotatedString {
   val coroutineScope = rememberCoroutineScope()
   val animations = remember { mutableStateMapOf<Int, TextAnimation>() }
   val textToRender = remember { mutableStateOf(AnnotatedString("")) }
-  if (animate) {
+  if (renderOptions.animate) {
     val lastAnimationIndex = remember { mutableIntStateOf(-1) }
     val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
     // In case no changes happen for a while, we'll render after some timeout
     val debouncedTextFlow = remember { MutableStateFlow(AnnotatedString("")) }
-    val debouncedText by remember { debouncedTextFlow.debounce(debounceMs.milliseconds) }
-      .collectAsState(AnnotatedString(""), coroutineScope.coroutineContext)
+    val debouncedText by remember {
+      debouncedTextFlow.debounce(renderOptions.debounceMs.milliseconds)
+    }.collectAsState(AnnotatedString(""), coroutineScope.coroutineContext)
 
     LaunchedEffect(annotated) {
       debouncedTextFlow.value = annotated
@@ -152,15 +158,18 @@ private fun rememberAnimatedText(
           lastAnimationIndex.value = phraseIndex
           coroutineScope.launch {
             textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
+            sharedAnimationState.value = sharedAnimationState.value.addAnimation()
             Animatable(0f).animateTo(
               targetValue = 1f,
               animationSpec = tween(
-                durationMillis = textFadeInMs,
-                delayMillis = (animations.size * delayMs).coerceAtMost(2000),
+                durationMillis = renderOptions.textFadeInMs,
+                delayMillis = sharedAnimationState.value.toDelayMs(renderOptions.delayMs),
               )
             ) {
               animations[phraseIndex] = TextAnimation(phraseIndex, value)
+              renderOptions.onTextAnimate()
             }
+            sharedAnimationState.value = sharedAnimationState.value.removeAnimation()
             animations.remove(phraseIndex)
           }
         }
@@ -182,9 +191,10 @@ private fun rememberAnimatedText(
   }
 }
 
-private data class TextAnimation(val startIndex: Int, val alpha: Float)
+private data class TextAnimation(val startIndex: Int, val alpha: Float) 
 
-private fun AnnotatedString.animateAlphas(animations: Collection<TextAnimation>, contentColor: Color): AnnotatedString {
+private fun AnnotatedString.animateAlphas(
+  animations: Collection<TextAnimation>, contentColor: Color): AnnotatedString {
   if (this.text.isEmpty() || animations.isEmpty()) {
     return this
   }
