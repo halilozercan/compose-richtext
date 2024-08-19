@@ -213,6 +213,8 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
     is AstBulletList -> {
       FormattedList(
         listType = Unordered,
+        markdownAnimationState,
+        richTextRenderOptions,
         items = astNode.filterChildrenType<AstListItem>().toList()
       ) {
         visitChildren(
@@ -228,6 +230,8 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
     is AstOrderedList -> {
       FormattedList(
         listType = Ordered,
+        markdownAnimationState,
+        richTextRenderOptions,
         items = astNode.childrenSequence().toList()
       ) { astListItem ->
         visitChildren(

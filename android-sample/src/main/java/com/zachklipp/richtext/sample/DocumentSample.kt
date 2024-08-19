@@ -287,7 +287,7 @@ private val LargeGap = 96.dp
   LargeBlurb(organization, location, title, duration) {
     // RichText works seamlessly with printing!
     RichText {
-      FormattedList(Unordered, listOf(*descriptionBulletPoints)) {
+      FormattedList(Unordered, items = listOf(*descriptionBulletPoints)) {
         Text(it, fontSize = 13.sp)
       }
     }

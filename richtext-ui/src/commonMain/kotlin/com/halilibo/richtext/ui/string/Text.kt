@@ -105,7 +105,7 @@ public typealias MarkdownAnimationState = Int
 public val DefaultMarkdownAnimationState: MarkdownAnimationState = 0
 private fun MarkdownAnimationState.addAnimation(): MarkdownAnimationState = this + 1
 private fun MarkdownAnimationState.removeAnimation(): MarkdownAnimationState = this - 1
-private fun MarkdownAnimationState.toDelayMs(defaultDelayMs: Int): Int =
+public fun MarkdownAnimationState.toDelayMs(defaultDelayMs: Int): Int =
   (sqrt(this.toDouble()) * defaultDelayMs).toInt()
 
 @Composable
