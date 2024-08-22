@@ -133,7 +133,6 @@ public data class RichTextString internal constructor(
           // If no prefix was found then we ignore it.
           .takeUnless { it === tag }
           ?.let {
-            @Suppress("UNCHECKED_CAST")
             Pair(it, format as InlineContent)
           }
       }
@@ -141,41 +140,41 @@ public data class RichTextString internal constructor(
 
   public open class Format(private val simpleTag: String? = null) {
 
-    internal open fun getStyle(
+    public open fun getStyle(
       richTextStyle: RichTextStringStyle,
       contentColor: Color
     ): SpanStyle? = null
 
     public object Italic : Format("italic") {
       internal val DefaultStyle = SpanStyle(fontStyle = FontStyle.Italic)
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.italicStyle
+      ): SpanStyle? = richTextStyle.italicStyle
     }
 
     public object Bold : Format(simpleTag = "foo") {
       internal val DefaultStyle = SpanStyle(fontWeight = FontWeight.Bold)
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.boldStyle
+      ): SpanStyle? = richTextStyle.boldStyle
     }
 
     public object Underline : Format("underline") {
       internal val DefaultStyle = SpanStyle(textDecoration = TextDecoration.Underline)
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.underlineStyle
+      ): SpanStyle? = richTextStyle.underlineStyle
     }
 
     public object Strikethrough : Format("strikethrough") {
       internal val DefaultStyle = SpanStyle(textDecoration = TextDecoration.LineThrough)
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.strikethroughStyle
+      ): SpanStyle? = richTextStyle.strikethroughStyle
     }
 
     public object Subscript : Format("subscript") {
@@ -185,10 +184,10 @@ public data class RichTextString internal constructor(
         fontSize = 10.sp
       )
 
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.subscriptStyle
+      ): SpanStyle? = richTextStyle.subscriptStyle
     }
 
     public object Superscript : Format("superscript") {
@@ -197,10 +196,10 @@ public data class RichTextString internal constructor(
         fontSize = 10.sp
       )
 
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.superscriptStyle
+      ): SpanStyle? = richTextStyle.superscriptStyle
     }
 
     public object Code : Format("code") {
@@ -210,17 +209,17 @@ public data class RichTextString internal constructor(
         background = DefaultCodeBlockBackgroundColor
       )
 
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.codeStyle
+      ): SpanStyle? = richTextStyle.codeStyle
     }
 
     public data class Link(val onClick: () -> Unit) : Format() {
-      override fun getStyle(
+      public override fun getStyle(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.linkStyle
+      ): SpanStyle? = richTextStyle.linkStyle
 
       internal companion object {
         val DefaultStyle = SpanStyle(
