@@ -139,7 +139,7 @@ public data class RichTextString internal constructor(
       }
       .toMap()
 
-  public sealed class Format(private val simpleTag: String? = null) {
+  public open class Format(private val simpleTag: String? = null) {
 
     internal open fun getStyle(
       richTextStyle: RichTextStringStyle,
