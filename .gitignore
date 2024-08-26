@@ -16,6 +16,7 @@
 /.idea/misc.xml
 /.idea/artifacts
 /.idea/vcs.xml
+/.idea/other.xml
 .DS_Store
 build/
 /captures

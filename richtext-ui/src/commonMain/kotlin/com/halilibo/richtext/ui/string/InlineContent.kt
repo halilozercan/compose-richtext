@@ -90,6 +90,18 @@ public class InlineContent(
         val contentPlaceable = measurables.singleOrNull()?.measure(contentConstraints)
           ?: return@Layout layout(0, 0) {}
 
+        // If the inline content changes in size, there will be one layout pass in which
+        // the text layout placeholder and composable size will be out of sync.
+        // In some cases, the composable will be larger than the placeholder.
+        // If that happens, we need to offset the layout so that the composable starts
+        // in the right place and overhangs the end. Without this, Compose will place the
+        // composable centered inside of its smaller placeholder which makes the content shift
+        // left for one frame and is more jarring.
+        val extraWidth = (contentPlaceable.width - (size?.width ?: contentPlaceable.width))
+          .coerceAtLeast(0)
+        val extraHeight = (contentPlaceable.height - (size?.height ?: contentPlaceable.height))
+          .coerceAtLeast(0)
+
         if (contentPlaceable.width != size?.width
           || contentPlaceable.height != size?.height
         ) {
@@ -97,7 +109,7 @@ public class InlineContent(
         }
 
         layout(contentPlaceable.width, contentPlaceable.height) {
-          contentPlaceable.place(0, 0)
+          contentPlaceable.placeRelative(extraWidth / 2, extraHeight / 2)
         }
       }
     }
