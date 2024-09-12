@@ -260,7 +260,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
     targetAlpha.value,
     tween(
       richTextRenderOptions.textFadeInMs,
-      delayMillis = markdownAnimationState.value.toDelayMs(richTextRenderOptions.delayMs),
+      delayMillis = markdownAnimationState.value.toDelayMs(richTextRenderOptions),
     )
   )
   return alpha

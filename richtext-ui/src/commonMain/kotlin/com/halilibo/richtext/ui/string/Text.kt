@@ -31,6 +31,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
+import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -105,8 +106,8 @@ public typealias MarkdownAnimationState = Int
 public val DefaultMarkdownAnimationState: MarkdownAnimationState = 0
 private fun MarkdownAnimationState.addAnimation(): MarkdownAnimationState = this + 1
 private fun MarkdownAnimationState.removeAnimation(): MarkdownAnimationState = this - 1
-public fun MarkdownAnimationState.toDelayMs(defaultDelayMs: Int): Int =
-  (sqrt(this.toDouble()) * defaultDelayMs).toInt()
+public fun MarkdownAnimationState.toDelayMs(renderOptions: RichTextRenderOptions): Int =
+  (this.toDouble().pow(renderOptions.delayExponent) * renderOptions.delayMs).toInt()
 
 @Composable
 @OptIn(FlowPreview::class)
@@ -133,19 +134,20 @@ private fun rememberAnimatedText(
     LaunchedEffect(annotated) {
       debouncedTextFlow.value = annotated
       // If we detect a new phrase, kick off the animation now.
-      val phrases = annotated.segmentIntoPhrases(isComplete = !isLeafText)
+      val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
       if (phrases.hasNewPhrasesFrom(readyToAnimateText.value)) {
         readyToAnimateText.value = phrases
       }
     }
     LaunchedEffect(isLeafText, annotated) {
       if (!isLeafText) {
-        readyToAnimateText.value = annotated.segmentIntoPhrases(isComplete = true)
+        readyToAnimateText.value = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
       }
     }
     LaunchedEffect(debouncedText) {
       if (debouncedText.text.isNotEmpty()) {
-        readyToAnimateText.value = debouncedText.segmentIntoPhrases(isComplete = true)
+        readyToAnimateText.value =
+          debouncedText.segmentIntoPhrases(renderOptions, isComplete = true)
       }
     }
 
@@ -163,7 +165,7 @@ private fun rememberAnimatedText(
               targetValue = 1f,
               animationSpec = tween(
                 durationMillis = renderOptions.textFadeInMs,
-                delayMillis = sharedAnimationState.value.toDelayMs(renderOptions.delayMs),
+                delayMillis = sharedAnimationState.value.toDelayMs(renderOptions),
               )
             ) {
               animations[phraseIndex] = TextAnimation(phraseIndex, value)

@@ -1,6 +1,7 @@
 package com.halilibo.richtext.ui.util
 
 import androidx.compose.ui.text.AnnotatedString
+import com.halilibo.richtext.ui.string.RichTextRenderOptions
 
 public data class PhraseAnnotatedString(
   val annotatedString: AnnotatedString = AnnotatedString(""),
@@ -21,16 +22,20 @@ public data class PhraseAnnotatedString(
   }
 }
 
-public fun AnnotatedString.segmentIntoPhrases(isComplete: Boolean = false): PhraseAnnotatedString {
+public fun AnnotatedString.segmentIntoPhrases(
+  renderOptions: RichTextRenderOptions,
+  isComplete: Boolean = false,
+): PhraseAnnotatedString {
   val stylePhrases = stylePhrases()
+  val phraseMarkers = renderOptions.phraseMarkersOverride ?: phraseMarkers
   val phrases = stylePhrases
     .map { it.split(delimiters = phraseMarkers.toCharArray(), ignoreCase = false) }
     .flatten()
   val phraseSegments = mutableListOf(0)
   for (phrase in phrases) {
     if (phrase != phrases.last()) {
-      if (phrase.length > MAX_PHRASE_LENGTH * 1.2) {
-        phraseSegments.add(phraseSegments.last() + MAX_PHRASE_LENGTH)
+      if (phrase.length > renderOptions.maxPhraseLength * 1.2) {
+        phraseSegments.add(phraseSegments.last() + renderOptions.maxPhraseLength)
       }
       phraseSegments.add(text.length.coerceAtMost(phraseSegments.last() + phrase.length + 1))
     }
@@ -54,6 +59,7 @@ private fun AnnotatedString.stylePhrases(): List<String> {
 }
 
 private val phraseMarkers = listOf(
+  ' ',    // Space
   '.',    // Period
   '!',    // Exclamation mark
   '?',    // Question mark
@@ -86,5 +92,3 @@ private val phraseMarkers = listOf(
   '፧',    // Ethiopic question mark
   '፨'     // Ethiopic paragraph separator
 )
-
-private const val MAX_PHRASE_LENGTH = 50
