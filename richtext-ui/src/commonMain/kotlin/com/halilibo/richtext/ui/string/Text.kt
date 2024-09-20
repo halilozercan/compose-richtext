@@ -161,6 +161,7 @@ private fun rememberAnimatedText(
           coroutineScope.launch {
             textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
             sharedAnimationState.value = sharedAnimationState.value.addAnimation()
+            var hasAnimationFired = false
             Animatable(0f).animateTo(
               targetValue = 1f,
               animationSpec = tween(
@@ -168,8 +169,13 @@ private fun rememberAnimatedText(
                 delayMillis = sharedAnimationState.value.toDelayMs(renderOptions),
               )
             ) {
+              if (!hasAnimationFired) {
+                renderOptions.onPhraseAnimate()
+                hasAnimationFired = true
+              } else {
+                renderOptions.onTextAnimate()
+              }
               animations[phraseIndex] = TextAnimation(phraseIndex, value)
-              renderOptions.onTextAnimate()
             }
             sharedAnimationState.value = sharedAnimationState.value.removeAnimation()
             animations.remove(phraseIndex)
