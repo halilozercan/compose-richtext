@@ -38,7 +38,6 @@ import com.halilibo.richtext.ui.ListType.Unordered
 import com.halilibo.richtext.ui.string.DefaultMarkdownAnimationState
 import com.halilibo.richtext.ui.string.MarkdownAnimationState
 import com.halilibo.richtext.ui.string.RichTextRenderOptions
-import com.halilibo.richtext.ui.string.toDelayMs
 import kotlinx.coroutines.delay
 import kotlin.math.max
 
@@ -211,7 +210,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
  */
 @Composable public fun <T> RichTextScope.FormattedList(
   listType: ListType,
-  markdownAnimationState: MutableState<MarkdownAnimationState> = mutableIntStateOf(
+  markdownAnimationState: MutableState<MarkdownAnimationState> = mutableStateOf(
     DefaultMarkdownAnimationState),
   richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions(),
   items: List<T>,
@@ -260,7 +259,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
     targetAlpha.value,
     tween(
       richTextRenderOptions.textFadeInMs,
-      delayMillis = markdownAnimationState.value.toDelayMs(richTextRenderOptions),
+      delayMillis = markdownAnimationState.value.toDelayMs(),
     )
   )
   return alpha
