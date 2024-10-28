@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import com.halilibo.richtext.ui.ClickableText
 import com.halilibo.richtext.ui.RichTextScope
@@ -220,7 +221,8 @@ private fun rememberAnimatedText(
     textToRender.value = annotated
   }
 
-  return textToRender.value.animateAlphas(animations.values, contentColor)}
+  return textToRender.value.animateAlphas(animations.values, contentColor)
+}
 
 private data class TextAnimation(val startIndex: Int, val alpha: Float)
 
@@ -247,17 +249,6 @@ private fun AnnotatedString.animateAlphas(
   }.toAnnotatedString()
 }
 
-private val annotatedStringFullConstructor by lazy {
-  AnnotatedString::class.java.getDeclaredConstructor(
-    String::class.java,
-    List::class.java,
-    List::class.java,
-    List::class.java
-  ).apply {
-    isAccessible = true
-  }
-}
-
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
   val newWordsStyles = spanStyles.map { spanStyle ->
     spanStyle.copy(item = spanStyle.item.copy(color = spanStyle.item.color.copy(alpha = alpha)))
@@ -266,14 +257,12 @@ private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): Anno
   if (paragraphStyles.isEmpty() && stringAnnotations.isEmpty()) {
     return AnnotatedString(text, newWordsStyles)
   }
-  // It is not ideal to have to use reflection here but we need a way to copy the paragraph styles
-  // and string annotations to a new AnnotatedString instance and there is no other way.
-  return annotatedStringFullConstructor.newInstance(
-    text,
-    newWordsStyles,
-    paragraphStyles,
-    stringAnnotations
-  )
+  return buildAnnotatedString {
+    append(text)
+    newWordsStyles.forEach { addStyle(it.item, it.start, it.end) }
+    stringAnnotations.forEach { addStringAnnotation(it.tag, it.item, it.start, it.end) }
+    paragraphStyles.forEach { addStyle(it.item, it.start, it.end) }
+  }
 }
 
 private fun AnnotatedString.getConsumableAnnotations(
