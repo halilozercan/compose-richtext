@@ -2,6 +2,7 @@
 
 package com.halilibo.richtext.ui.string
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -9,8 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.PlaceholderVerticalAlign.Companion.AboveBaseline
@@ -41,13 +45,16 @@ public class InlineContent(
  * a new map will be returned with updated [Placeholder]s.
  */
 @Composable internal fun manageInlineTextContents(
+  annotatedString: AnnotatedString,
   inlineContents: Map<String, InlineContent>,
   textConstraints: Constraints,
 ): Map<String, InlineTextContent> {
   val density = LocalDensity.current
 
-  return inlineContents.mapValues { (_, content) ->
+  return inlineContents.mapValues { (key, content) ->
     reifyInlineContent(
+      annotatedString,
+      key,
       content,
       Constraints(maxWidth = textConstraints.maxWidth, maxHeight = textConstraints.maxHeight),
       density,
@@ -62,6 +69,8 @@ public class InlineContent(
  * in the text layout for the content.
  */
 @Composable private fun reifyInlineContent(
+  annotatedString: AnnotatedString,
+  key: String,
   content: InlineContent,
   contentConstraints: Constraints,
   density: Density,
@@ -83,7 +92,26 @@ public class InlineContent(
     )
 
     return InlineTextContent(placeholder) { alternateText ->
-      Layout(content = { content.content(density, alternateText) }) { measurables, _ ->
+      val annotations = annotatedString.getStringAnnotations(0, annotatedString.length)
+      val annotation = annotations.firstOrNull { it.item == key }
+      val alpha = when (annotation) {
+        null -> 1f
+        else -> annotatedString.spanStyles
+          .filter { it.start <= annotation.start && it.end >= annotation.end }
+          .minOfOrNull { it.item.alpha } ?: 1f
+      }
+      Layout(
+        content = {
+          when (alpha) {
+            1f -> content.content(density, alternateText)
+            else -> {
+              Box(Modifier.alpha(alpha)) {
+                content.content(density, alternateText)
+              }
+            }
+          }
+        },
+      ) { measurables, _ ->
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.

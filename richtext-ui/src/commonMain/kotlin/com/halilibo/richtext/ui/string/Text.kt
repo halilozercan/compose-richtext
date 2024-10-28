@@ -71,6 +71,7 @@ public fun RichTextScope.Text(
 
   BoxWithConstraints(modifier = modifier) {
     val inlineTextContents = manageInlineTextContents(
+      annotatedString = animatedText,
       inlineContents = inlineContents,
       textConstraints = constraints,
     )
@@ -222,7 +223,7 @@ private fun rememberAnimatedText(
   }
 }
 
-private data class TextAnimation(val startIndex: Int, val alpha: Float) 
+private data class TextAnimation(val startIndex: Int, val alpha: Float)
 
 private fun AnnotatedString.animateAlphas(
   animations: Collection<TextAnimation>, contentColor: Color): AnnotatedString {
