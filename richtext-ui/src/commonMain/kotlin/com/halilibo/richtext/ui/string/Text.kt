@@ -108,16 +108,17 @@ public data class MarkdownAnimationState(
   )
   private fun calculatedDelay(renderOptions: RichTextRenderOptions): Long {
     val now = System.currentTimeMillis()
-    return if (now >= lastAnimationStartMs) {
-       renderOptions.delayMs.toLong()
-    } else {
-      val diffMs = lastAnimationStartMs - now
-      when {
-        diffMs < renderOptions.delayMs -> renderOptions.delayMs - diffMs
-        else -> diffMs + (renderOptions.delayMs * (renderOptions.delayMs / diffMs.toDouble()).pow(
-          renderOptions.delayExponent
-        )).toLong()
-      }
+    val diffMs = lastAnimationStartMs - now
+
+    return when {
+      lastAnimationStartMs <= 0L -> 0
+      diffMs < -renderOptions.delayMs -> 0 // We are past the last animation, so launch it now.
+      diffMs <= 0 -> renderOptions.delayMs - diffMs
+      else -> diffMs + (renderOptions.delayMs * (renderOptions.delayMs / diffMs.toDouble()).pow(
+        renderOptions.delayExponent
+      )).toLong()
+    }.also {
+      println("Calculated delay: $it now: $now last: $lastAnimationStartMs diff: $diffMs")
     }
   }
 
