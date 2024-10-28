@@ -175,7 +175,7 @@ private fun RichTextScope.computeRichTextString(
         )
       }
 
-      iteratorStack = iteratorStack.addFirst(
+      iteratorStack = iteratorStack.addFirstInternal(
         AstNodeTraversalEntry(
           astNode = currentNode,
           isVisited = true,
@@ -186,7 +186,7 @@ private fun RichTextScope.computeRichTextString(
       // Do not visit children of terminals such as Text, Image, etc.
       if (!currentNode.isRichTextTerminal()) {
         currentNode.childrenSequence(reverse = true).forEach {
-          iteratorStack = iteratorStack.addFirst(
+          iteratorStack = iteratorStack.addFirstInternal(
             AstNodeTraversalEntry(
               astNode = it,
               isVisited = false,
@@ -211,6 +211,6 @@ private data class AstNodeTraversalEntry(
   val formatIndex: Int?
 )
 
-private inline fun <reified T> List<T>.addFirst(item: T): List<T> {
+private inline fun <reified T> List<T>.addFirstInternal(item: T): List<T> {
   return listOf(item) + this
 }
