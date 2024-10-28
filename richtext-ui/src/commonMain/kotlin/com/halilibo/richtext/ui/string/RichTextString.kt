@@ -291,9 +291,9 @@ public data class RichTextString internal constructor(
 
     public fun appendInlineContent(
       alternateText: String = REPLACEMENT_CHAR,
+      tag: String = randomUUID(),
       content: InlineContent
     ) {
-      val tag = randomUUID()
       formatObjects["inline:$tag"] = content
 
       // Resets the style to defaults.

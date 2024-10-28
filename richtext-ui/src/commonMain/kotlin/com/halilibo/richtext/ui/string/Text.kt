@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import com.halilibo.richtext.ui.ClickableText
 import com.halilibo.richtext.ui.RichTextScope
@@ -62,11 +63,10 @@ public fun RichTextScope.Text(
 
   val animatedText = rememberAnimatedText(
     annotated = annotated,
-    contentColor = contentColor,
     renderOptions = renderOptions,
-    isLeafText = isLeafText,
+    contentColor = contentColor,
     sharedAnimationState = sharedAnimationState,
-    hasInlineTextContent = inlineContents.isNotEmpty(),
+    isLeafText = isLeafText,
   )
 
   BoxWithConstraints(modifier = modifier) {
@@ -90,10 +90,16 @@ public fun RichTextScope.Text(
         // clickable on the left side.
         // However, if a paragraph ends with a link, the link will be clickable past the
         // end of the last line.
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1)).any()
+        annotated.getConsumableAnnotations(
+          text.formatObjects,
+          offset.coerceAtMost(annotated.length - 1)
+        ).any()
       },
       onClick = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1))
+        annotated.getConsumableAnnotations(
+          text.formatObjects,
+          offset.coerceAtMost(annotated.length - 1)
+        )
           .firstOrNull()
           ?.let { link -> link.onClick() }
       }
@@ -107,6 +113,7 @@ public data class MarkdownAnimationState(
   public fun addAnimation(renderOptions: RichTextRenderOptions): MarkdownAnimationState = copy(
     lastAnimationStartMs = calculatedDelay(renderOptions) + System.currentTimeMillis()
   )
+
   private fun calculatedDelay(renderOptions: RichTextRenderOptions): Long {
     val now = System.currentTimeMillis()
     val diffMs = lastAnimationStartMs - now
@@ -126,6 +133,7 @@ public data class MarkdownAnimationState(
   public fun toDelayMs(): Int =
     (lastAnimationStartMs - System.currentTimeMillis()).coerceAtLeast(0).toInt()
 }
+
 // Add a default value
 public val DefaultMarkdownAnimationState: MarkdownAnimationState = MarkdownAnimationState()
 
@@ -137,7 +145,6 @@ private fun rememberAnimatedText(
   contentColor: Color,
   sharedAnimationState: MutableState<MarkdownAnimationState>,
   isLeafText: Boolean,
-  hasInlineTextContent: Boolean,
 ): AnnotatedString {
   val coroutineScope = rememberCoroutineScope()
   val animations = remember { mutableStateMapOf<Int, TextAnimation>() }
@@ -205,7 +212,7 @@ private fun rememberAnimatedText(
       val phrases = debouncedText.segmentIntoPhrases(renderOptions, isComplete = true)
       if (phrases != readyToAnimateText.value) {
         readyToAnimateText.value = phrases
-          animationUpdate()
+        animationUpdate()
       }
     }
 
@@ -214,19 +221,14 @@ private fun rememberAnimatedText(
     textToRender.value = annotated
   }
 
-
-  // Ignore animated text if we have inline content, since it causes crashes.
-  return if (!hasInlineTextContent) {
-    textToRender.value.animateAlphas(animations.values, contentColor)
-  } else {
-    annotated
-  }
+  return textToRender.value.animateAlphas(animations.values, contentColor)
 }
 
 private data class TextAnimation(val startIndex: Int, val alpha: Float)
 
 private fun AnnotatedString.animateAlphas(
-  animations: Collection<TextAnimation>, contentColor: Color): AnnotatedString {
+  animations: Collection<TextAnimation>, contentColor: Color
+): AnnotatedString {
   if (this.text.isEmpty() || animations.isEmpty()) {
     return this
   }
@@ -248,12 +250,20 @@ private fun AnnotatedString.animateAlphas(
 }
 
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
-  val newWordsStyles = spanStyles.map { spanstyle ->
-        spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
-      } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
-  return AnnotatedString(text, newWordsStyles)
+  val newWordsStyles = spanStyles.map { spanStyle ->
+    spanStyle.copy(item = spanStyle.item.copy(color = spanStyle.item.color.copy(alpha = alpha)))
+  } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
+  val stringAnnotations = getStringAnnotations(0, length)
+  if (paragraphStyles.isEmpty() && stringAnnotations.isEmpty()) {
+    return AnnotatedString(text, newWordsStyles)
+  }
+  return buildAnnotatedString {
+    append(text)
+    newWordsStyles.forEach { addStyle(it.item, it.start, it.end) }
+    stringAnnotations.forEach { addStringAnnotation(it.tag, it.item, it.start, it.end) }
+    paragraphStyles.forEach { addStyle(it.item, it.start, it.end) }
+  }
 }
-
 
 private fun AnnotatedString.getConsumableAnnotations(
   textFormatObjects: Map<String, Any>,
