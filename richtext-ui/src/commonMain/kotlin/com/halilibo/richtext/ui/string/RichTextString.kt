@@ -263,6 +263,7 @@ public data class RichTextString internal constructor(
   public class Builder(capacity: Int = 16) {
     private val builder = AnnotatedString.Builder(capacity)
     private val formatObjects = mutableMapOf<String, Any>()
+    private var indexedInlineContentIndex = 0
 
     public fun addFormat(
       format: Format,
@@ -287,6 +288,22 @@ public data class RichTextString internal constructor(
     public fun append(text: RichTextString) {
       builder.append(text.taggedString)
       formatObjects.putAll(text.formatObjects)
+    }
+
+    /**
+     * If inline content doesn't reach a stable render on its first composition
+     * (like a remote image) then maintaining a stable ID is important or else the content
+     * may flicker if the underlying text that embeds it changes.
+     * It is possible to pass a stable id into [appendInlineContent]. However, if inline
+     * content is stable based on index, this method is easier to use because it prevents
+     * callers from having to create a tag on its own.
+     */
+    public fun appendInlineContentWithIndexBasedTag(
+      alternateText: String = REPLACEMENT_CHAR,
+      content: InlineContent
+    ) {
+      val tag = "indexed:${indexedInlineContentIndex++}"
+      appendInlineContent(alternateText, tag, content)
     }
 
     public fun appendInlineContent(
