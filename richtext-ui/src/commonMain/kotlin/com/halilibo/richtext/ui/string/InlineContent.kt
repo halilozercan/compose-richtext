@@ -2,7 +2,6 @@
 
 package com.halilibo.richtext.ui.string
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -10,8 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
@@ -100,18 +97,7 @@ public class InlineContent(
           .filter { it.start <= annotation.start && it.end >= annotation.end }
           .minOfOrNull { it.item.alpha } ?: 1f
       }
-      Layout(
-        content = {
-          when (alpha) {
-            1f -> content.content(density, alternateText)
-            else -> {
-              Box(Modifier.alpha(alpha)) {
-                content.content(density, alternateText)
-              }
-            }
-          }
-        },
-      ) { measurables, _ ->
+      Layout(content = { content.content(density, alternateText) }) { measurables, _ ->
         // Measure the content with the constraints for the parent Text layout, not the actual.
         // This allows it to determine exactly how large it needs to be so we can update the
         // placeholder.
@@ -137,7 +123,9 @@ public class InlineContent(
         }
 
         layout(contentPlaceable.width, contentPlaceable.height) {
-          contentPlaceable.placeRelative(extraWidth / 2, extraHeight / 2)
+          contentPlaceable.placeRelativeWithLayer(extraWidth / 2, extraHeight / 2) {
+            this.alpha = alpha
+          }
         }
       }
     }
