@@ -260,7 +260,7 @@ private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): Anno
   return buildAnnotatedString {
     append(text)
     newWordsStyles.forEach { addStyle(it.item, it.start, it.end) }
-    stringAnnotations.forEach { addStringAnnotation(it.tag, it.item, it.start, it.end) }
+    stringAnnotations.filter { it.end > it.start }.forEach { addStringAnnotation(it.tag, it.item, it.start, it.end) }
     paragraphStyles.forEach { addStyle(it.item, it.start, it.end) }
   }
 }
