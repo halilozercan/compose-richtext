@@ -51,7 +51,7 @@ public fun RichTextScope.Text(
   sharedAnimationState: MutableState<MarkdownAnimationState> =
     mutableStateOf(DefaultMarkdownAnimationState),
   overflow: TextOverflow = TextOverflow.Clip,
-  maxLines: Int = Int.MAX_VALUE
+  maxLines: Int = Int.MAX_VALUE,
 ) {
   val style = currentRichTextStyle.stringStyle
   val contentColor = currentContentColor
@@ -125,8 +125,6 @@ public data class MarkdownAnimationState(
       else -> diffMs + (renderOptions.delayMs * (renderOptions.delayMs / diffMs.toDouble()).pow(
         renderOptions.delayExponent
       )).toLong()
-    }.also {
-      println("Calculated delay: $it now: $now last: $lastAnimationStartMs diff: $diffMs")
     }
   }
 
@@ -184,7 +182,10 @@ private fun rememberAnimatedText(
               }
               animations[phraseIndex] = TextAnimation(phraseIndex, value)
             }
-            animations.remove(phraseIndex)
+            if (phraseIndex != 0) {
+              // Leave the very first animation around so the inlineContent fix below works.
+              animations.remove(phraseIndex)
+            }
           }
         }
       if (phrases.isComplete) {
@@ -234,6 +235,13 @@ private fun AnnotatedString.animateAlphas(
   }
   var remainingText = this
   val modifiedTextSnippets = mutableStateListOf<AnnotatedString>()
+  val inlineContentSpans = getStringAnnotations(0, length)
+    .filter { it.tag == "androidx.compose.foundation.text.inlineContent" }
+  val inlineContentStyles = spanStyles.filter { it.tag == "androidx.compose.foundation.text.inlineContent"}
+  // Chopping up a string with inline content in it causes a crash. So we need to fade in the entire block.
+  if (inlineContentSpans.isNotEmpty() || inlineContentStyles.isNotEmpty()) {
+    return remainingText.changeAlpha(animations.maxOf { it.alpha }, contentColor)
+  }
   animations.sortedByDescending { it.startIndex }.forEach { animation ->
     if (animation.startIndex >= remainingText.length) {
       return@forEach
@@ -250,6 +258,9 @@ private fun AnnotatedString.animateAlphas(
 }
 
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
+  if (alpha == 1f) {
+    return this
+  }
   val newWordsStyles = spanStyles.map { spanStyle ->
     spanStyle.copy(item = spanStyle.item.copy(color = spanStyle.item.color.copy(alpha = alpha)))
   } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
