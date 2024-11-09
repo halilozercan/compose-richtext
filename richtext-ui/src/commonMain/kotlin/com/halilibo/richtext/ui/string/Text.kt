@@ -182,10 +182,7 @@ private fun rememberAnimatedText(
               }
               animations[phraseIndex] = TextAnimation(phraseIndex, value)
             }
-            if (phraseIndex != 0) {
-              // Leave the very first animation around so the inlineContent fix below works.
-              animations.remove(phraseIndex)
-            }
+            animations.remove(phraseIndex)
           }
         }
       if (phrases.isComplete) {
@@ -222,27 +219,24 @@ private fun rememberAnimatedText(
     textToRender.value = annotated
   }
 
-  return textToRender.value.animateAlphas(animations.values, contentColor)
+  return textToRender.value.animateAlphas(animations, contentColor)
 }
 
 private data class TextAnimation(val startIndex: Int, val alpha: Float)
 
 private fun AnnotatedString.animateAlphas(
-  animations: Collection<TextAnimation>, contentColor: Color
+  animations: Map<Int, TextAnimation>, contentColor: Color
 ): AnnotatedString {
   if (this.text.isEmpty() || animations.isEmpty()) {
     return this
   }
   var remainingText = this
+
+  // If there's inline content, we cancel the animation and just trim.
+  handleInlineContent(animations, contentColor)?.let { return it }
+
   val modifiedTextSnippets = mutableStateListOf<AnnotatedString>()
-  val inlineContentSpans = getStringAnnotations(0, length)
-    .filter { it.tag == "androidx.compose.foundation.text.inlineContent" }
-  val inlineContentStyles = spanStyles.filter { it.tag == "androidx.compose.foundation.text.inlineContent"}
-  // Chopping up a string with inline content in it causes a crash. So we need to fade in the entire block.
-  if (inlineContentSpans.isNotEmpty() || inlineContentStyles.isNotEmpty()) {
-    return remainingText.changeAlpha(animations.maxOf { it.alpha }, contentColor)
-  }
-  animations.sortedByDescending { it.startIndex }.forEach { animation ->
+  animations.values.sortedByDescending { it.startIndex }.forEach { animation ->
     if (animation.startIndex >= remainingText.length) {
       return@forEach
     }
@@ -273,6 +267,26 @@ private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): Anno
     newWordsStyles.forEach { addStyle(it.item, it.start, it.end) }
     stringAnnotations.filter { it.end > it.start }.forEach { addStringAnnotation(it.tag, it.item, it.start, it.end) }
     paragraphStyles.forEach { addStyle(it.item, it.start, it.end) }
+  }
+}
+
+private fun AnnotatedString.handleInlineContent(
+  animations: Map<Int, TextAnimation>,
+  contentColor: Color,
+): AnnotatedString? {
+  // Chopping up a string with inline content in it causes a crash. So we need to fade in the entire block.
+  val inlineContentSpans = getStringAnnotations(0, length)
+    .filter { it.tag == "androidx.compose.foundation.text.inlineContent" }
+  val inlineContentStyles = spanStyles.filter { it.tag == "androidx.compose.foundation.text.inlineContent"}
+  return if (inlineContentSpans.isNotEmpty() || inlineContentStyles.isNotEmpty()) {
+    // Trim the text to the last animation that's currently running.
+    animations.filter { it.value.alpha > 0f }.maxOfOrNull {it.value.startIndex }
+      ?.let { startIndex ->
+        this.subSequence(0, startIndex.coerceAtMost(length))
+          .changeAlpha(animations.maxOf { it.value.alpha }, contentColor)
+      } ?: AnnotatedString("")
+  } else {
+    null
   }
 }
 
