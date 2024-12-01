@@ -1,8 +1,6 @@
 plugins {
   id("com.android.library")
   kotlin("android")
-  id("maven-publish")
-  id("signing")
 }
 
 kotlin {
