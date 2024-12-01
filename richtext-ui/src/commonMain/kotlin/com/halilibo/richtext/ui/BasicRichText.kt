@@ -16,21 +16,18 @@ import androidx.compose.ui.platform.LocalDensity
 public fun BasicRichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
-  linkClickHandler: LinkClickHandler? = null,
   children: @Composable RichTextScope.() -> Unit
 ) {
   with(RichTextScope) {
     RestartListLevel {
       WithStyle(style) {
-        CompositionLocalProvider(LocalLinkClickHandler provides linkClickHandler) {
-          val resolvedStyle = currentRichTextStyle.resolveDefaults()
-          val blockSpacing = with(LocalDensity.current) {
-            resolvedStyle.paragraphSpacing!!.toDp()
-          }
+        val resolvedStyle = currentRichTextStyle.resolveDefaults()
+        val blockSpacing = with(LocalDensity.current) {
+          resolvedStyle.paragraphSpacing!!.toDp()
+        }
 
-          Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
-            children()
-          }
+        Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
+          children()
         }
       }
     }

@@ -216,7 +216,7 @@ private val sampleMarkdown = """
   + Or pluses
 <!-- -->
   2. Ordered list starting with `2.`
-  3. Another item
+  3. Another item with [link](https://www.google.com)
 <!-- -->
   0. Ordered list starting with `0.`
 <!-- -->
