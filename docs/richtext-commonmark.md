@@ -97,7 +97,11 @@ Passing `MarkdownParseOptions` into either `Markdown` composable or `CommonmarkA
 
 ```kotlin
 val markdownParseOptions = MarkdownParseOptions(
-  autolink = false
+  listOfNotNull(
+    TablesExtension.create(),
+    StrikethroughExtension.create(),
+    AutolinkExtension.create()
+  )
 )
 
 Markdown(
