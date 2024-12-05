@@ -1,8 +1,6 @@
 plugins {
   id("com.android.library")
   kotlin("android")
-  id("maven-publish")
-  id("signing")
 }
 
 kotlin {
@@ -27,10 +25,6 @@ android {
 
   buildFeatures {
     compose = true
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion = Compose.compilerVersion
   }
 
   publishing {

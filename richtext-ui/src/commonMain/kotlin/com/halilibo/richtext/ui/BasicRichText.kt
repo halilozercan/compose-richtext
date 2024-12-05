@@ -5,7 +5,6 @@ package com.halilibo.richtext.ui
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 
@@ -16,21 +15,18 @@ import androidx.compose.ui.platform.LocalDensity
 public fun BasicRichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
-  linkClickHandler: LinkClickHandler? = null,
   children: @Composable RichTextScope.() -> Unit
 ) {
   with(RichTextScope) {
     RestartListLevel {
       WithStyle(style) {
-        CompositionLocalProvider(LocalLinkClickHandler provides linkClickHandler) {
-          val resolvedStyle = currentRichTextStyle.resolveDefaults()
-          val blockSpacing = with(LocalDensity.current) {
-            resolvedStyle.paragraphSpacing!!.toDp()
-          }
+        val resolvedStyle = currentRichTextStyle.resolveDefaults()
+        val blockSpacing = with(LocalDensity.current) {
+          resolvedStyle.paragraphSpacing!!.toDp()
+        }
 
-          Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
-            children()
-          }
+        Column(modifier = modifier, verticalArrangement = spacedBy(blockSpacing)) {
+          children()
         }
       }
     }

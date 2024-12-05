@@ -2,6 +2,7 @@ plugins {
   id("com.android.application")
   kotlin("android")
   id("org.jetbrains.compose") version Compose.desktopVersion
+  id("org.jetbrains.kotlin.plugin.compose") version Kotlin.version
 }
 
 android {
@@ -23,10 +24,6 @@ android {
   }
   kotlinOptions {
     jvmTarget = "11"
-  }
-
-  composeOptions {
-    kotlinCompilerExtensionVersion = Compose.compilerVersion
   }
 }
 

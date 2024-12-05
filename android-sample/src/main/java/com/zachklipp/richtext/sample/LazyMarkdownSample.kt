@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,10 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.halilibo.richtext.commonmark.CommonMarkdownParseOptions
 import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
-import com.halilibo.richtext.commonmark.MarkdownParseOptions
 import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstNode
@@ -50,7 +53,7 @@ import com.halilibo.richtext.ui.resolveDefaults
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
   var isDarkModeEnabled by remember { mutableStateOf(false) }
   var isWordWrapEnabled by remember { mutableStateOf(true) }
-  var markdownParseOptions by remember { mutableStateOf(MarkdownParseOptions.Default) }
+  var markdownParseOptions by remember { mutableStateOf(CommonMarkdownParseOptions.Default) }
   var isAutolinkEnabled by remember { mutableStateOf(true) }
 
   LaunchedEffect(isWordWrapEnabled) {
@@ -115,14 +118,13 @@ import com.halilibo.richtext.ui.resolveDefaults
             parser.parse(sampleMarkdown)
           }
 
-          RichText(
-            style = richTextStyle,
-            linkClickHandler = {
-              Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            },
-            modifier = Modifier.padding(8.dp),
-          ) {
-            LazyMarkdown(astNode)
+          ProvideToastUriHandler(context) {
+            RichText(
+              style = richTextStyle,
+              modifier = Modifier.padding(8.dp),
+            ) {
+              LazyMarkdown(astNode)
+            }
           }
         }
       }

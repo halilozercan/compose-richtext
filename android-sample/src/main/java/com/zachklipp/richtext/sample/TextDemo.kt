@@ -1,5 +1,7 @@
 package com.zachklipp.richtext.sample
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +31,8 @@ import androidx.compose.ui.graphics.StrokeCap.Companion.Round
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,7 +70,7 @@ import kotlinx.coroutines.launch
       appendPreviewSentence(Superscript)
       appendPreviewSentence(Code)
       appendPreviewSentence(
-        Link(""),
+        Link("") { toggleLink = !toggleLink },
         if (toggleLink) "clicked link" else "link"
       )
       append("Here, ")
@@ -96,7 +101,7 @@ import kotlinx.coroutines.launch
       }
     }
   }
-  RichText(linkClickHandler = { toggleLink = !toggleLink }) {
+  RichText {
     Text(text)
   }
 }
@@ -212,4 +217,17 @@ private fun Builder.appendPreviewSentence(
     append(text)
   }
   append(" text. ")
+}
+
+@Composable
+fun ProvideToastUriHandler(context: Context, content: @Composable () -> Unit) {
+  val uriHandler = remember(context) {
+    object : UriHandler {
+      override fun openUri(uri: String) {
+        Toast.makeText(context, uri, Toast.LENGTH_SHORT).show()
+      }
+    }
+  }
+
+  CompositionLocalProvider(LocalUriHandler provides uriHandler, content)
 }

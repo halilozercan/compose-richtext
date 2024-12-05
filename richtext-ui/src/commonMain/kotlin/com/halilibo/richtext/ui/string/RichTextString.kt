@@ -6,8 +6,10 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.LinkInteractionListener
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -38,15 +40,15 @@ internal const val REPLACEMENT_CHAR: String = "\uFFFD"
  * Defines the [SpanStyle]s that are used for various [RichTextString] formatting directives.
  */
 @Immutable
-public data class RichTextStringStyle(
-  val boldStyle: SpanStyle? = null,
-  val italicStyle: SpanStyle? = null,
-  val underlineStyle: SpanStyle? = null,
-  val strikethroughStyle: SpanStyle? = null,
-  val subscriptStyle: SpanStyle? = null,
-  val superscriptStyle: SpanStyle? = null,
-  val codeStyle: SpanStyle? = null,
-  val linkStyle: SpanStyle? = null
+public class RichTextStringStyle(
+  public val boldStyle: SpanStyle? = null,
+  public val italicStyle: SpanStyle? = null,
+  public val underlineStyle: SpanStyle? = null,
+  public val strikethroughStyle: SpanStyle? = null,
+  public val subscriptStyle: SpanStyle? = null,
+  public val superscriptStyle: SpanStyle? = null,
+  public val codeStyle: SpanStyle? = null,
+  public val linkStyle: TextLinkStyles? = null
 ) {
   internal fun merge(otherStyle: RichTextStringStyle?): RichTextStringStyle {
     if (otherStyle == null) return this
@@ -58,7 +60,7 @@ public data class RichTextStringStyle(
       subscriptStyle = subscriptStyle.merge(otherStyle.subscriptStyle),
       superscriptStyle = superscriptStyle.merge(otherStyle.superscriptStyle),
       codeStyle = codeStyle.merge(otherStyle.codeStyle),
-      linkStyle = linkStyle.merge(otherStyle.linkStyle)
+      linkStyle = linkStyle?.merge(otherStyle.linkStyle) ?: otherStyle.linkStyle
     )
   }
 
@@ -73,6 +75,45 @@ public data class RichTextStringStyle(
       codeStyle = codeStyle ?: Code.DefaultStyle,
       linkStyle = linkStyle ?: Link.DefaultStyle
     )
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is RichTextStringStyle) return false
+
+    if (boldStyle != other.boldStyle) return false
+    if (italicStyle != other.italicStyle) return false
+    if (underlineStyle != other.underlineStyle) return false
+    if (strikethroughStyle != other.strikethroughStyle) return false
+    if (subscriptStyle != other.subscriptStyle) return false
+    if (superscriptStyle != other.superscriptStyle) return false
+    if (codeStyle != other.codeStyle) return false
+    if (linkStyle != other.linkStyle) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = boldStyle?.hashCode() ?: 0
+    result = 31 * result + (italicStyle?.hashCode() ?: 0)
+    result = 31 * result + (underlineStyle?.hashCode() ?: 0)
+    result = 31 * result + (strikethroughStyle?.hashCode() ?: 0)
+    result = 31 * result + (subscriptStyle?.hashCode() ?: 0)
+    result = 31 * result + (superscriptStyle?.hashCode() ?: 0)
+    result = 31 * result + (codeStyle?.hashCode() ?: 0)
+    result = 31 * result + (linkStyle?.hashCode() ?: 0)
+    return result
+  }
+
+  override fun toString(): String {
+    return "RichTextStringStyle(boldStyle=$boldStyle, " +
+        "italicStyle=$italicStyle, " +
+        "underlineStyle=$underlineStyle, " +
+        "strikethroughStyle=$strikethroughStyle, " +
+        "subscriptStyle=$subscriptStyle, " +
+        "superscriptStyle=$superscriptStyle, " +
+        "codeStyle=$codeStyle, " +
+        "linkStyle=$linkStyle)"
+  }
 
   public companion object {
     public val Default: RichTextStringStyle = RichTextStringStyle()
@@ -94,13 +135,12 @@ public inline fun richTextString(builder: Builder.() -> Unit): RichTextString =
  * configured using a [RichTextStringStyle].
  */
 @Immutable
-public data class RichTextString internal constructor(
+public class RichTextString internal constructor(
   private val taggedString: AnnotatedString,
   internal val formatObjects: Map<String, Any>
 ) {
-
   private val length: Int get() = taggedString.length
-  val text: String get() = taggedString.text
+  public val text: String get() = taggedString.text
 
   public operator fun plus(other: RichTextString): RichTextString =
     Builder(length + other.length).run {
@@ -121,8 +161,14 @@ public data class RichTextString internal constructor(
       // And apply their actual SpanStyles to the string.
       tags.forEach { range ->
         val format = Format.findTag(range.item, formatObjects) ?: return@forEach
-        format.getStyle(style, contentColor)
-          ?.let { spanStyle -> addStyle(spanStyle, range.start, range.end) }
+        format.getAnnotation(style, contentColor)
+          ?.let { annotation ->
+            if (annotation is SpanStyle) {
+              addStyle(annotation, range.start, range.end)
+            } else if (annotation is LinkAnnotation.Url) {
+              addLink(annotation, range.start, range.end)
+            }
+          }
       }
     }
 
@@ -133,22 +179,42 @@ public data class RichTextString internal constructor(
           // If no prefix was found then we ignore it.
           .takeUnless { it === tag }
           ?.let {
-            @Suppress("UNCHECKED_CAST")
             Pair(it, format as InlineContent)
           }
       }
       .toMap()
 
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is RichTextString) return false
+
+    if (taggedString != other.taggedString) return false
+    if (formatObjects != other.formatObjects) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    var result = taggedString.hashCode()
+    result = 31 * result + formatObjects.hashCode()
+    return result
+  }
+
   public sealed class Format(private val simpleTag: String? = null) {
 
-    internal open fun getStyle(
+    /**
+     * This function should either return [SpanStyle] or [LinkAnnotation.Url]. In future releases of
+     * Compose these classes will have a common supertype called `AnnotatedString.Annotation`. Then
+     * we can stop returning [Any].
+     */
+    internal open fun getAnnotation(
       richTextStyle: RichTextStringStyle,
       contentColor: Color
-    ): SpanStyle? = null
+    ): Any? = null
 
     public object Italic : Format("italic") {
       internal val DefaultStyle = SpanStyle(fontStyle = FontStyle.Italic)
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.italicStyle
@@ -156,7 +222,7 @@ public data class RichTextString internal constructor(
 
     public object Bold : Format(simpleTag = "foo") {
       internal val DefaultStyle = SpanStyle(fontWeight = FontWeight.Bold)
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.boldStyle
@@ -164,7 +230,7 @@ public data class RichTextString internal constructor(
 
     public object Underline : Format("underline") {
       internal val DefaultStyle = SpanStyle(textDecoration = TextDecoration.Underline)
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.underlineStyle
@@ -172,7 +238,7 @@ public data class RichTextString internal constructor(
 
     public object Strikethrough : Format("strikethrough") {
       internal val DefaultStyle = SpanStyle(textDecoration = TextDecoration.LineThrough)
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.strikethroughStyle
@@ -185,7 +251,7 @@ public data class RichTextString internal constructor(
         fontSize = 10.sp
       )
 
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.subscriptStyle
@@ -197,7 +263,7 @@ public data class RichTextString internal constructor(
         fontSize = 10.sp
       )
 
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.superscriptStyle
@@ -210,22 +276,52 @@ public data class RichTextString internal constructor(
         background = DefaultCodeBlockBackgroundColor
       )
 
-      override fun getStyle(
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
       ) = richTextStyle.codeStyle
     }
 
-    public data class Link(val destination: String) : Format() {
-      override fun getStyle(
+    public class Link(
+      public val destination: String,
+      public val linkInteractionListener: LinkInteractionListener? = null
+    ) : Format() {
+      override fun getAnnotation(
         richTextStyle: RichTextStringStyle,
         contentColor: Color
-      ) = richTextStyle.linkStyle
+      ) = LinkAnnotation.Url(
+        url = destination,
+        styles = richTextStyle.linkStyle,
+        linkInteractionListener = linkInteractionListener
+      )
+
+      override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Link) return false
+
+        if (destination != other.destination) return false
+        if (linkInteractionListener != other.linkInteractionListener) return false
+
+        return true
+      }
+
+      override fun hashCode(): Int {
+        var result = destination.hashCode()
+        result = 31 * result + linkInteractionListener.hashCode()
+        return result
+      }
+
+      override fun toString(): String {
+        return "Link(destination='$destination', linkInteractionListener=$linkInteractionListener)"
+      }
 
       internal companion object {
-        val DefaultStyle = SpanStyle(
-          textDecoration = TextDecoration.Underline,
-          color = Color.Blue
+        val DefaultStyle = TextLinkStyles(
+          style = SpanStyle(color = Color.Blue),
+          hoveredStyle = SpanStyle(
+            textDecoration = TextDecoration.Underline,
+            color = Color.Blue
+          )
         )
       }
     }
@@ -320,4 +416,17 @@ public inline fun Builder.withFormat(
   val index = pushFormat(format)
   block()
   pop(index)
+}
+
+private fun TextLinkStyles.merge(other: TextLinkStyles?): TextLinkStyles {
+  return if (other == null) {
+    TextLinkStyles()
+  } else {
+    TextLinkStyles(
+      style = this.style?.merge(other.style) ?: other.style,
+      focusedStyle = this.style?.merge(other.focusedStyle) ?: other.focusedStyle,
+      hoveredStyle = this.style?.merge(other.hoveredStyle) ?: other.hoveredStyle,
+      pressedStyle = this.style?.merge(other.pressedStyle) ?: other.pressedStyle,
+    )
+  }
 }
