@@ -117,7 +117,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
   ) {
     with(astNodeComposer) {
       Compose(astNode) {
-        renderChildren(astNode, astNodeComposer)
+        renderChildren(it, astNodeComposer)
       }
     }
   } else {
@@ -125,7 +125,7 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
       Compose(
         astNode = astNode,
         visitChildren = {
-          renderChildren(astNode, astNodeComposer)
+          renderChildren(it, astNodeComposer)
         }
       )
     }
