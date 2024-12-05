@@ -229,7 +229,7 @@ fun main(): Unit = singleWindowApplication(
       appendPreviewSentence(Superscript)
       appendPreviewSentence(Code)
       appendPreviewSentence(
-        Link(""),
+        Link("") { toggleLink = !toggleLink },
         if (toggleLink) "clicked link" else "link"
       )
       append("Here, ")
@@ -260,7 +260,7 @@ fun main(): Unit = singleWindowApplication(
       }
     }
   }
-  RichText(linkClickHandler = { toggleLink = !toggleLink }) {
+  RichText {
     Text(text)
   }
 }

@@ -204,7 +204,6 @@ private val LocalListLevel = compositionLocalOf { 0 }
   val contentsIndent = with(density) { listStyle.contentsIndent!!.toDp() }
   val itemSpacing = with(density) { listStyle.itemSpacing!!.toDp() }
   val currentLevel = LocalListLevel.current
-  val currentLinkClickHandler = LocalLinkClickHandler.current
 
   PrefixListLayout(
     count = items.size,
@@ -219,7 +218,6 @@ private val LocalListLevel = compositionLocalOf { 0 }
     itemForIndex = { index ->
       BasicRichText(
         style = currentRichTextStyle.copy(paragraphSpacing = listStyle.itemSpacing),
-        linkClickHandler = currentLinkClickHandler
       ) {
         CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])

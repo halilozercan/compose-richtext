@@ -8,7 +8,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import com.halilibo.richtext.ui.BasicRichText
-import com.halilibo.richtext.ui.LinkClickHandler
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.RichTextThemeProvider
@@ -24,14 +23,12 @@ import com.halilibo.richtext.ui.RichTextThemeProvider
 public fun RichText(
   modifier: Modifier = Modifier,
   style: RichTextStyle? = null,
-  linkClickHandler: LinkClickHandler? = null,
   children: @Composable RichTextScope.() -> Unit
 ) {
   RichTextMaterialTheme {
     BasicRichText(
       modifier = modifier,
       style = style,
-      linkClickHandler = linkClickHandler,
       children = children
     )
   }

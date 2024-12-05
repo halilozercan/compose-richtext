@@ -34,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.singleWindowApplication
@@ -103,30 +105,26 @@ fun main(): Unit = singleWindowApplication(
                   icon = { Icon(Icons.Default.Favorite, "") })
               }
             }
-            if (selectedTab == 0) {
-              RichText(
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-                style = richTextStyle,
-                linkClickHandler = {
-                  println("Link clicked destination=$it")
+            ProvidePrintUriHandler {
+              if (selectedTab == 0) {
+                RichText(
+                  modifier = Modifier.verticalScroll(rememberScrollState()),
+                  style = richTextStyle,
+                ) {
+                  Markdown(content = text)
                 }
-              ) {
-                Markdown(content = text)
-              }
-            } else {
-              val parser = remember { CommonmarkAstNodeParser() }
+              } else {
+                val parser = remember { CommonmarkAstNodeParser() }
 
-              val astNode = remember(parser) {
-                parser.parse(sampleMarkdown)
-              }
-
-              RichText(
-                style = richTextStyle,
-                linkClickHandler = {
-                  println("Link clicked destination=$it")
+                val astNode = remember(parser) {
+                  parser.parse(sampleMarkdown)
                 }
-              ) {
-                LazyMarkdown(astNode)
+
+                RichText(
+                  style = richTextStyle,
+                ) {
+                  LazyMarkdown(astNode)
+                }
               }
             }
           }
@@ -240,6 +238,19 @@ fun RichTextStyleConfig(
       }
     }
   }
+}
+
+@Composable
+fun ProvidePrintUriHandler(content: @Composable () -> Unit) {
+  val uriHandler = remember {
+    object : UriHandler {
+      override fun openUri(uri: String) {
+        println("Link clicked destination=$uri")
+      }
+    }
+  }
+
+  CompositionLocalProvider(LocalUriHandler provides uriHandler, content)
 }
 
 private val sampleMarkdown = """

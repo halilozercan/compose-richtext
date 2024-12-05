@@ -133,14 +133,13 @@ import com.halilibo.richtext.ui.resolveDefaults
                 parser.parse(sampleMarkdown)
               }
 
-              RichText(
-                style = richTextStyle,
-                linkClickHandler = {
-                  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier.padding(8.dp),
-              ) {
-                BasicMarkdown(astNode, HeadingAstBlockNodeComposer)
+              ProvideToastUriHandler(context) {
+                RichText(
+                  style = richTextStyle,
+                  modifier = Modifier.padding(8.dp),
+                ) {
+                  BasicMarkdown(astNode, HeadingAstBlockNodeComposer)
+                }
               }
             }
           }
