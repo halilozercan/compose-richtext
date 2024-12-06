@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
@@ -70,7 +71,7 @@ fun main(): Unit = singleWindowApplication(
       )
     ) {
       SelectionContainer {
-        var text by remember { mutableStateOf(sampleMarkdown) }
+        val state = rememberTextFieldState(sampleMarkdown)
         Row(
           modifier = Modifier
             .padding(32.dp)
@@ -80,9 +81,7 @@ fun main(): Unit = singleWindowApplication(
           Column(modifier = Modifier.weight(1f)) {
             RichTextStyleConfig(richTextStyle = richTextStyle, onChanged = { richTextStyle = it })
             BasicTextField(
-              value = text,
-              onValueChange = { text = it },
-              maxLines = Int.MAX_VALUE,
+              state = state,
               modifier = Modifier
                 .fillMaxHeight()
                 .background(Color.LightGray)
@@ -111,7 +110,7 @@ fun main(): Unit = singleWindowApplication(
                   modifier = Modifier.verticalScroll(rememberScrollState()),
                   style = richTextStyle,
                 ) {
-                  Markdown(content = text)
+                  Markdown(content = state.text.toString())
                 }
               } else {
                 val parser = remember { CommonmarkAstNodeParser() }
