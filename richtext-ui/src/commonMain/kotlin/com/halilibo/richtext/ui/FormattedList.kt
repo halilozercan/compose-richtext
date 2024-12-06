@@ -275,8 +275,12 @@ private val LocalListLevel = compositionLocalOf { 0 }
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumOf { it.height } +
+    val itemsHeight = itemPlaceables.sumOf { it.height } +
         (itemPlaceables.size - 1) * itemSpacing.roundToPx()
+    val prefixesHeight = prefixPlaceables.sumOf { it.height } +
+        (prefixPlaceables.size - 1) * itemSpacing.roundToPx()
+
+    val listHeight = maxOf(itemsHeight, prefixesHeight)
     layout(listWidth, listHeight) {
       var y = 0
 
