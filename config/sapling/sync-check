@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -euo pipefail
+
+GIT_REV=$(git rev-parse HEAD)
+SL_REV=$(sl whereami)
+
+echo ${GIT_REV}
+echo ${SL_REV}
+
+if test "${GIT_REV}" = "${SL_REV}"; then
+  echo "ok"
+else
+  echo "mismatch!"
+  exit 1
+fi

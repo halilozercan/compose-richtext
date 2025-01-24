@@ -1,0 +1,38 @@
+# This is a copy from project/sapling in openai.git, adpated for chatgpt-android
+#
+# Include this in your .sl/config by adding at the top:
+#
+#   %include ../config/sapling/sl_config
+
+[github]
+# While the PR body will initially be created from the commit message,
+# subsequent updates to the PR body via the GitHub UI will not be overwritten
+# by the commit message by subsequent calls to `sl pr submit`.
+preserve-pull-request-description = true
+
+pull-request-include-reviewstack = false
+pr_workflow = single
+pr.branch-name-template = dev/{emailuser(author)}/pr{github_pull_request_number}
+
+[hooks]
+update = config/sapling/sl-git-sync $HG_PARENT1
+# whereami can return two lines in the case of a merge
+txnclose = config/sapling/sl-git-sync `sl whereami | head -1`
+
+
+# This is an experimental extension that uses a persistent file change
+# daemon to avoid walking the whole filesystem.  This takes `sl
+# status` from 1.8s to 200ms in the monorepo.
+#
+# Install watchman with `brew install watchman`
+[fsmonitor]
+mode = on
+
+[alias]
+# Note: replace $HG when https://github.com/facebook/sapling/issues/876
+# is fixed and a version of Sapling with the fix is deployed internally.
+#
+# Rebase the current development branch on the latest main.
+sync=pull --rebase -d remote/main
+# Rebase all development branches on the latest main.
+sync-all=!$HG pull && $HG rebase -r "draft()" -d remote/main

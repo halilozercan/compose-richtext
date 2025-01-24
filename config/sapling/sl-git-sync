@@ -1,0 +1,42 @@
+#!/bin/bash
+# This is a copy from project/sapling in openai.git, adpated for chatgpt-android
+#
+# sl-git handles git<->sapling interop, sharing a single working
+# directory.  This is useful for the numerous tools that expect a git
+# repo, like pre-commit
+#
+# To setup, from the root of the sapling repo:
+#   $ git init --separate-git-dir .sl/store/git .
+#
+# Then add to your .sl/config:
+#
+# [hooks]
+# txnclose = config/sapling/sl-git-sync .
+# update = config/sapling/sl-git-sync $HG_PARENT1
+
+set -euo pipefail
+
+if ! `git rev-parse --show-toplevel > /dev/null 2>&1`; then
+    1>&2 cat <<EOF
+ERROR: sl-git shadow repo not initialized; run
+
+  $ cd \$YOUR_SAPLING_ROOT
+  $ git init --separate-git-dir .sl/store/git .
+
+See https://www.notion.so/openai/Sapling-fa61efe770594cdba0d4090d48111d2d for full setup docs.
+
+EOF
+    exit 1
+fi
+
+if test $# -eq 0; then
+    1>&2 echo "usage: $0 [HEAD_REVISION]"
+    exit 1
+fi 
+
+SL_REV=$1
+
+# Update git HEAD to the sapling revision
+git update-ref HEAD ${SL_REV}
+# update the index without changing the working directory
+git read-tree HEAD
