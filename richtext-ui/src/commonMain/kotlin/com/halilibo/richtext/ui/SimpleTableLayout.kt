@@ -52,7 +52,7 @@ internal fun SimpleTableLayout(
     check(constraints.hasBoundedWidth) { "Table must have bounded width" }
     // Divide the width by the number of columns, then leave room for the padding.
     val cellSpacingWidth = cellSpacing * (columns + 1)
-    val cellWidth = (constraints.maxWidth - cellSpacingWidth) / columns
+    val cellWidth = minOf((constraints.maxWidth - cellSpacingWidth) / columns, MinCellWidth)
     val cellSpacingHeight = cellSpacing * (rowMeasurables.size + 1)
     // TODO Handle bounded height constraints.
     // val cellMaxHeight = if (!constraints.hasBoundedHeight) {
@@ -109,3 +109,5 @@ internal fun SimpleTableLayout(
     }
   }
 }
+
+private const val MinCellWidth = 10f
