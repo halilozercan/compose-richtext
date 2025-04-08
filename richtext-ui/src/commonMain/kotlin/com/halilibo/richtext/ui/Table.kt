@@ -144,7 +144,7 @@ public fun RichTextScope.Table(
   }
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
-  SimpleTableLayout(
+  ScrollableTableLayout(
       columns = columns,
       rows = styledRows,
       cellSpacing = tableStyle.borderStrokeWidth!!,
