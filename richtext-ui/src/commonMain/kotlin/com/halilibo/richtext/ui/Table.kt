@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.max
 
@@ -31,22 +33,27 @@ import kotlin.math.max
 public data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
+  val cellMaxWidth: Dp? = null,
   val borderColor: Color? = null,
   val borderStrokeWidth: Float? = null
 ) {
   public companion object {
     public val Default: TableStyle = TableStyle()
+
+    public val CellWidthDistributeEvenly: Dp = 0.dp
   }
 }
 
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Unspecified
+private val DefaultCellMaxWidth = TableStyle.CellWidthDistributeEvenly
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
     headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
     cellPadding = cellPadding ?: DefaultCellPadding,
+    cellMaxWidth = cellMaxWidth ?: DefaultCellMaxWidth,
     borderColor = borderColor ?: DefaultBorderColor,
     borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
@@ -143,21 +150,34 @@ public fun RichTextScope.Table(
     }
   }
 
+  val drawDecorations: (TableLayoutResult) -> Modifier = { layoutResult ->
+    Modifier.drawTableBorders(
+      rowOffsets = layoutResult.rowOffsets,
+      columnOffsets = layoutResult.columnOffsets,
+      borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
+      borderStrokeWidth = tableStyle.borderStrokeWidth!!
+    )
+  }
+
   // For some reason borders don't get drawn in the Preview, but they work on-device.
-  ScrollableTableLayout(
+  if (tableStyle.cellMaxWidth == TableStyle.CellWidthDistributeEvenly) {
+    SimpleTableLayout(
       columns = columns,
       rows = styledRows,
       cellSpacing = tableStyle.borderStrokeWidth!!,
-      drawDecorations = { layoutResult ->
-        Modifier.drawTableBorders(
-            rowOffsets = layoutResult.rowOffsets,
-            columnOffsets = layoutResult.columnOffsets,
-            borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
-            borderStrokeWidth = tableStyle.borderStrokeWidth
-        )
-      },
+      drawDecorations = drawDecorations,
       modifier = modifier
-  )
+    )
+  } else {
+    ScrollableTableLayout(
+      columns = columns,
+      rows = styledRows,
+      cellSpacing = tableStyle.borderStrokeWidth!!,
+      maxCellWidth = tableStyle.cellMaxWidth!!,
+      drawDecorations = drawDecorations,
+      modifier = modifier
+    )
+  }
 }
 
 private fun Modifier.drawTableBorders(

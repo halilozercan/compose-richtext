@@ -4,16 +4,14 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import kotlin.math.roundToInt
 
 private const val MinCellWidth = 10
-private val MaxCellWidth = 200.dp
 
 /**
  * The offsets of rows and columns of a [SimpleTableLayout], centered inside their spacing.
@@ -28,13 +26,13 @@ internal fun ScrollableTableLayout(
   rows: List<List<@Composable () -> Unit>>,
   drawDecorations: (TableLayoutResult) -> Modifier,
   cellSpacing: Float,
+  maxCellWidth: Dp,
   modifier: Modifier = Modifier
 ) {
   SubcomposeLayout(
     modifier = modifier
       .horizontalScroll(rememberScrollState())
-  ) { constraints ->
-
+  ) {
     // Subcompose all cells in one pass.
     val measurables = subcompose("cells") {
       rows.forEach { row ->
@@ -45,15 +43,14 @@ internal fun ScrollableTableLayout(
     // Organize the cells into rows.
     val rowMeasurables = measurables.chunked(columns)
 
-    val cellConstraints = Constraints(maxWidth = MaxCellWidth.roundToPx())
+    val cellConstraints = Constraints(maxWidth = maxCellWidth.roundToPx())
     val rowPlaceables: List<List<Placeable>> = rowMeasurables.map { row ->
       row.map { measurable ->
         measurable.measure(cellConstraints)
       }
     }
 
-    // Determine the width for each column:
-    // For each column, take the maximum measured width among all its cells and compare with the 200dp minimum.
+    // Determine the width for each column
     val columnWidths = (0 until columns).map { colIndex ->
       val measuredMax = rowPlaceables.map { it[colIndex].width }.maxOrNull() ?: 0
       maxOf(measuredMax, MinCellWidth)
