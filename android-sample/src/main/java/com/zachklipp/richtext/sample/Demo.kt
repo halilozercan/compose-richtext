@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.halilibo.richtext.ui.BlockQuote
 import com.halilibo.richtext.ui.CodeBlock
+import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.Heading
 import com.halilibo.richtext.ui.HorizontalRule
@@ -129,7 +130,7 @@ import com.halilibo.richtext.ui.material.RichText
 
     WithStyle(
       RichTextStyle(
-        tableStyle = TableStyle.Default.copy(cellMaxWidth = 200.dp)
+        tableStyle = TableStyle.Default.copy(columnArrangement = Adaptive(200.dp))
       )
     ) {
       Heading(0, "Scrollable Table")

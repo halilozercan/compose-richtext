@@ -44,7 +44,7 @@ internal fun ScrollableTableLayout(
     val rowMeasurables = measurables.chunked(columns)
 
     val cellConstraints = Constraints(maxWidth = maxCellWidth.roundToPx())
-    val rowPlaceables: List<List<Placeable>> = rowMeasurables.map { row ->
+    val rowPlaceables = rowMeasurables.map { row ->
       row.map { measurable ->
         measurable.measure(cellConstraints)
       }
@@ -52,7 +52,7 @@ internal fun ScrollableTableLayout(
 
     // Determine the width for each column
     val columnWidths = (0 until columns).map { colIndex ->
-      val measuredMax = rowPlaceables.map { it[colIndex].width }.maxOrNull() ?: 0
+      val measuredMax = rowPlaceables.maxOfOrNull { it[colIndex].width } ?: 0
       maxOf(measuredMax, MinCellWidth)
     }
 

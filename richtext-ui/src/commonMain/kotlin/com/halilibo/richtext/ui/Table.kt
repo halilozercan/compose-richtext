@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
+import com.halilibo.richtext.ui.ColumnArrangement.Uniform
 import kotlin.math.max
 
 /**
@@ -33,7 +35,7 @@ import kotlin.math.max
 public data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
-  val cellMaxWidth: Dp? = null,
+  val columnArrangement: ColumnArrangement? = null,
   val borderColor: Color? = null,
   val borderStrokeWidth: Float? = null
 ) {
@@ -44,16 +46,21 @@ public data class TableStyle(
   }
 }
 
+public sealed interface ColumnArrangement {
+  public object Uniform : ColumnArrangement
+  public class Adaptive(public val maxWidth: Dp) : ColumnArrangement
+}
+
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Unspecified
-private val DefaultCellMaxWidth = TableStyle.CellWidthDistributeEvenly
+private val DefaultColumnArrangement = ColumnArrangement.Uniform
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
     headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
     cellPadding = cellPadding ?: DefaultCellPadding,
-    cellMaxWidth = cellMaxWidth ?: DefaultCellMaxWidth,
+    columnArrangement = columnArrangement ?: DefaultColumnArrangement,
     borderColor = borderColor ?: DefaultBorderColor,
     borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
@@ -160,20 +167,21 @@ public fun RichTextScope.Table(
   }
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
-  if (tableStyle.cellMaxWidth == TableStyle.CellWidthDistributeEvenly) {
-    SimpleTableLayout(
+  val columnArrangement = tableStyle.columnArrangement!!
+  when (columnArrangement) {
+    is Uniform -> SimpleTableLayout(
       columns = columns,
       rows = styledRows,
       cellSpacing = tableStyle.borderStrokeWidth!!,
       drawDecorations = drawDecorations,
       modifier = modifier
     )
-  } else {
-    ScrollableTableLayout(
+
+    is Adaptive -> ScrollableTableLayout(
       columns = columns,
       rows = styledRows,
       cellSpacing = tableStyle.borderStrokeWidth!!,
-      maxCellWidth = tableStyle.cellMaxWidth!!,
+      maxCellWidth = columnArrangement.maxWidth,
       drawDecorations = drawDecorations,
       modifier = modifier
     )
