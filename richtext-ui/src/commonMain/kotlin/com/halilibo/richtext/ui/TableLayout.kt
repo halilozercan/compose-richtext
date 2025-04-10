@@ -6,8 +6,8 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.constrain
 import kotlin.math.roundToInt
+
 
 /**
  * The offsets of rows and columns of a [SimpleTableLayout], centered inside their spacing.
@@ -21,57 +21,32 @@ internal data class TableLayoutResult(
   val columnOffsets: List<Float>
 )
 
-/**
- * A simple table that sizes all columns equally.
- *
- * @param cellSpacing The space in between each cell, and between each outer cell and the edge of
- * the table.
- */
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
-internal fun SimpleTableLayout(
+internal fun TableLayout(
   columns: Int,
   rows: List<List<@Composable () -> Unit>>,
   drawDecorations: (TableLayoutResult) -> Modifier,
   cellSpacing: Float,
-  modifier: Modifier
+  tableMeasurer: TableMeasurer,
+  modifier: Modifier = Modifier
 ) {
   SubcomposeLayout(modifier = modifier) { constraints ->
-    val measurables = subcompose(false) {
+    // Subcompose all cells in one pass.
+    val measurables = subcompose("cells") {
       rows.forEach { row ->
         check(row.size == columns)
-        row.forEach { cell ->
-          cell()
-        }
+        row.forEach { cell -> cell() }
       }
     }
 
     val rowMeasurables = measurables.chunked(columns)
-    check(rowMeasurables.size == rows.size)
+    val (rowPlaceables, columnWidths, rowHeights) = tableMeasurer.measure(
+      constraints,
+      rowMeasurables
+    )
 
-    check(constraints.hasBoundedWidth) { "Table must have bounded width" }
-    // Divide the width by the number of columns, then leave room for the padding.
-    val cellSpacingWidth = cellSpacing * (columns + 1)
-    val cellWidth = maxOf((constraints.maxWidth - cellSpacingWidth) / columns, MinCellWidth)
-    val cellSpacingHeight = cellSpacing * (rowMeasurables.size + 1)
-    // TODO Handle bounded height constraints.
-    // val cellMaxHeight = if (!constraints.hasBoundedHeight) {
-    //   Float.MAX_VALUE
-    // } else {
-    //   // Divide the height by the number of rows, then leave room for the padding.
-    //   (constraints.maxHeight - cellSpacingHeight) / rowMeasurables.size
-    // }
-    val cellConstraints = Constraints(maxWidth = cellWidth.roundToInt()).constrain(constraints)
-
-    val rowPlaceables = rowMeasurables.map { cellMeasurables ->
-      cellMeasurables.map { cell ->
-        cell.measure(cellConstraints)
-      }
-    }
-    val rowHeights = rowPlaceables.map { row -> row.maxByOrNull { it.height }!!.height }
-
-    val tableWidth = constraints.maxWidth
-    val tableHeight = (rowHeights.sumOf { it } + cellSpacingHeight).roundToInt()
+    val tableWidth = columnWidths.sum() + (cellSpacing * (columns + 1)).roundToInt()
+    val tableHeight = rowHeights.sum() + (cellSpacing * (rowHeights.size + 1)).roundToInt()
     layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()
@@ -81,12 +56,12 @@ internal fun SimpleTableLayout(
         rowOffsets += y - cellSpacing / 2f
         var x = cellSpacing
 
-        cellPlaceables.forEach { cell ->
+        cellPlaceables.forEachIndexed { columnIndex, cell ->
           if (rowIndex == 0) {
             columnOffsets.add(x - cellSpacing / 2f)
           }
           cell.place(x.roundToInt(), y.roundToInt())
-          x += cellWidth + cellSpacing
+          x += columnWidths[columnIndex] + cellSpacing
         }
 
         if (rowIndex == 0) {
@@ -109,5 +84,3 @@ internal fun SimpleTableLayout(
     }
   }
 }
-
-private const val MinCellWidth = 10f

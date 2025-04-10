@@ -128,9 +128,10 @@ import com.halilibo.richtext.ui.material.RichText
       }
     }
 
+    val currentStyle = style!!
     WithStyle(
-      RichTextStyle(
-        tableStyle = TableStyle.Default.copy(columnArrangement = Adaptive(200.dp))
+      currentStyle.copy(
+        tableStyle = currentStyle.tableStyle!!.copy(columnArrangement = Adaptive(200.dp))
       )
     ) {
       Heading(0, "Scrollable Table")

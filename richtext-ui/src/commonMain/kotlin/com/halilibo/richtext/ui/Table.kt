@@ -2,7 +2,9 @@
 
 package com.halilibo.richtext.ui
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -11,6 +13,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
 import com.halilibo.richtext.ui.ColumnArrangement.Uniform
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * Defines the visual style for a [Table].
@@ -168,24 +172,31 @@ public fun RichTextScope.Table(
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   val columnArrangement = tableStyle.columnArrangement!!
-  when (columnArrangement) {
-    is Uniform -> SimpleTableLayout(
-      columns = columns,
-      rows = styledRows,
-      cellSpacing = tableStyle.borderStrokeWidth!!,
-      drawDecorations = drawDecorations,
-      modifier = modifier
-    )
-
-    is Adaptive -> ScrollableTableLayout(
-      columns = columns,
-      rows = styledRows,
-      cellSpacing = tableStyle.borderStrokeWidth!!,
-      maxCellWidth = columnArrangement.maxWidth,
-      drawDecorations = drawDecorations,
-      modifier = modifier
-    )
+  val cellSpacing = tableStyle.borderStrokeWidth!!
+  val measurer = when (columnArrangement) {
+    is Uniform -> UniformTableMeasurer(cellSpacing)
+    is Adaptive -> {
+      val maxWidth = with(LocalDensity.current) {
+        columnArrangement.maxWidth.toPx()
+      }.roundToInt()
+      AdaptiveTableMeasurer(maxWidth)
+    }
   }
+
+  val tableModifier = if (columnArrangement is Adaptive) {
+    modifier.horizontalScroll(rememberScrollState())
+  } else {
+    modifier
+  }
+
+  TableLayout(
+    columns = columns,
+    rows = styledRows,
+    cellSpacing = tableStyle.borderStrokeWidth,
+    tableMeasurer = measurer,
+    drawDecorations = drawDecorations,
+    modifier = tableModifier
+  )
 }
 
 private fun Modifier.drawTableBorders(
