@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.halilibo.richtext.ui.BlockQuote
 import com.halilibo.richtext.ui.CodeBlock
+import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.Heading
 import com.halilibo.richtext.ui.HorizontalRule
@@ -28,6 +29,7 @@ import com.halilibo.richtext.ui.ListType.Unordered
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.Table
+import com.halilibo.richtext.ui.WithStyle
 import com.halilibo.richtext.ui.material.RichText
 
 @Preview(widthDp = 300, heightDp = 1000)
@@ -101,7 +103,7 @@ import com.halilibo.richtext.ui.material.RichText
       }
     }
 
-    Heading(0, "Table")
+    Heading(0, "Simple Table")
     Table(
       modifier = Modifier.fillMaxWidth(),
       headerRow = {
@@ -121,6 +123,58 @@ import com.halilibo.richtext.ui.material.RichText
           }
         }
         cell { Text("Hello world this is a really long line that is going to wrap hopefully") }
+      }
+    }
+
+    val currentStyle = style!!
+    WithStyle(
+      currentStyle.copy(
+        tableStyle = currentStyle.tableStyle!!.copy(columnArrangement = Adaptive(200.dp))
+      )
+    ) {
+      Heading(0, "Scrollable Table")
+      Table(
+        modifier = Modifier.fillMaxWidth(),
+        headerRow = {
+          cell { Text("Column 1") }
+          cell { Text("Column 2") }
+          cell { Text("Column 3") }
+          cell { Text("Column 4") }
+        }) {
+        row {
+          cell { Text("Hello") }
+          cell {
+            CodeBlock("Foo bar")
+          }
+          cell { Text("Hey") }
+          cell {
+            CodeBlock("Baz buzz")
+          }
+        }
+        row {
+          cell {
+            BlockQuote {
+              Text("Stuff")
+            }
+          }
+          cell { Text("Hello world this is a really long line that is going to wrap hopefully") }
+          cell { }
+          cell { Text("The quick brown fox jumped over the lazy dog") }
+        }
+        row {
+          cell {
+            BlockQuote {
+              Text("More")
+            }
+          }
+          cell { ListDemo(listType = Unordered) }
+          cell {
+            BlockQuote {
+              Text("More")
+            }
+          }
+          cell { Text("Hello world this is another really long line and it too should do the wrapping") }
+        }
       }
     }
   }

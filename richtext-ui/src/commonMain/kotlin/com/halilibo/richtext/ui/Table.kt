@@ -2,7 +2,9 @@
 
 package com.halilibo.richtext.ui
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -15,9 +17,13 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
+import com.halilibo.richtext.ui.ColumnArrangement.Uniform
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * Defines the visual style for a [Table].
@@ -31,6 +37,7 @@ import kotlin.math.max
 public data class TableStyle(
   val headerTextStyle: TextStyle? = null,
   val cellPadding: TextUnit? = null,
+  val columnArrangement: ColumnArrangement? = null,
   val borderColor: Color? = null,
   val borderStrokeWidth: Float? = null
 ) {
@@ -39,14 +46,21 @@ public data class TableStyle(
   }
 }
 
+public sealed interface ColumnArrangement {
+  public object Uniform : ColumnArrangement
+  public class Adaptive(public val maxWidth: Dp) : ColumnArrangement
+}
+
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Unspecified
+private val DefaultColumnArrangement = ColumnArrangement.Uniform
 private const val DefaultBorderStrokeWidth = 1f
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
     headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
     cellPadding = cellPadding ?: DefaultCellPadding,
+    columnArrangement = columnArrangement ?: DefaultColumnArrangement,
     borderColor = borderColor ?: DefaultBorderColor,
     borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
 )
@@ -83,7 +97,6 @@ private class RowBuilder : RichTextTableCellScope {
  *
  * The style of the table is defined by the [RichTextStyle.tableStyle]&nbsp;[TableStyle].
  */
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
 public fun RichTextScope.Table(
   modifier: Modifier = Modifier,
@@ -144,19 +157,39 @@ public fun RichTextScope.Table(
   }
 
   // For some reason borders don't get drawn in the Preview, but they work on-device.
-  SimpleTableLayout(
-      columns = columns,
-      rows = styledRows,
-      cellSpacing = tableStyle.borderStrokeWidth!!,
-      drawDecorations = { layoutResult ->
-        Modifier.drawTableBorders(
-            rowOffsets = layoutResult.rowOffsets,
-            columnOffsets = layoutResult.columnOffsets,
-            borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
-            borderStrokeWidth = tableStyle.borderStrokeWidth
-        )
-      },
-      modifier = modifier
+  val columnArrangement = tableStyle.columnArrangement!!
+  val cellSpacing = tableStyle.borderStrokeWidth!!
+  val density = LocalDensity.current
+  val measurer = remember(columnArrangement, cellSpacing, density) {
+    when (columnArrangement) {
+      is Uniform -> UniformTableMeasurer(cellSpacing)
+      is Adaptive -> {
+        val maxWidth = with(density) { columnArrangement.maxWidth.toPx() }.roundToInt()
+        AdaptiveTableMeasurer(maxWidth)
+      }
+    }
+  }
+
+  val tableModifier = if (columnArrangement is Adaptive) {
+    modifier.horizontalScroll(rememberScrollState())
+  } else {
+    modifier
+  }
+
+  TableLayout(
+    columns = columns,
+    rows = styledRows,
+    cellSpacing = tableStyle.borderStrokeWidth,
+    tableMeasurer = measurer,
+    drawDecorations = { layoutResult ->
+      Modifier.drawTableBorders(
+        rowOffsets = layoutResult.rowOffsets,
+        columnOffsets = layoutResult.columnOffsets,
+        borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
+        borderStrokeWidth = tableStyle.borderStrokeWidth
+      )
+    },
+    modifier = tableModifier
   )
 }
 
