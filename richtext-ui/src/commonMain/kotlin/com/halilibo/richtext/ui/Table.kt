@@ -156,15 +156,6 @@ public fun RichTextScope.Table(
     }
   }
 
-  val drawDecorations: (TableLayoutResult) -> Modifier = { layoutResult ->
-    Modifier.drawTableBorders(
-      rowOffsets = layoutResult.rowOffsets,
-      columnOffsets = layoutResult.columnOffsets,
-      borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
-      borderStrokeWidth = tableStyle.borderStrokeWidth!!
-    )
-  }
-
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   val columnArrangement = tableStyle.columnArrangement!!
   val cellSpacing = tableStyle.borderStrokeWidth!!
@@ -190,7 +181,14 @@ public fun RichTextScope.Table(
     rows = styledRows,
     cellSpacing = tableStyle.borderStrokeWidth,
     tableMeasurer = measurer,
-    drawDecorations = drawDecorations,
+    drawDecorations = { layoutResult ->
+      Modifier.drawTableBorders(
+        rowOffsets = layoutResult.rowOffsets,
+        columnOffsets = layoutResult.columnOffsets,
+        borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
+        borderStrokeWidth = tableStyle.borderStrokeWidth
+      )
+    },
     modifier = tableModifier
   )
 }
