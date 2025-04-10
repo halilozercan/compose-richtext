@@ -10,12 +10,15 @@ import kotlin.math.roundToInt
 private const val MinCellWidth = 10
 
 internal interface TableMeasurer {
-  fun measure(constraints: Constraints, rowMeasurables: List<List<Measurable>>): Measurements
+  fun measure(
+    rowMeasurables: List<List<Measurable>>,
+    constraints: Constraints,
+  ): Measurements
 
   data class Measurements(
     val rowPlaceables: List<List<Placeable>>,
     val columnWidths: List<Int>,
-    val rowHeights: List<Int>
+    val rowHeights: List<Int>,
   )
 }
 
@@ -23,8 +26,8 @@ internal class AdaptiveTableMeasurer(
   private val maxCellWidthPx: Int,
 ): TableMeasurer {
   override fun measure(
+    rowMeasurables: List<List<Measurable>>,
     constraints: Constraints,
-    rowMeasurables: List<List<Measurable>>
   ): Measurements {
     val columns = rowMeasurables[0].size
     val cellConstraints = Constraints(maxWidth = maxCellWidthPx)
@@ -53,8 +56,8 @@ internal class UniformTableMeasurer(
   private val cellSpacing: Float
 ) : TableMeasurer {
   override fun measure(
+    rowMeasurables: List<List<Measurable>>,
     constraints: Constraints,
-    rowMeasurables: List<List<Measurable>>
   ): Measurements {
     check(constraints.hasBoundedWidth) { "Uniform tables must have bounded width" }
 

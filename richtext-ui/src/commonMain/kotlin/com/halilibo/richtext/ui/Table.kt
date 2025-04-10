@@ -13,14 +13,12 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
 import com.halilibo.richtext.ui.ColumnArrangement.Uniform
@@ -99,7 +97,6 @@ private class RowBuilder : RichTextTableCellScope {
  *
  * The style of the table is defined by the [RichTextStyle.tableStyle]&nbsp;[TableStyle].
  */
-@OptIn(ExperimentalStdlibApi::class)
 @Composable
 public fun RichTextScope.Table(
   modifier: Modifier = Modifier,
@@ -171,13 +168,14 @@ public fun RichTextScope.Table(
   // For some reason borders don't get drawn in the Preview, but they work on-device.
   val columnArrangement = tableStyle.columnArrangement!!
   val cellSpacing = tableStyle.borderStrokeWidth!!
-  val measurer = when (columnArrangement) {
-    is Uniform -> UniformTableMeasurer(cellSpacing)
-    is Adaptive -> {
-      val maxWidth = with(LocalDensity.current) {
-        columnArrangement.maxWidth.toPx()
-      }.roundToInt()
-      AdaptiveTableMeasurer(maxWidth)
+  val density = LocalDensity.current
+  val measurer = remember(columnArrangement, cellSpacing, density) {
+    when (columnArrangement) {
+      is Uniform -> UniformTableMeasurer(cellSpacing)
+      is Adaptive -> {
+        val maxWidth = with(density) { columnArrangement.maxWidth.toPx() }.roundToInt()
+        AdaptiveTableMeasurer(maxWidth)
+      }
     }
   }
 

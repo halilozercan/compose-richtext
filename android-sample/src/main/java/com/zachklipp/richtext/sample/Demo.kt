@@ -29,8 +29,6 @@ import com.halilibo.richtext.ui.ListType.Unordered
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.RichTextStyle
 import com.halilibo.richtext.ui.Table
-import com.halilibo.richtext.ui.TableStyle
-import com.halilibo.richtext.ui.TableStyle.Companion
 import com.halilibo.richtext.ui.WithStyle
 import com.halilibo.richtext.ui.material.RichText
 

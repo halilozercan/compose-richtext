@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 
 
 /**
- * The offsets of rows and columns of a [SimpleTableLayout], centered inside their spacing.
+ * The offsets of rows and columns of a [TableLayout], centered inside their spacing.
  *
  * E.g. If a table is given a cell spacing of 2px, then the first column and row offset will each
  * be 1px.
@@ -40,19 +40,20 @@ internal fun TableLayout(
     }
 
     val rowMeasurables = measurables.chunked(columns)
-    val (rowPlaceables, columnWidths, rowHeights) = tableMeasurer.measure(
-      constraints,
-      rowMeasurables
-    )
+    val measurements = tableMeasurer.measure(rowMeasurables, constraints)
 
-    val tableWidth = columnWidths.sum() + (cellSpacing * (columns + 1)).roundToInt()
-    val tableHeight = rowHeights.sum() + (cellSpacing * (rowHeights.size + 1)).roundToInt()
+    val tableWidth = measurements.columnWidths.sum() +
+        (cellSpacing * (columns + 1)).roundToInt()
+
+    val tableHeight = measurements.rowHeights.sum() +
+        (cellSpacing * (measurements.rowHeights.size + 1)).roundToInt()
+
     layout(tableWidth, tableHeight) {
       var y = cellSpacing
       val rowOffsets = mutableListOf<Float>()
       val columnOffsets = mutableListOf<Float>()
 
-      rowPlaceables.forEachIndexed { rowIndex, cellPlaceables ->
+      measurements.rowPlaceables.forEachIndexed { rowIndex, cellPlaceables ->
         rowOffsets += y - cellSpacing / 2f
         var x = cellSpacing
 
@@ -61,7 +62,7 @@ internal fun TableLayout(
             columnOffsets.add(x - cellSpacing / 2f)
           }
           cell.place(x.roundToInt(), y.roundToInt())
-          x += columnWidths[columnIndex] + cellSpacing
+          x += measurements.columnWidths[columnIndex] + cellSpacing
         }
 
         if (rowIndex == 0) {
@@ -69,7 +70,7 @@ internal fun TableLayout(
           columnOffsets.add(x - cellSpacing / 2f)
         }
 
-        y += rowHeights[rowIndex] + cellSpacing
+        y += measurements.rowHeights[rowIndex] + cellSpacing
       }
 
       rowOffsets.add(y - cellSpacing / 2f)
