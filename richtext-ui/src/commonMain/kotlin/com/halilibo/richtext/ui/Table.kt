@@ -45,8 +45,6 @@ public data class TableStyle(
 ) {
   public companion object {
     public val Default: TableStyle = TableStyle()
-
-    public val CellWidthDistributeEvenly: Dp = 0.dp
   }
 }
 
