@@ -9,7 +9,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,7 +24,7 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.style.TextForegroundStyle.Unspecified.color
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import com.halilibo.richtext.ui.ClickableText
 import com.halilibo.richtext.ui.RichTextScope
@@ -217,24 +216,21 @@ private data class TextAnimation(val startIndex: Int, val alpha: Float)
 private fun AnnotatedString.animateAlphas(
   animations: Collection<TextAnimation>, contentColor: Color
 ): AnnotatedString {
-  if (this.text.isEmpty() || animations.isEmpty()) {
+  if (text.isEmpty() || animations.isEmpty()) {
     return this
   }
-  var remainingText = this
-  val modifiedTextSnippets = mutableStateListOf<AnnotatedString>()
-  animations.sortedByDescending { it.startIndex }.forEach { animation ->
-    if (animation.startIndex >= remainingText.length) {
-      return@forEach
-    }
-    modifiedTextSnippets.add(
-      remainingText.subSequence(animation.startIndex, remainingText.length)
-        .changeColor(contentColor) { animation.alpha }
-    )
-    remainingText = remainingText.subSequence(0, animation.startIndex)
+  var remainingLength = length
+  val modifiedTextSnippets = mutableListOf<AnnotatedString>()
+  for (animation in animations.sortedByDescending { it.startIndex }) {
+    if (animation.startIndex >= remainingLength) continue
+    modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
+      .changeColor(contentColor) { animation.alpha }
+    remainingLength = animation.startIndex
   }
-  return AnnotatedString.Builder(remainingText).apply {
+  return buildAnnotatedString {
+    append(this@animateAlphas, start = 0, end = remainingLength)
     modifiedTextSnippets.reversed().forEach { append(it) }
-  }.toAnnotatedString()
+  }
 }
 
 private fun AnnotatedString.changeColor(color: Color, alpha: () -> Float): AnnotatedString {
