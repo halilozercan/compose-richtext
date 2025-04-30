@@ -160,13 +160,14 @@ private fun rememberAnimatedText(
     phrases.phraseSegments
       .filter { it > lastAnimationIndex.value }
       .forEach { phraseIndex ->
-        animations[phraseIndex] = TextAnimation(phraseIndex, 0f)
+        val animatable = Animatable(0f)
+        animations[phraseIndex] = TextAnimation(phraseIndex) { animatable.value }
         lastAnimationIndex.value = phraseIndex
         coroutineScope.launch {
           textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
           sharedAnimationState.addAnimation(renderOptions)
           var hasAnimationFired = false
-          Animatable(0f).animateTo(
+          animatable.animateTo(
             targetValue = 1f,
             animationSpec = tween(
               durationMillis = renderOptions.textFadeInMs,
@@ -179,7 +180,6 @@ private fun rememberAnimatedText(
             } else {
               renderOptions.onTextAnimate()
             }
-            animations[phraseIndex] = TextAnimation(phraseIndex, value)
           }
           animations.remove(phraseIndex)
         }
@@ -211,7 +211,7 @@ private fun rememberAnimatedText(
   return textToRender.value.animateAlphas(animations.values, contentColor)
 }
 
-private data class TextAnimation(val startIndex: Int, val alpha: Float)
+private data class TextAnimation(val startIndex: Int, val alpha: () -> Float)
 
 private fun AnnotatedString.animateAlphas(
   animations: Collection<TextAnimation>, contentColor: Color
@@ -224,7 +224,7 @@ private fun AnnotatedString.animateAlphas(
   for (animation in animations.sortedByDescending { it.startIndex }) {
     if (animation.startIndex >= remainingLength) continue
     modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
-      .changeColor(contentColor) { animation.alpha }
+      .changeColor(contentColor, alpha = animation.alpha)
     remainingLength = animation.startIndex
   }
   return buildAnnotatedString {
