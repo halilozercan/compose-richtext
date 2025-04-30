@@ -232,10 +232,11 @@ private fun AnnotatedString.animateAlphas(
 }
 
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
-  val newWordsStyles = spanStyles.map { spanstyle ->
-    spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
-  } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
-  return AnnotatedString(text, newWordsStyles)
+  val subStyles = spanStyles.map {
+    it.copy(item = it.item.copy(color = it.item.color.copy(alpha = alpha)))
+  }
+  val fullStyle = AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length)
+  return AnnotatedString(text, subStyles + fullStyle)
 }
 
 private fun AnnotatedString.getConsumableAnnotations(
