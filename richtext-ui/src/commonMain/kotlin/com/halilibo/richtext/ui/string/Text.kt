@@ -17,16 +17,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Offset.Companion
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.style.TextForegroundStyle.Unspecified.color
 import androidx.compose.ui.text.style.TextOverflow
 import com.halilibo.richtext.ui.ClickableText
 import com.halilibo.richtext.ui.RichTextScope
@@ -229,7 +228,7 @@ private fun AnnotatedString.animateAlphas(
     }
     modifiedTextSnippets.add(
       remainingText.subSequence(animation.startIndex, remainingText.length)
-        .changeAlpha(animation.alpha, contentColor)
+        .changeColor(contentColor) { animation.alpha }
     )
     remainingText = remainingText.subSequence(0, animation.startIndex)
   }
@@ -238,21 +237,12 @@ private fun AnnotatedString.animateAlphas(
   }.toAnnotatedString()
 }
 
-private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
+private fun AnnotatedString.changeColor(color: Color, alpha: () -> Float): AnnotatedString {
   val subStyles = spanStyles.map {
-    it.copy(
-      item = it.item.copy(
-        brush = DynamicSolidColor { it.item.color.copy(alpha = alpha) },
-      ),
-    )
+    it.copy(item = it.item.copy(brush = DynamicSolidColor(it.item.color, alpha)))
   }
-  val fullStyle = AnnotatedString.Range(
-    SpanStyle(
-      brush = DynamicSolidColor { contentColor.copy(alpha = alpha) },
-    ),
-    0,
-    length,
-  )
+  val fullStyle =
+    AnnotatedString.Range(SpanStyle(brush = DynamicSolidColor(color, alpha)), 0, length)
   return AnnotatedString(text, subStyles + fullStyle)
 }
 
@@ -269,10 +259,11 @@ private fun AnnotatedString.getConsumableAnnotations(
       ) as? Format.Link
     }
 
-private data class DynamicSolidColor(val color: () -> Color) : ShaderBrush() {
+private data class DynamicSolidColor(private val color: Color, private val alpha: () -> Float) :
+  ShaderBrush() {
 
   override fun createShader(size: Size): Shader {
-    val color = color()
+    val color = color.copy(alpha = color.alpha * alpha())
     return LinearGradientShader(Offset.Zero, Offset(size.width, size.height), listOf(color, color))
   }
 }
