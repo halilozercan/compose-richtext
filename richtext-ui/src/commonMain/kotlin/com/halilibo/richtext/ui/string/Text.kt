@@ -16,7 +16,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Offset.Companion
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
@@ -233,9 +240,19 @@ private fun AnnotatedString.animateAlphas(
 
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
   val subStyles = spanStyles.map {
-    it.copy(item = it.item.copy(color = it.item.color.copy(alpha = alpha)))
+    it.copy(
+      item = it.item.copy(
+        brush = DynamicSolidColor { it.item.color.copy(alpha = alpha) },
+      ),
+    )
   }
-  val fullStyle = AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length)
+  val fullStyle = AnnotatedString.Range(
+    SpanStyle(
+      brush = DynamicSolidColor { contentColor.copy(alpha = alpha) },
+    ),
+    0,
+    length,
+  )
   return AnnotatedString(text, subStyles + fullStyle)
 }
 
@@ -251,3 +268,11 @@ private fun AnnotatedString.getConsumableAnnotations(
         textFormatObjects
       ) as? Format.Link
     }
+
+private data class DynamicSolidColor(val color: () -> Color) : ShaderBrush() {
+
+  override fun createShader(size: Size): Shader {
+    val color = color()
+    return LinearGradientShader(Offset.Zero, Offset(size.width, size.height), listOf(color, color))
+  }
+}
