@@ -17,7 +17,7 @@ internal fun RichTextScope.RenderTable(
   node: AstNode,
   inlineContentOverride: InlineContentOverride?,
   richtextRenderOptions: RichTextRenderOptions,
-  markdownAnimationState: MutableState<MarkdownAnimationState>,
+  markdownAnimationState: MarkdownAnimationState,
 ) {
   Table(
     headerRow = {

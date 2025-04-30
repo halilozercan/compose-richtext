@@ -2,10 +2,8 @@
 
 package com.halilibo.richtext.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -14,12 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,10 +30,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.ListType.Ordered
 import com.halilibo.richtext.ui.ListType.Unordered
-import com.halilibo.richtext.ui.string.DefaultMarkdownAnimationState
 import com.halilibo.richtext.ui.string.MarkdownAnimationState
 import com.halilibo.richtext.ui.string.RichTextRenderOptions
-import kotlinx.coroutines.delay
 import kotlin.math.max
 
 public enum class ListType {
@@ -210,8 +203,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
  */
 @Composable public fun <T> RichTextScope.FormattedList(
   listType: ListType,
-  markdownAnimationState: MutableState<MarkdownAnimationState> = mutableStateOf(
-    DefaultMarkdownAnimationState),
+  markdownAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
   richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions(),
   items: List<T>,
   drawItem: @Composable RichTextScope.(T) -> Unit
@@ -248,7 +240,8 @@ private val LocalListLevel = compositionLocalOf { 0 }
 
 @Composable private fun rememberAnimation(
   richTextRenderOptions: RichTextRenderOptions,
-  markdownAnimationState: MutableState<MarkdownAnimationState>): State<Float> {
+  markdownAnimationState: MarkdownAnimationState,
+): State<Float> {
   val targetAlpha = remember {
     mutableFloatStateOf(if (richTextRenderOptions.animate) 0f else 1f)
   }
@@ -259,7 +252,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
     targetAlpha.value,
     tween(
       richTextRenderOptions.textFadeInMs,
-      delayMillis = markdownAnimationState.value.toDelayMs(),
+      delayMillis = markdownAnimationState.toDelayMs(),
     )
   )
   return alpha

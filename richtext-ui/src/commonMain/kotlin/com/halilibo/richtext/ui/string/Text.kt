@@ -5,13 +5,16 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -43,8 +46,7 @@ public fun RichTextScope.Text(
   softWrap: Boolean = true,
   isLeafText: Boolean = true,
   renderOptions: RichTextRenderOptions = RichTextRenderOptions(),
-  sharedAnimationState: MutableState<MarkdownAnimationState> =
-    mutableStateOf(DefaultMarkdownAnimationState),
+  sharedAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
   overflow: TextOverflow = TextOverflow.Clip,
   maxLines: Int = Int.MAX_VALUE
 ) {
@@ -105,12 +107,14 @@ public fun RichTextScope.Text(
   }
 }
 
-public data class MarkdownAnimationState(
-  val lastAnimationStartMs: Long = 0,
-) {
-  public fun addAnimation(renderOptions: RichTextRenderOptions): MarkdownAnimationState = copy(
+@Stable
+public class MarkdownAnimationState {
+
+  private var lastAnimationStartMs by mutableLongStateOf(0L)
+
+  public fun addAnimation(renderOptions: RichTextRenderOptions) {
     lastAnimationStartMs = calculatedDelay(renderOptions) + System.currentTimeMillis()
-  )
+  }
 
   private fun calculatedDelay(renderOptions: RichTextRenderOptions): Long {
     val now = System.currentTimeMillis()
@@ -132,15 +136,12 @@ public data class MarkdownAnimationState(
     (lastAnimationStartMs - System.currentTimeMillis()).coerceAtLeast(0).toInt()
 }
 
-// Add a default value
-public val DefaultMarkdownAnimationState: MarkdownAnimationState = MarkdownAnimationState()
-
 @Composable
 private fun rememberAnimatedText(
   annotated: AnnotatedString,
   renderOptions: RichTextRenderOptions,
   contentColor: Color,
-  sharedAnimationState: MutableState<MarkdownAnimationState>,
+  sharedAnimationState: MarkdownAnimationState,
   isLeafText: Boolean,
 ): AnnotatedString {
   val coroutineScope = rememberCoroutineScope()
@@ -158,13 +159,13 @@ private fun rememberAnimatedText(
         lastAnimationIndex.value = phraseIndex
         coroutineScope.launch {
           textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
-          sharedAnimationState.value = sharedAnimationState.value.addAnimation(renderOptions)
+          sharedAnimationState.addAnimation(renderOptions)
           var hasAnimationFired = false
           Animatable(0f).animateTo(
             targetValue = 1f,
             animationSpec = tween(
               durationMillis = renderOptions.textFadeInMs,
-              delayMillis = sharedAnimationState.value.toDelayMs(),
+              delayMillis = sharedAnimationState.toDelayMs(),
             )
           ) {
             if (!hasAnimationFired) {
