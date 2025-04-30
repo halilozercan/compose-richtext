@@ -62,14 +62,17 @@ public fun RichTextScope.Text(
   }
   val inlineContents = remember(text) { text.getInlineContents() }
 
-  val animatedText = rememberAnimatedText(
-    annotated = annotated,
-    contentColor = contentColor,
-    renderOptions = renderOptions,
-    isLeafText = isLeafText,
-    sharedAnimationState = sharedAnimationState,
-    hasInlineTextContent = inlineContents.isNotEmpty(),
-  )
+  val animatedText = if (renderOptions.animate && inlineContents.isEmpty()) {
+    rememberAnimatedText(
+      annotated = annotated,
+      contentColor = contentColor,
+      renderOptions = renderOptions,
+      isLeafText = isLeafText,
+      sharedAnimationState = sharedAnimationState,
+    )
+  } else {
+    annotated
+  }
 
   BoxWithConstraints(modifier = modifier) {
     val inlineTextContents = manageInlineTextContents(
@@ -145,83 +148,74 @@ private fun rememberAnimatedText(
   contentColor: Color,
   sharedAnimationState: MutableState<MarkdownAnimationState>,
   isLeafText: Boolean,
-  hasInlineTextContent: Boolean,
 ): AnnotatedString {
   val coroutineScope = rememberCoroutineScope()
   val animations = remember { mutableStateMapOf<Int, TextAnimation>() }
   val textToRender = remember { mutableStateOf(AnnotatedString("")) }
-  if (renderOptions.animate) {
-    val lastAnimationIndex = remember { mutableIntStateOf(-1) }
-    val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
-    val animationUpdate: () -> Unit = {
-      val phrases = readyToAnimateText.value
-      phrases.phraseSegments
-        .filter { it > lastAnimationIndex.value }
-        .forEach { phraseIndex ->
-          animations[phraseIndex] = TextAnimation(phraseIndex, 0f)
-          lastAnimationIndex.value = phraseIndex
-          coroutineScope.launch {
-            textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
-            sharedAnimationState.value = sharedAnimationState.value.addAnimation(renderOptions)
-            var hasAnimationFired = false
-            Animatable(0f).animateTo(
-              targetValue = 1f,
-              animationSpec = tween(
-                durationMillis = renderOptions.textFadeInMs,
-                delayMillis = sharedAnimationState.value.toDelayMs(),
-              )
-            ) {
-              if (!hasAnimationFired) {
-                renderOptions.onPhraseAnimate()
-                hasAnimationFired = true
-              } else {
-                renderOptions.onTextAnimate()
-              }
-              animations[phraseIndex] = TextAnimation(phraseIndex, value)
-            }
-            animations.remove(phraseIndex)
-          }
-        }
-      if (phrases.isComplete) {
-        textToRender.value = phrases.annotatedString
-      }
-    }
-    LaunchedEffect(annotated) {
-      // If we detect a new phrase, kick off the animation now.
-      val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
-      if (!phrases.hasNewPhrasesFrom(readyToAnimateText.value)) return@LaunchedEffect
-      readyToAnimateText.value = phrases
-      animationUpdate()
 
-      // In case no changes happen for a while, we'll render after some timeout
-      delay(renderOptions.debounceMs.milliseconds)
-      if (annotated.text.isNotEmpty()) {
-        val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
-        if (debouncedPhrases != readyToAnimateText.value) {
-          readyToAnimateText.value = debouncedPhrases
-          animationUpdate()
+  val lastAnimationIndex = remember { mutableIntStateOf(-1) }
+  val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
+  val animationUpdate: () -> Unit = {
+    val phrases = readyToAnimateText.value
+    phrases.phraseSegments
+      .filter { it > lastAnimationIndex.value }
+      .forEach { phraseIndex ->
+        animations[phraseIndex] = TextAnimation(phraseIndex, 0f)
+        lastAnimationIndex.value = phraseIndex
+        coroutineScope.launch {
+          textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
+          sharedAnimationState.value = sharedAnimationState.value.addAnimation(renderOptions)
+          var hasAnimationFired = false
+          Animatable(0f).animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+              durationMillis = renderOptions.textFadeInMs,
+              delayMillis = sharedAnimationState.value.toDelayMs(),
+            )
+          ) {
+            if (!hasAnimationFired) {
+              renderOptions.onPhraseAnimate()
+              hasAnimationFired = true
+            } else {
+              renderOptions.onTextAnimate()
+            }
+            animations[phraseIndex] = TextAnimation(phraseIndex, value)
+          }
+          animations.remove(phraseIndex)
         }
       }
+    if (phrases.isComplete) {
+      textToRender.value = phrases.annotatedString
     }
-    LaunchedEffect(isLeafText, annotated) {
-      if (isLeafText) return@LaunchedEffect
+  }
+  LaunchedEffect(isLeafText, annotated) {
+    // If we detect a new phrase, kick off the animation now.
+    val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
+    if (!phrases.hasNewPhrasesFrom(readyToAnimateText.value)) return@LaunchedEffect
+    readyToAnimateText.value = phrases
+    animationUpdate()
+
+    // In case no changes happen for a while, we'll render after some timeout
+    delay(renderOptions.debounceMs.milliseconds)
+    if (annotated.text.isNotEmpty()) {
+      val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
+      if (debouncedPhrases != readyToAnimateText.value) {
+        readyToAnimateText.value = debouncedPhrases
+        animationUpdate()
+      }
+    }
+  }
+  if (!isLeafText) {
+    LaunchedEffect(annotated) {
       val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
       if (phrases != readyToAnimateText.value) {
         readyToAnimateText.value = phrases
         animationUpdate()
       }
     }
-  } else {
-    // If we're not animating, just render the text as is.
-    textToRender.value = annotated
   }
 
-  // Ignore animated text if we have inline content, since it causes crashes.
-  return if (!hasInlineTextContent) {
-    textToRender.value.animateAlphas(animations.values, contentColor)
-  } else {
-    annotated
-  }
+  return textToRender.value.animateAlphas(animations.values, contentColor)
 }
 
 private data class TextAnimation(val startIndex: Int, val alpha: Float)
