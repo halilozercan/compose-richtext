@@ -6,15 +6,12 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -28,10 +25,7 @@ import com.halilibo.richtext.ui.currentRichTextStyle
 import com.halilibo.richtext.ui.string.RichTextString.Format
 import com.halilibo.richtext.ui.util.PhraseAnnotatedString
 import com.halilibo.richtext.ui.util.segmentIntoPhrases
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.milliseconds
@@ -154,16 +148,16 @@ private fun rememberAnimatedText(
   val textToRender = remember { mutableStateOf(AnnotatedString("")) }
 
   val lastAnimationIndex = remember { mutableIntStateOf(-1) }
-  val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
-  val animationUpdate: () -> Unit = {
-    val phrases = readyToAnimateText.value
+  val lastPhrases = remember { mutableStateOf(PhraseAnnotatedString()) }
+  val animationUpdate = { phrases: PhraseAnnotatedString ->
+    lastPhrases.value = phrases
     phrases.phraseSegments
       .filter { it > lastAnimationIndex.value }
       .forEach { phraseIndex ->
         animations[phraseIndex] = TextAnimation(phraseIndex, 0f)
         lastAnimationIndex.value = phraseIndex
         coroutineScope.launch {
-          textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
+          textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
           sharedAnimationState.value = sharedAnimationState.value.addAnimation(renderOptions)
           var hasAnimationFired = false
           Animatable(0f).animateTo(
@@ -189,28 +183,21 @@ private fun rememberAnimatedText(
     }
   }
   LaunchedEffect(isLeafText, annotated) {
+    val isComplete = !isLeafText
     // If we detect a new phrase, kick off the animation now.
-    val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
-    if (!phrases.hasNewPhrasesFrom(readyToAnimateText.value)) return@LaunchedEffect
-    readyToAnimateText.value = phrases
-    animationUpdate()
+    val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = isComplete)
+    if (isComplete && phrases == lastPhrases.value) return@LaunchedEffect
+    if (!isComplete && !phrases.hasNewPhrasesFrom(lastPhrases.value)) return@LaunchedEffect
+    animationUpdate(phrases)
 
-    // In case no changes happen for a while, we'll render after some timeout
-    delay(renderOptions.debounceMs.milliseconds)
-    if (annotated.text.isNotEmpty()) {
-      val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
-      if (debouncedPhrases != readyToAnimateText.value) {
-        readyToAnimateText.value = debouncedPhrases
-        animationUpdate()
-      }
-    }
-  }
-  if (!isLeafText) {
-    LaunchedEffect(annotated) {
-      val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
-      if (phrases != readyToAnimateText.value) {
-        readyToAnimateText.value = phrases
-        animationUpdate()
+    if (!isComplete) {
+      // In case no changes happen for a while, we'll render after some timeout
+      delay(renderOptions.debounceMs.milliseconds)
+      if (annotated.text.isNotEmpty()) {
+        val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
+        if (debouncedPhrases != lastPhrases.value) {
+          animationUpdate(debouncedPhrases)
+        }
       }
     }
   }
