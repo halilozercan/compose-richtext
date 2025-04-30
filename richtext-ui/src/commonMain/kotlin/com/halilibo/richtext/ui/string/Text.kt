@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -28,6 +29,7 @@ import com.halilibo.richtext.ui.string.RichTextString.Format
 import com.halilibo.richtext.ui.util.PhraseAnnotatedString
 import com.halilibo.richtext.ui.util.segmentIntoPhrases
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
@@ -89,10 +91,16 @@ public fun RichTextScope.Text(
         // clickable on the left side.
         // However, if a paragraph ends with a link, the link will be clickable past the
         // end of the last line.
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1)).any()
+        annotated.getConsumableAnnotations(
+          text.formatObjects,
+          offset.coerceAtMost(annotated.length - 1)
+        ).any()
       },
       onClick = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1))
+        annotated.getConsumableAnnotations(
+          text.formatObjects,
+          offset.coerceAtMost(annotated.length - 1)
+        )
           .firstOrNull()
           ?.let { link -> link.onClick() }
       }
@@ -106,6 +114,7 @@ public data class MarkdownAnimationState(
   public fun addAnimation(renderOptions: RichTextRenderOptions): MarkdownAnimationState = copy(
     lastAnimationStartMs = calculatedDelay(renderOptions) + System.currentTimeMillis()
   )
+
   private fun calculatedDelay(renderOptions: RichTextRenderOptions): Long {
     val now = System.currentTimeMillis()
     val diffMs = lastAnimationStartMs - now
@@ -125,6 +134,7 @@ public data class MarkdownAnimationState(
   public fun toDelayMs(): Int =
     (lastAnimationStartMs - System.currentTimeMillis()).coerceAtLeast(0).toInt()
 }
+
 // Add a default value
 public val DefaultMarkdownAnimationState: MarkdownAnimationState = MarkdownAnimationState()
 
@@ -144,12 +154,6 @@ private fun rememberAnimatedText(
   if (renderOptions.animate) {
     val lastAnimationIndex = remember { mutableIntStateOf(-1) }
     val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
-    // In case no changes happen for a while, we'll render after some timeout
-    val debouncedTextFlow = remember { MutableStateFlow(AnnotatedString("")) }
-    val debouncedText by remember {
-      debouncedTextFlow.debounce(renderOptions.debounceMs.milliseconds)
-    }.collectAsState(AnnotatedString(""), coroutineScope.coroutineContext)
-
     val animationUpdate: () -> Unit = {
       val phrases = readyToAnimateText.value
       phrases.phraseSegments
@@ -184,12 +188,21 @@ private fun rememberAnimatedText(
       }
     }
     LaunchedEffect(annotated) {
-      debouncedTextFlow.value = annotated
       // If we detect a new phrase, kick off the animation now.
       val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
       if (phrases.hasNewPhrasesFrom(readyToAnimateText.value).not()) return@LaunchedEffect
       readyToAnimateText.value = phrases
       animationUpdate()
+
+      // In case no changes happen for a while, we'll render after some timeout
+      delay(renderOptions.debounceMs.milliseconds)
+      if (annotated.text.isNotEmpty()) {
+        val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
+        if (debouncedPhrases != readyToAnimateText.value) {
+          readyToAnimateText.value = debouncedPhrases
+          animationUpdate()
+        }
+      }
     }
     LaunchedEffect(isLeafText, annotated) {
       if (isLeafText) return@LaunchedEffect
@@ -199,20 +212,10 @@ private fun rememberAnimatedText(
         animationUpdate()
       }
     }
-    LaunchedEffect(debouncedText) {
-      if (debouncedText.text.isEmpty()) return@LaunchedEffect
-      val phrases = debouncedText.segmentIntoPhrases(renderOptions, isComplete = true)
-      if (phrases != readyToAnimateText.value) {
-        readyToAnimateText.value = phrases
-          animationUpdate()
-      }
-    }
-
   } else {
     // If we're not animating, just render the text as is.
     textToRender.value = annotated
   }
-
 
   // Ignore animated text if we have inline content, since it causes crashes.
   return if (!hasInlineTextContent) {
@@ -222,10 +225,11 @@ private fun rememberAnimatedText(
   }
 }
 
-private data class TextAnimation(val startIndex: Int, val alpha: Float) 
+private data class TextAnimation(val startIndex: Int, val alpha: Float)
 
 private fun AnnotatedString.animateAlphas(
-  animations: Collection<TextAnimation>, contentColor: Color): AnnotatedString {
+  animations: Collection<TextAnimation>, contentColor: Color
+): AnnotatedString {
   if (this.text.isEmpty() || animations.isEmpty()) {
     return this
   }
@@ -248,11 +252,10 @@ private fun AnnotatedString.animateAlphas(
 
 private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
   val newWordsStyles = spanStyles.map { spanstyle ->
-        spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
-      } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
+    spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
+  } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
   return AnnotatedString(text, newWordsStyles)
 }
-
 
 private fun AnnotatedString.getConsumableAnnotations(
   textFormatObjects: Map<String, Any>,
