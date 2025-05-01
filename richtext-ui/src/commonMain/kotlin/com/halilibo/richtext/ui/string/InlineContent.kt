@@ -4,6 +4,7 @@ package com.halilibo.richtext.ui.string
 
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,16 +43,12 @@ public class InlineContent(
  */
 @Composable internal fun manageInlineTextContents(
   inlineContents: Map<String, InlineContent>,
-  textConstraints: Constraints,
+  textConstraints: State<Constraints>,
 ): Map<String, InlineTextContent> {
   val density = LocalDensity.current
 
   return inlineContents.mapValues { (_, content) ->
-    reifyInlineContent(
-      content,
-      Constraints(maxWidth = textConstraints.maxWidth, maxHeight = textConstraints.maxHeight),
-      density,
-    )
+    reifyInlineContent(content, textConstraints, density)
   }
 }
 
@@ -63,7 +60,7 @@ public class InlineContent(
  */
 @Composable private fun reifyInlineContent(
   content: InlineContent,
-  contentConstraints: Constraints,
+  contentConstraints: State<Constraints>,
   density: Density,
 ): InlineTextContent {
   var size by remember {
@@ -73,44 +70,44 @@ public class InlineContent(
     )
   }
 
-  with(density) {
-    // If size is null, content hasn't been measured yet, so just draw with zero width for now.
-    // Set the height to 1 em so we can calculate how many pixels in an EM.
-    val placeholder = Placeholder(
+  // If size is null, content hasn't been measured yet, so just draw with zero width for now.
+  // Set the height to 1 em so we can calculate how many pixels in an EM.
+  val placeholder = with(density) {
+    Placeholder(
       width = size?.width?.toSp() ?: 0.sp,
       height = size?.height?.toSp() ?: 1.sp,
       placeholderVerticalAlign = content.placeholderVerticalAlign
     )
+  }
 
-    return InlineTextContent(placeholder) { alternateText ->
-      Layout(content = { content.content(density, alternateText) }) { measurables, _ ->
-        // Measure the content with the constraints for the parent Text layout, not the actual.
-        // This allows it to determine exactly how large it needs to be so we can update the
-        // placeholder.
-        val contentPlaceable = measurables.singleOrNull()?.measure(contentConstraints)
-          ?: return@Layout layout(0, 0) {}
+  return InlineTextContent(placeholder) { alternateText ->
+    Layout(content = { content.content(density, alternateText) }) { measurables, _ ->
+      // Measure the content with the constraints for the parent Text layout, not the actual.
+      // This allows it to determine exactly how large it needs to be so we can update the
+      // placeholder.
+      val contentPlaceable = measurables.singleOrNull()?.measure(contentConstraints.value)
+        ?: return@Layout layout(0, 0) {}
 
-        // If the inline content changes in size, there will be one layout pass in which
-        // the text layout placeholder and composable size will be out of sync.
-        // In some cases, the composable will be larger than the placeholder.
-        // If that happens, we need to offset the layout so that the composable starts
-        // in the right place and overhangs the end. Without this, Compose will place the
-        // composable centered inside of its smaller placeholder which makes the content shift
-        // left for one frame and is more jarring.
-        val extraWidth = (contentPlaceable.width - (size?.width ?: contentPlaceable.width))
-          .coerceAtLeast(0)
-        val extraHeight = (contentPlaceable.height - (size?.height ?: contentPlaceable.height))
-          .coerceAtLeast(0)
+      // If the inline content changes in size, there will be one layout pass in which
+      // the text layout placeholder and composable size will be out of sync.
+      // In some cases, the composable will be larger than the placeholder.
+      // If that happens, we need to offset the layout so that the composable starts
+      // in the right place and overhangs the end. Without this, Compose will place the
+      // composable centered inside of its smaller placeholder which makes the content shift
+      // left for one frame and is more jarring.
+      val extraWidth = (contentPlaceable.width - (size?.width ?: contentPlaceable.width))
+        .coerceAtLeast(0)
+      val extraHeight = (contentPlaceable.height - (size?.height ?: contentPlaceable.height))
+        .coerceAtLeast(0)
 
-        if (contentPlaceable.width != size?.width
-          || contentPlaceable.height != size?.height
-        ) {
-          size = IntSize(contentPlaceable.width, contentPlaceable.height)
-        }
+      if (contentPlaceable.width != size?.width
+        || contentPlaceable.height != size?.height
+      ) {
+        size = IntSize(contentPlaceable.width, contentPlaceable.height)
+      }
 
-        layout(contentPlaceable.width, contentPlaceable.height) {
-          contentPlaceable.placeRelative(extraWidth / 2, extraHeight / 2)
-        }
+      layout(contentPlaceable.width, contentPlaceable.height) {
+        contentPlaceable.placeRelative(extraWidth / 2, extraHeight / 2)
       }
     }
   }
