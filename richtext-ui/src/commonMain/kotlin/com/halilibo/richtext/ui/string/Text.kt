@@ -2,7 +2,6 @@ package com.halilibo.richtext.ui.string
 
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -22,11 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import com.halilibo.richtext.ui.ClickableText
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.currentContentColor
@@ -76,41 +77,49 @@ public fun RichTextScope.Text(
     annotated
   }
 
-  BoxWithConstraints(modifier = modifier) {
-    val inlineTextContents = manageInlineTextContents(
-      inlineContents = inlineContents,
-      textConstraints = constraints,
-    )
-    ClickableText(
-      text = animatedText,
-      onTextLayout = onTextLayout,
-      inlineContent = inlineTextContents,
-      softWrap = softWrap,
-      overflow = overflow,
-      maxLines = maxLines,
-      isOffsetClickable = { offset ->
-        // When you click past the end of the string, the offset is where the caret should be
-        // placed. However, when it is at the end, offset == text.length but parent links will at
-        // most end at length - 1. So we need to coerce the offset to be at most length - 1.
-        // This fixes an image where only the left side of an image wrapped with a link was only
-        // clickable on the left side.
-        // However, if a paragraph ends with a link, the link will be clickable past the
-        // end of the last line.
-        annotated.getConsumableAnnotations(
-          text.formatObjects,
-          offset.coerceAtMost(annotated.length - 1)
-        ).any()
-      },
-      onClick = { offset ->
-        annotated.getConsumableAnnotations(
-          text.formatObjects,
-          offset.coerceAtMost(annotated.length - 1)
-        )
-          .firstOrNull()
-          ?.let { link -> link.onClick() }
+  val inlineTextConstraints = remember { mutableStateOf(Constraints()) }
+  val inlineTextContents = manageInlineTextContents(
+    inlineContents = inlineContents,
+    textConstraints = inlineTextConstraints,
+  )
+
+  ClickableText(
+    text = animatedText,
+    onTextLayout = onTextLayout,
+    inlineContent = inlineTextContents,
+    softWrap = softWrap,
+    overflow = overflow,
+    maxLines = maxLines,
+    isOffsetClickable = { offset ->
+      // When you click past the end of the string, the offset is where the caret should be
+      // placed. However, when it is at the end, offset == text.length but parent links will at
+      // most end at length - 1. So we need to coerce the offset to be at most length - 1.
+      // This fixes an image where only the left side of an image wrapped with a link was only
+      // clickable on the left side.
+      // However, if a paragraph ends with a link, the link will be clickable past the
+      // end of the last line.
+      annotated.getConsumableAnnotations(
+        text.formatObjects,
+        offset.coerceAtMost(annotated.length - 1)
+      ).any()
+    },
+    onClick = { offset ->
+      annotated.getConsumableAnnotations(
+        text.formatObjects,
+        offset.coerceAtMost(annotated.length - 1)
+      )
+        .firstOrNull()
+        ?.let { link -> link.onClick() }
+    },
+    modifier = modifier.layout { measurable, constraints ->
+      // Prepares the custom constraints InlineTextContents before they get measured.
+      inlineTextConstraints.value = constraints.copy(minWidth = 0, minHeight = 0)
+      val placeable = measurable.measure(constraints)
+      layout(placeable.width, placeable.height) {
+        placeable.place(0, 0)
       }
-    )
-  }
+    },
+  )
 }
 
 @Stable
