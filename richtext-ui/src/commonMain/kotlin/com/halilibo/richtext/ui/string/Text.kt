@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -222,7 +223,14 @@ private fun rememberAnimatedText(
     }
   }
 
-  return textToRender.value.animateAlphas(animations.values, contentColor)
+  return remember(contentColor) {
+    derivedStateOf {
+      textToRender.value.animateAlphas(
+        animations.values,
+        contentColor
+      )
+    }
+  }.value
 }
 
 private class TextAnimation(val startIndex: Int) {
