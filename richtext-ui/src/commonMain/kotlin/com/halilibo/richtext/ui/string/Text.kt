@@ -181,9 +181,14 @@ private fun rememberAnimatedText(
               renderOptions.onTextAnimate()
             }
           }
-          animations.remove(phraseIndex)
         }
       }
+    // Since animations are already being updated, remove any animations that have finished.
+    animations.forEach { (key, animation) ->
+      if (animation.alpha() == 1f) {
+        animations.remove(key)
+      }
+    }
     if (phrases.isComplete) {
       textToRender.value = phrases.annotatedString
     }
