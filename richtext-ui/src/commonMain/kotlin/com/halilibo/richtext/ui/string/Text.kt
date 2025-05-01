@@ -1,6 +1,5 @@
 package com.halilibo.richtext.ui.string
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -157,8 +156,9 @@ private fun rememberAnimatedText(
 
   val lastAnimationIndex = remember { mutableIntStateOf(-1) }
   val lastPhrases = remember { mutableStateOf(PhraseAnnotatedString()) }
-  val animationUpdate = { phrases: PhraseAnnotatedString ->
+  val updatePhrases = { phrases: PhraseAnnotatedString ->
     lastPhrases.value = phrases
+    textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
     phrases.phraseSegments
       .filter { it > lastAnimationIndex.value }
       .forEach { phraseIndex ->
@@ -166,7 +166,6 @@ private fun rememberAnimatedText(
         animations[phraseIndex] = animation
         lastAnimationIndex.value = phraseIndex
         coroutineScope.launch {
-          textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
           sharedAnimationState.addAnimation(renderOptions)
           var hasAnimationFired = false
           animate(
@@ -193,9 +192,6 @@ private fun rememberAnimatedText(
         animations.remove(key)
       }
     }
-    if (phrases.isComplete) {
-      textToRender.value = phrases.annotatedString
-    }
   }
   LaunchedEffect(isLeafText, annotated) {
     val isComplete = !isLeafText
@@ -203,7 +199,7 @@ private fun rememberAnimatedText(
     val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = isComplete)
     if (isComplete && phrases == lastPhrases.value) return@LaunchedEffect
     if (!isComplete && !phrases.hasNewPhrasesFrom(lastPhrases.value)) return@LaunchedEffect
-    animationUpdate(phrases)
+    updatePhrases(phrases)
 
     if (!isComplete) {
       // In case no changes happen for a while, we'll render after some timeout
@@ -211,7 +207,7 @@ private fun rememberAnimatedText(
       if (annotated.text.isNotEmpty()) {
         val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
         if (debouncedPhrases != lastPhrases.value) {
-          animationUpdate(debouncedPhrases)
+          updatePhrases(debouncedPhrases)
         }
       }
     }
