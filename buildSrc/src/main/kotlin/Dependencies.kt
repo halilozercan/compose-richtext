@@ -4,9 +4,9 @@ object BuildPlugins {
 }
 
 object AndroidX {
-  val activity = "androidx.activity:activity:1.5.0-rc01"
+  val activity = "androidx.activity:activity:1.9.1"
   val annotations = "androidx.annotation:annotation:1.1.0"
-  val appcompat = "androidx.appcompat:appcompat:1.3.0"
+  val appcompat = "androidx.appcompat:appcompat:1.7.0"
   val material = "com.google.android.material:material:1.1.0"
 }
 
@@ -30,14 +30,14 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val version = "1.5.4"
-  val compilerVersion = "1.5.4"
+  val version = "1.7.8"
+  val compilerVersion = "1.5.5"
   val desktopVersion = "1.5.11"
-  val activity = "androidx.activity:activity-compose:1.7.2"
+  val activity = "androidx.activity:activity-compose:1.9.1"
   val foundation = "androidx.compose.foundation:foundation:$version"
   val material = "androidx.compose.material:material:$version"
-  val material3 = "androidx.compose.material3:material3:1.0.1"
-  val icons = "androidx.compose.material:material-icons-extended:$version"
+  val material3 = "androidx.compose.material3:material3:1.3.1"
+  val icons = "androidx.compose.material:material-icons-extended:1.7.8"
   val test = "androidx.ui:ui-test:$version"
   val tooling = "androidx.compose.ui:ui-tooling:$version"
   val toolingData = "androidx.compose.ui:ui-tooling-data:$version"

@@ -1,5 +1,6 @@
 package com.zachklipp.richtext.sample
 
+import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -68,7 +72,14 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
         itemsIndexed(Samples) { index, (title, sampleContent) ->
           ListItem(
             Modifier.clickable(onClick = { onSampleClicked(index) }),
-            icon = { SamplePreview(sampleContent) }
+            icon = {
+              // Slideshow tries to take over the screen through LocalView. It needs to be
+              // overridden to prevent the launcher from going fullscreen.
+              // Overriding the local view can't be done always, because it causes AndroidView
+              // usages to crash.
+              val overrideLocalView = (title == "Slideshow")
+              SamplePreview(overrideLocalView = overrideLocalView, sampleContent)
+            }
           ) {
             Text(title)
           }
@@ -78,20 +89,31 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   }
 }
 
-@Composable private fun SamplePreview(content: @Composable () -> Unit) {
-  ScreenPreview(
-    Modifier
-      .height(50.dp)
-      .aspectRatio(1f)
-      .clipToBounds()
-      // "Zoom in" to the top-start corner to make the preview more legible.
-      .graphicsLayer(
-        scaleX = 1.5f, scaleY = 1.5f,
-        transformOrigin = TransformOrigin(0f, 0f)
-      ),
-  ) {
-    MaterialTheme(colors = lightColors()) {
-      Surface(content = content)
+@Composable private fun SamplePreview(
+  overrideLocalView: Boolean,
+  content: @Composable () -> Unit,
+) {
+  val localView = if (overrideLocalView) {
+    val context = LocalContext.current
+    remember { FrameLayout(context.applicationContext) }
+  } else {
+    LocalView.current
+  }
+  CompositionLocalProvider(LocalView provides localView) {
+    ScreenPreview(
+      Modifier
+        .height(50.dp)
+        .aspectRatio(1f)
+        .clipToBounds()
+        // "Zoom in" to the top-start corner to make the preview more legible.
+        .graphicsLayer(
+          scaleX = 1.5f, scaleY = 1.5f,
+          transformOrigin = TransformOrigin(0f, 0f)
+        ),
+    ) {
+      MaterialTheme(colors = lightColors()) {
+        Surface(content = content)
+      }
     }
   }
 }
