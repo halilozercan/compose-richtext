@@ -263,6 +263,9 @@ private fun AnnotatedString.getConsumableAnnotations(
       ) as? Format.Link
     }
 
+/**
+ * Custom brush allows animating the alpha of this Brush via recompositions only in the draw phase.
+ */
 private data class DynamicSolidColor(private val color: Color, private val alpha: () -> Float) :
   ShaderBrush() {
 
