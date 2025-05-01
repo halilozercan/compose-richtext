@@ -64,17 +64,9 @@ import androidx.compose.ui.unit.IntSize
     val previewDensityScale = constraints.maxWidth / screenSize.width.toFloat()
     val previewDensity = actualDensity * previewDensityScale
 
-    // Provide a fake host view, since the preview doesn't really belong to this host view.
-    val context = LocalContext.current
-    val previewView = remember {
-      val previewContext = context.applicationContext
-      FrameLayout(previewContext)
-    }
-
     DisableSelection {
       CompositionLocalProvider(
         LocalDensity provides Density(previewDensity),
-        LocalView provides previewView,
         content = content
       )
     }

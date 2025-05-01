@@ -63,7 +63,7 @@ internal fun RichTextScope.MarkdownRichText(
   astNode: AstNode,
   inlineContentOverride: InlineContentOverride?,
   richTextRenderOptions: RichTextRenderOptions,
-  markdownAnimationState: MutableState<MarkdownAnimationState>,
+  markdownAnimationState: MarkdownAnimationState,
   modifier: Modifier = Modifier,
 ) {
   val onLinkClicked = LocalOnLinkClicked.current

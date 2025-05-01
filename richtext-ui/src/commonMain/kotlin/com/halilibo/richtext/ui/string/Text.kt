@@ -1,24 +1,31 @@
 package com.halilibo.richtext.ui.string
 
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import com.halilibo.richtext.ui.ClickableText
 import com.halilibo.richtext.ui.RichTextScope
@@ -27,9 +34,7 @@ import com.halilibo.richtext.ui.currentRichTextStyle
 import com.halilibo.richtext.ui.string.RichTextString.Format
 import com.halilibo.richtext.ui.util.PhraseAnnotatedString
 import com.halilibo.richtext.ui.util.segmentIntoPhrases
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 import kotlin.time.Duration.Companion.milliseconds
@@ -47,8 +52,7 @@ public fun RichTextScope.Text(
   softWrap: Boolean = true,
   isLeafText: Boolean = true,
   renderOptions: RichTextRenderOptions = RichTextRenderOptions(),
-  sharedAnimationState: MutableState<MarkdownAnimationState> =
-    mutableStateOf(DefaultMarkdownAnimationState),
+  sharedAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
   overflow: TextOverflow = TextOverflow.Clip,
   maxLines: Int = Int.MAX_VALUE
 ) {
@@ -60,14 +64,17 @@ public fun RichTextScope.Text(
   }
   val inlineContents = remember(text) { text.getInlineContents() }
 
-  val animatedText = rememberAnimatedText(
-    annotated = annotated,
-    contentColor = contentColor,
-    renderOptions = renderOptions,
-    isLeafText = isLeafText,
-    sharedAnimationState = sharedAnimationState,
-    hasInlineTextContent = inlineContents.isNotEmpty(),
-  )
+  val animatedText = if (renderOptions.animate && inlineContents.isEmpty()) {
+    rememberAnimatedText(
+      annotated = annotated,
+      contentColor = contentColor,
+      renderOptions = renderOptions,
+      isLeafText = isLeafText,
+      sharedAnimationState = sharedAnimationState,
+    )
+  } else {
+    annotated
+  }
 
   BoxWithConstraints(modifier = modifier) {
     val inlineTextContents = manageInlineTextContents(
@@ -89,10 +96,16 @@ public fun RichTextScope.Text(
         // clickable on the left side.
         // However, if a paragraph ends with a link, the link will be clickable past the
         // end of the last line.
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1)).any()
+        annotated.getConsumableAnnotations(
+          text.formatObjects,
+          offset.coerceAtMost(annotated.length - 1)
+        ).any()
       },
       onClick = { offset ->
-        annotated.getConsumableAnnotations(text.formatObjects, offset.coerceAtMost(annotated.length - 1))
+        annotated.getConsumableAnnotations(
+          text.formatObjects,
+          offset.coerceAtMost(annotated.length - 1)
+        )
           .firstOrNull()
           ?.let { link -> link.onClick() }
       }
@@ -100,12 +113,15 @@ public fun RichTextScope.Text(
   }
 }
 
-public data class MarkdownAnimationState(
-  val lastAnimationStartMs: Long = 0,
-) {
-  public fun addAnimation(renderOptions: RichTextRenderOptions): MarkdownAnimationState = copy(
+@Stable
+public class MarkdownAnimationState {
+
+  private var lastAnimationStartMs by mutableLongStateOf(0L)
+
+  public fun addAnimation(renderOptions: RichTextRenderOptions) {
     lastAnimationStartMs = calculatedDelay(renderOptions) + System.currentTimeMillis()
-  )
+  }
+
   private fun calculatedDelay(renderOptions: RichTextRenderOptions): Long {
     val now = System.currentTimeMillis()
     val diffMs = lastAnimationStartMs - now
@@ -125,134 +141,114 @@ public data class MarkdownAnimationState(
   public fun toDelayMs(): Int =
     (lastAnimationStartMs - System.currentTimeMillis()).coerceAtLeast(0).toInt()
 }
-// Add a default value
-public val DefaultMarkdownAnimationState: MarkdownAnimationState = MarkdownAnimationState()
 
 @Composable
-@OptIn(FlowPreview::class)
 private fun rememberAnimatedText(
   annotated: AnnotatedString,
   renderOptions: RichTextRenderOptions,
   contentColor: Color,
-  sharedAnimationState: MutableState<MarkdownAnimationState>,
+  sharedAnimationState: MarkdownAnimationState,
   isLeafText: Boolean,
-  hasInlineTextContent: Boolean,
 ): AnnotatedString {
   val coroutineScope = rememberCoroutineScope()
   val animations = remember { mutableStateMapOf<Int, TextAnimation>() }
   val textToRender = remember { mutableStateOf(AnnotatedString("")) }
-  if (renderOptions.animate) {
-    val lastAnimationIndex = remember { mutableIntStateOf(-1) }
-    val readyToAnimateText = remember { mutableStateOf(PhraseAnnotatedString()) }
-    // In case no changes happen for a while, we'll render after some timeout
-    val debouncedTextFlow = remember { MutableStateFlow(AnnotatedString("")) }
-    val debouncedText by remember {
-      debouncedTextFlow.debounce(renderOptions.debounceMs.milliseconds)
-    }.collectAsState(AnnotatedString(""), coroutineScope.coroutineContext)
 
-    val animationUpdate: () -> Unit = {
-      val phrases = readyToAnimateText.value
-      phrases.phraseSegments
-        .filter { it > lastAnimationIndex.value }
-        .forEach { phraseIndex ->
-          animations[phraseIndex] = TextAnimation(phraseIndex, 0f)
-          lastAnimationIndex.value = phraseIndex
-          coroutineScope.launch {
-            textToRender.value = readyToAnimateText.value.makeCompletePhraseString(!isLeafText)
-            sharedAnimationState.value = sharedAnimationState.value.addAnimation(renderOptions)
-            var hasAnimationFired = false
-            Animatable(0f).animateTo(
-              targetValue = 1f,
-              animationSpec = tween(
-                durationMillis = renderOptions.textFadeInMs,
-                delayMillis = sharedAnimationState.value.toDelayMs(),
-              )
-            ) {
-              if (!hasAnimationFired) {
-                renderOptions.onPhraseAnimate()
-                hasAnimationFired = true
-              } else {
-                renderOptions.onTextAnimate()
-              }
-              animations[phraseIndex] = TextAnimation(phraseIndex, value)
+  val lastAnimationIndex = remember { mutableIntStateOf(-1) }
+  val lastPhrases = remember { mutableStateOf(PhraseAnnotatedString()) }
+  val updatePhrases = { phrases: PhraseAnnotatedString ->
+    lastPhrases.value = phrases
+    textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
+    phrases.phraseSegments
+      .filter { it > lastAnimationIndex.value }
+      .forEach { phraseIndex ->
+        val animation = TextAnimation(phraseIndex)
+        animations[phraseIndex] = animation
+        lastAnimationIndex.value = phraseIndex
+        coroutineScope.launch {
+          sharedAnimationState.addAnimation(renderOptions)
+          var hasAnimationFired = false
+          animate(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = tween(
+              durationMillis = renderOptions.textFadeInMs,
+              delayMillis = sharedAnimationState.toDelayMs(),
+            )
+          ) { value, _ ->
+            animation.alpha = value
+            if (!hasAnimationFired) {
+              renderOptions.onPhraseAnimate()
+              hasAnimationFired = true
+            } else {
+              renderOptions.onTextAnimate()
             }
-            animations.remove(phraseIndex)
           }
         }
-      if (phrases.isComplete) {
-        textToRender.value = phrases.annotatedString
+      }
+    // Since animations are already being updated, remove any animations that have finished.
+    animations.forEach { (key, animation) ->
+      if (animation.alpha == 1f) {
+        animations.remove(key)
       }
     }
-    LaunchedEffect(annotated) {
-      debouncedTextFlow.value = annotated
-      // If we detect a new phrase, kick off the animation now.
-      val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
-      if (phrases.hasNewPhrasesFrom(readyToAnimateText.value).not()) return@LaunchedEffect
-      readyToAnimateText.value = phrases
-      animationUpdate()
-    }
-    LaunchedEffect(isLeafText, annotated) {
-      if (isLeafText) return@LaunchedEffect
-      val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
-      if (phrases != readyToAnimateText.value) {
-        readyToAnimateText.value = phrases
-        animationUpdate()
-      }
-    }
-    LaunchedEffect(debouncedText) {
-      if (debouncedText.text.isEmpty()) return@LaunchedEffect
-      val phrases = debouncedText.segmentIntoPhrases(renderOptions, isComplete = true)
-      if (phrases != readyToAnimateText.value) {
-        readyToAnimateText.value = phrases
-          animationUpdate()
-      }
-    }
+  }
+  LaunchedEffect(isLeafText, annotated) {
+    val isComplete = !isLeafText
+    // If we detect a new phrase, kick off the animation now.
+    val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = isComplete)
+    if (isComplete && phrases == lastPhrases.value) return@LaunchedEffect
+    if (!isComplete && !phrases.hasNewPhrasesFrom(lastPhrases.value)) return@LaunchedEffect
+    updatePhrases(phrases)
 
-  } else {
-    // If we're not animating, just render the text as is.
-    textToRender.value = annotated
+    if (!isComplete) {
+      // In case no changes happen for a while, we'll render after some timeout
+      delay(renderOptions.debounceMs.milliseconds)
+      if (annotated.text.isNotEmpty()) {
+        val debouncedPhrases = annotated.segmentIntoPhrases(renderOptions, isComplete = true)
+        if (debouncedPhrases != lastPhrases.value) {
+          updatePhrases(debouncedPhrases)
+        }
+      }
+    }
   }
 
-
-  // Ignore animated text if we have inline content, since it causes crashes.
-  return if (!hasInlineTextContent) {
-    textToRender.value.animateAlphas(animations.values, contentColor)
-  } else {
-    annotated
-  }
+  return textToRender.value.animateAlphas(animations.values, contentColor)
 }
 
-private data class TextAnimation(val startIndex: Int, val alpha: Float) 
+private class TextAnimation(val startIndex: Int) {
+
+  var alpha by mutableFloatStateOf(0f)
+}
 
 private fun AnnotatedString.animateAlphas(
-  animations: Collection<TextAnimation>, contentColor: Color): AnnotatedString {
-  if (this.text.isEmpty() || animations.isEmpty()) {
+  animations: Collection<TextAnimation>, contentColor: Color
+): AnnotatedString {
+  if (text.isEmpty() || animations.isEmpty()) {
     return this
   }
-  var remainingText = this
-  val modifiedTextSnippets = mutableStateListOf<AnnotatedString>()
-  animations.sortedByDescending { it.startIndex }.forEach { animation ->
-    if (animation.startIndex >= remainingText.length) {
-      return@forEach
-    }
-    modifiedTextSnippets.add(
-      remainingText.subSequence(animation.startIndex, remainingText.length)
-        .changeAlpha(animation.alpha, contentColor)
-    )
-    remainingText = remainingText.subSequence(0, animation.startIndex)
+  var remainingLength = length
+  val modifiedTextSnippets = mutableListOf<AnnotatedString>()
+  for (animation in animations.sortedByDescending { it.startIndex }) {
+    if (animation.startIndex >= remainingLength) continue
+    modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
+      .changeColor(contentColor, alpha = { animation.alpha })
+    remainingLength = animation.startIndex
   }
-  return AnnotatedString.Builder(remainingText).apply {
+  return buildAnnotatedString {
+    append(this@animateAlphas, start = 0, end = remainingLength)
     modifiedTextSnippets.reversed().forEach { append(it) }
-  }.toAnnotatedString()
+  }
 }
 
-private fun AnnotatedString.changeAlpha(alpha: Float, contentColor: Color): AnnotatedString {
-  val newWordsStyles = spanStyles.map { spanstyle ->
-        spanstyle.copy(item = spanstyle.item.copy(color = spanstyle.item.color.copy(alpha = alpha)))
-      } + listOf(AnnotatedString.Range(SpanStyle(contentColor.copy(alpha = alpha)), 0, length))
-  return AnnotatedString(text, newWordsStyles)
+private fun AnnotatedString.changeColor(color: Color, alpha: () -> Float): AnnotatedString {
+  val subStyles = spanStyles.map {
+    it.copy(item = it.item.copy(brush = DynamicSolidColor(it.item.color, alpha)))
+  }
+  val fullStyle =
+    AnnotatedString.Range(SpanStyle(brush = DynamicSolidColor(color, alpha)), 0, length)
+  return AnnotatedString(text, subStyles + fullStyle)
 }
-
 
 private fun AnnotatedString.getConsumableAnnotations(
   textFormatObjects: Map<String, Any>,
@@ -266,3 +262,15 @@ private fun AnnotatedString.getConsumableAnnotations(
         textFormatObjects
       ) as? Format.Link
     }
+
+/**
+ * Custom brush allows animating the alpha of this Brush via recompositions only in the draw phase.
+ */
+private data class DynamicSolidColor(private val color: Color, private val alpha: () -> Float) :
+  ShaderBrush() {
+
+  override fun createShader(size: Size): Shader {
+    val color = color.copy(alpha = color.alpha * alpha())
+    return LinearGradientShader(Offset.Zero, Offset(size.width, size.height), listOf(color, color))
+  }
+}
