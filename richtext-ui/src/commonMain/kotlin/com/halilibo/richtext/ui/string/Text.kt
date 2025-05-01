@@ -223,12 +223,19 @@ private fun rememberAnimatedText(
     }
   }
 
+  // contentColor rarely changes, and it's not already a State. When contentColor changes, a new
+  // AnnotatedString must be created using the updated contentColor value.
   return remember(contentColor) {
+    // textToRender and the set of animations are tracked as States, and trigger the derivedStateOf
+    // to return a new value in order to create a new AnnotatedString with the latest text and
+    // animated Brushes.
+    // This will only return a new value if the actual text changes, or the *set* of animated spans
+    // has changed.
+    // When a span gets a new animated value, the AnnotatedString will not be updated. Instead,
+    // the text will just be re-drawn, since the animated alpha state was read only inside
+    // DynamicSolidColor during the draw phase.
     derivedStateOf {
-      textToRender.value.animateAlphas(
-        animations.values,
-        contentColor
-      )
+      textToRender.value.withDynamicColorPhrases(contentColor, animations.values)
     }
   }.value
 }
@@ -238,8 +245,8 @@ private class TextAnimation(val startIndex: Int) {
   var alpha by mutableFloatStateOf(0f)
 }
 
-private fun AnnotatedString.animateAlphas(
-  animations: Collection<TextAnimation>, contentColor: Color
+private fun AnnotatedString.withDynamicColorPhrases(
+  contentColor: Color, animations: Collection<TextAnimation>,
 ): AnnotatedString {
   if (text.isEmpty() || animations.isEmpty()) {
     return this
@@ -249,16 +256,16 @@ private fun AnnotatedString.animateAlphas(
   for (animation in animations.sortedByDescending { it.startIndex }) {
     if (animation.startIndex >= remainingLength) continue
     modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
-      .changeColor(contentColor, alpha = { animation.alpha })
+      .withDynamicColor(contentColor, alpha = { animation.alpha })
     remainingLength = animation.startIndex
   }
   return buildAnnotatedString {
-    append(this@animateAlphas, start = 0, end = remainingLength)
+    append(this@withDynamicColorPhrases, start = 0, end = remainingLength)
     modifiedTextSnippets.reversed().forEach { append(it) }
   }
 }
 
-private fun AnnotatedString.changeColor(color: Color, alpha: () -> Float): AnnotatedString {
+private fun AnnotatedString.withDynamicColor(color: Color, alpha: () -> Float): AnnotatedString {
   val subStyles = spanStyles.map {
     it.copy(item = it.item.copy(brush = DynamicSolidColor(it.item.color, alpha)))
   }
