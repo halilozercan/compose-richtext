@@ -139,7 +139,6 @@ public data class MarkdownAnimationState(
 public val DefaultMarkdownAnimationState: MarkdownAnimationState = MarkdownAnimationState()
 
 @Composable
-@OptIn(FlowPreview::class)
 private fun rememberAnimatedText(
   annotated: AnnotatedString,
   renderOptions: RichTextRenderOptions,
@@ -190,7 +189,7 @@ private fun rememberAnimatedText(
     LaunchedEffect(annotated) {
       // If we detect a new phrase, kick off the animation now.
       val phrases = annotated.segmentIntoPhrases(renderOptions, isComplete = !isLeafText)
-      if (phrases.hasNewPhrasesFrom(readyToAnimateText.value).not()) return@LaunchedEffect
+      if (!phrases.hasNewPhrasesFrom(readyToAnimateText.value)) return@LaunchedEffect
       readyToAnimateText.value = phrases
       animationUpdate()
 
