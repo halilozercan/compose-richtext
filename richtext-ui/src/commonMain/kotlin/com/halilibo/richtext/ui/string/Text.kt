@@ -1,12 +1,14 @@
 package com.halilibo.richtext.ui.string
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -160,20 +162,22 @@ private fun rememberAnimatedText(
     phrases.phraseSegments
       .filter { it > lastAnimationIndex.value }
       .forEach { phraseIndex ->
-        val animatable = Animatable(0f)
-        animations[phraseIndex] = TextAnimation(phraseIndex) { animatable.value }
+        val animation = TextAnimation(phraseIndex)
+        animations[phraseIndex] = animation
         lastAnimationIndex.value = phraseIndex
         coroutineScope.launch {
           textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
           sharedAnimationState.addAnimation(renderOptions)
           var hasAnimationFired = false
-          animatable.animateTo(
+          animate(
+            initialValue = 0f,
             targetValue = 1f,
             animationSpec = tween(
               durationMillis = renderOptions.textFadeInMs,
               delayMillis = sharedAnimationState.toDelayMs(),
             )
-          ) {
+          ) { value, _ ->
+            animation.alpha = value
             if (!hasAnimationFired) {
               renderOptions.onPhraseAnimate()
               hasAnimationFired = true
@@ -185,7 +189,7 @@ private fun rememberAnimatedText(
       }
     // Since animations are already being updated, remove any animations that have finished.
     animations.forEach { (key, animation) ->
-      if (animation.alpha() == 1f) {
+      if (animation.alpha == 1f) {
         animations.remove(key)
       }
     }
@@ -216,7 +220,10 @@ private fun rememberAnimatedText(
   return textToRender.value.animateAlphas(animations.values, contentColor)
 }
 
-private data class TextAnimation(val startIndex: Int, val alpha: () -> Float)
+private class TextAnimation(val startIndex: Int) {
+
+  var alpha by mutableFloatStateOf(0f)
+}
 
 private fun AnnotatedString.animateAlphas(
   animations: Collection<TextAnimation>, contentColor: Color
@@ -229,7 +236,7 @@ private fun AnnotatedString.animateAlphas(
   for (animation in animations.sortedByDescending { it.startIndex }) {
     if (animation.startIndex >= remainingLength) continue
     modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
-      .changeColor(contentColor, alpha = animation.alpha)
+      .changeColor(contentColor, alpha = { animation.alpha })
     remainingLength = animation.startIndex
   }
   return buildAnnotatedString {
