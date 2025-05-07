@@ -25,7 +25,11 @@ internal data class RichTextThemeConfiguration(
       content()
     }
   }
-)
+) {
+  companion object {
+    internal val Default = RichTextThemeConfiguration()
+  }
+}
 
 internal val LocalRichTextThemeConfiguration: ProvidableCompositionLocal<RichTextThemeConfiguration> =
   compositionLocalOf { RichTextThemeConfiguration() }

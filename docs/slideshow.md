@@ -1,4 +1,8 @@
-# Slideshow
+# Slideshow (DEPRECATED)
+
+!!! warning
+    This artifact is deprecated and will no longer be published. You can use the already published versions from maven central or just look at its implementation as
+    a reference. If you would like to contribute and maintain this library, please reach out to us by creating an issue on Github.
 
 [![Android Library](https://img.shields.io/badge/Platform-Android-green.svg?style=for-the-badge)](https://developer.android.com/studio/build/dependencies)
 

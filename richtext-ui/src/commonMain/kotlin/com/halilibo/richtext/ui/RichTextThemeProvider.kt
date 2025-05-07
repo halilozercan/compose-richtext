@@ -33,18 +33,17 @@ public fun RichTextThemeProvider(
   contentColorBackProvider: @Composable ((Color, @Composable () -> Unit) -> Unit)? = null,
   content: @Composable () -> Unit
 ) {
-  val defaultRichTextThemeConfiguration = RichTextThemeConfiguration()
   CompositionLocalProvider(
     LocalRichTextThemeConfiguration provides
         RichTextThemeConfiguration(
           textStyleProvider = textStyleProvider
-            ?: defaultRichTextThemeConfiguration.textStyleProvider,
+            ?: RichTextThemeConfiguration.Default.textStyleProvider,
           textStyleBackProvider = textStyleBackProvider
-            ?: defaultRichTextThemeConfiguration.textStyleBackProvider,
+            ?: RichTextThemeConfiguration.Default.textStyleBackProvider,
           contentColorProvider = contentColorProvider
-            ?: defaultRichTextThemeConfiguration.contentColorProvider,
+            ?: RichTextThemeConfiguration.Default.contentColorProvider,
           contentColorBackProvider = contentColorBackProvider
-            ?: defaultRichTextThemeConfiguration.contentColorBackProvider,
+            ?: RichTextThemeConfiguration.Default.contentColorBackProvider,
         )
   ) {
     content()

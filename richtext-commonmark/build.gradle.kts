@@ -1,6 +1,7 @@
 plugins {
   id("richtext-kmp-library")
   id("org.jetbrains.compose") version Compose.desktopVersion
+  id("org.jetbrains.kotlin.plugin.compose") version Kotlin.version
   id("org.jetbrains.dokka")
 }
 
@@ -9,7 +10,7 @@ repositories {
 }
 
 android {
-  namespace = "com.halilibo.richtext.markdown"
+  namespace = "com.halilibo.richtext.commonmark"
 }
 
 kotlin {
@@ -17,9 +18,9 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(compose.runtime)
-        implementation(compose.foundation)
         api(Commonmark.core)
         api(project(":richtext-ui"))
+        api(project(":richtext-markdown"))
       }
     }
     val commonTest by getting
@@ -27,8 +28,7 @@ kotlin {
     val androidMain by getting {
       kotlin.srcDir("src/commonJvmAndroid/kotlin")
       dependencies {
-        implementation(Compose.coil)
-
+        implementation(Commonmark.core)
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
         implementation(Commonmark.autolink)
@@ -38,9 +38,7 @@ kotlin {
     val jvmMain by getting {
       kotlin.srcDir("src/commonJvmAndroid/kotlin")
       dependencies {
-        implementation(compose.desktop.currentOs)
-        implementation(Network.okHttp)
-
+        implementation(Commonmark.core)
         implementation(Commonmark.tables)
         implementation(Commonmark.strikethrough)
         implementation(Commonmark.autolink)
