@@ -37,6 +37,7 @@ import com.halilibo.richtext.commonmark.CommonMarkdownParseOptions
 import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
 import com.halilibo.richtext.markdown.AstBlockNodeComposer
 import com.halilibo.richtext.markdown.BasicMarkdown
+import com.halilibo.richtext.markdown.ContentOverride
 import com.halilibo.richtext.markdown.InlineContentOverride
 import com.halilibo.richtext.markdown.node.AstBlockNodeType
 import com.halilibo.richtext.markdown.node.AstHeading
@@ -159,6 +160,7 @@ val HeadingAstBlockNodeComposer = object : AstBlockNodeComposer {
 
   @Composable override fun RichTextScope.Compose(
     astNode: AstNode,
+    contentOverride: ContentOverride?,
     inlineContentOverride: InlineContentOverride?,
     richTextRenderOptions: RichTextRenderOptions,
     markdownAnimationState: MarkdownAnimationState,

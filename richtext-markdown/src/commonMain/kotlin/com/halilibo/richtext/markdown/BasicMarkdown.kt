@@ -77,16 +77,17 @@ public typealias InlineContentOverride = RichTextScope.(
 @Composable
 public fun RichTextScope.BasicMarkdown(
   astNode: AstNode,
+  contentOverride: ContentOverride? = null,
   inlineContentOverride: InlineContentOverride? = null,
   richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions.Default,
-  markdownAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
   astBlockNodeComposer: AstBlockNodeComposer? = null,
 ) {
   RecursiveRenderMarkdownAst(
     astNode = astNode,
+    contentOverride = contentOverride,
     inlineContentOverride = inlineContentOverride,
     richTextRenderOptions = richTextRenderOptions,
-    markdownAnimationState = markdownAnimationState,
+    markdownAnimationState = remember { MarkdownAnimationState() },
     astNodeComposer = astBlockNodeComposer,
   )
 }
@@ -112,6 +113,7 @@ public interface AstBlockNodeComposer {
   @Composable
   public fun RichTextScope.Compose(
     astNode: AstNode,
+    contentOverride: ContentOverride?,
     inlineContentOverride: InlineContentOverride?,
     richTextRenderOptions: RichTextRenderOptions,
     markdownAnimationState: MarkdownAnimationState,
@@ -147,6 +149,7 @@ public interface AstBlockNodeComposer {
 @Composable
 internal fun RichTextScope.RecursiveRenderMarkdownAst(
   astNode: AstNode?,
+  contentOverride: ContentOverride?,
   inlineContentOverride: InlineContentOverride?,
   richTextRenderOptions: RichTextRenderOptions,
   markdownAnimationState: MarkdownAnimationState,
@@ -154,14 +157,34 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
 ) {
   astNode ?: return
 
+  if (contentOverride?.invoke(astNode) {
+      renderChildren(
+        it,
+        contentOverride,
+        inlineContentOverride,
+        richTextRenderOptions,
+        markdownAnimationState,
+        astNodeComposer,
+      )
+    } == true) {
+    return
+  }
+
   if (astNodeComposer != null &&
     astNode.type is AstBlockNodeType &&
     astNodeComposer.predicate(astNode.type)
   ) {
     with(astNodeComposer) {
-      Compose(astNode, inlineContentOverride, richTextRenderOptions, markdownAnimationState) {
+      Compose(
+        astNode,
+        contentOverride,
+        inlineContentOverride,
+        richTextRenderOptions,
+        markdownAnimationState,
+      ) {
         renderChildren(
           node = it,
+          contentOverride,
           inlineContentOverride = inlineContentOverride,
           richTextRenderOptions = richTextRenderOptions,
           markdownAnimationState = markdownAnimationState,
@@ -173,12 +196,14 @@ internal fun RichTextScope.RecursiveRenderMarkdownAst(
     with(DefaultAstNodeComposer) {
       Compose(
         astNode = astNode,
+        contentOverride,
         inlineContentOverride = inlineContentOverride,
         richTextRenderOptions = richTextRenderOptions,
         markdownAnimationState = markdownAnimationState,
         visitChildren = {
           renderChildren(
             node = it,
+            contentOverride,
             inlineContentOverride = inlineContentOverride,
             richTextRenderOptions = richTextRenderOptions,
             markdownAnimationState = markdownAnimationState,
@@ -196,6 +221,7 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
   @Composable
   override fun RichTextScope.Compose(
     astNode: AstNode,
+    contentOverride: ContentOverride?,
     inlineContentOverride: InlineContentOverride?,
     richTextRenderOptions: RichTextRenderOptions,
     markdownAnimationState: MarkdownAnimationState,
@@ -324,6 +350,7 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
 @Composable
 internal fun RichTextScope.renderChildren(
   node: AstNode?,
+  contentOverride: ContentOverride?,
   inlineContentOverride: InlineContentOverride?,
   richTextRenderOptions: RichTextRenderOptions,
   markdownAnimationState: MarkdownAnimationState,
@@ -332,6 +359,7 @@ internal fun RichTextScope.renderChildren(
   node?.childrenSequence()?.forEach {
     RecursiveRenderMarkdownAst(
       astNode = it,
+      contentOverride = contentOverride,
       inlineContentOverride = inlineContentOverride,
       richTextRenderOptions = richTextRenderOptions,
       markdownAnimationState = markdownAnimationState,

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.halilibo.richtext.commonmark.CommonMarkdownParseOptions
 import com.halilibo.richtext.commonmark.CommonmarkAstNodeParser
 import com.halilibo.richtext.markdown.BasicMarkdown
+import com.halilibo.richtext.markdown.ContentOverride
 import com.halilibo.richtext.markdown.InlineContentOverride
 import com.halilibo.richtext.markdown.node.AstDocument
 import com.halilibo.richtext.markdown.node.AstNode
@@ -149,9 +150,9 @@ import com.halilibo.richtext.ui.string.RichTextRenderOptions.Companion
 @Composable
 fun RichTextScope.LazyMarkdown(
   astNode: AstNode,
+  contentOverride: ContentOverride? = null,
   inlineContentOverride: InlineContentOverride? = null,
   richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions.Default,
-  markdownAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
 ) {
   require(astNode.type == AstDocument) {
     "Lazy Markdown rendering requires root level node to have a type of AstDocument."
@@ -169,7 +170,12 @@ fun RichTextScope.LazyMarkdown(
       // iteration
       val node = iter
       item {
-        BasicMarkdown(node, inlineContentOverride, richTextRenderOptions, markdownAnimationState)
+        BasicMarkdown(
+          node,
+          contentOverride,
+          inlineContentOverride,
+          richTextRenderOptions,
+        )
       }
       iter = iter.links.next
     }

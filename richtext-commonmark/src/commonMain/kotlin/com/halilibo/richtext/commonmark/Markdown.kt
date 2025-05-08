@@ -29,6 +29,7 @@ public fun RichTextScope.Markdown(
   content: String,
   markdownParseOptions: CommonMarkdownParseOptions = CommonMarkdownParseOptions.Default,
   richtextRenderOptions: RichTextRenderOptions = RichTextRenderOptions.Default,
+  contentOverride: ContentOverride? = null,
   inlineContentOverride: InlineContentOverride? = null,
   astBlockNodeComposer: AstBlockNodeComposer? = null
 ) {
@@ -47,9 +48,9 @@ public fun RichTextScope.Markdown(
   astRootNode?.let {
     BasicMarkdown(
       astNode = it,
+      contentOverride = contentOverride,
       inlineContentOverride = inlineContentOverride,
       richTextRenderOptions = richtextRenderOptions,
-      markdownAnimationState = remember { MarkdownAnimationState() },
       astBlockNodeComposer = astBlockNodeComposer,
     )
   }
@@ -65,16 +66,16 @@ public fun RichTextScope.Markdown(
 public fun RichTextScope.Markdown(
   content: Node,
   richtextRenderOptions: RichTextRenderOptions = RichTextRenderOptions.Default,
+  contentOverride: ContentOverride? = null,
   inlineContentOverride: InlineContentOverride? = null,
   astBlockNodeComposer: AstBlockNodeComposer? = null
 ) {
   val astNode = content.toAstNode() ?: return
-  val animationState = remember { MarkdownAnimationState() }
   BasicMarkdown(
     astNode,
+    contentOverride,
     inlineContentOverride,
     richtextRenderOptions,
-    animationState,
     astBlockNodeComposer,
   )
 }
