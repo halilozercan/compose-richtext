@@ -1,9 +1,11 @@
 package com.halilibo.richtext.commonmark
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import com.halilibo.richtext.markdown.AstBlockNodeComposer
 import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.markdown.ContentOverride
@@ -12,6 +14,7 @@ import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.ui.RichTextScope
 import com.halilibo.richtext.ui.string.MarkdownAnimationState
 import com.halilibo.richtext.ui.string.RichTextRenderOptions
+import org.commonmark.node.Node
 
 /**
  * A composable that renders Markdown content according to Commonmark specification using RichText.
@@ -50,6 +53,30 @@ public fun RichTextScope.Markdown(
       astBlockNodeComposer = astBlockNodeComposer,
     )
   }
+}
+
+/**
+ * A composable that renders Markdown node using RichText.
+ *
+ * @param content CommonMark node to render.
+ * @param onLinkClicked A function to invoke when a link is clicked from rendered content.
+ */
+@Composable
+public fun RichTextScope.Markdown(
+  content: Node,
+  richtextRenderOptions: RichTextRenderOptions = RichTextRenderOptions.Default,
+  inlineContentOverride: InlineContentOverride? = null,
+  astBlockNodeComposer: AstBlockNodeComposer? = null
+) {
+  val astNode = content.toAstNode() ?: return
+  val animationState = remember { MarkdownAnimationState() }
+  BasicMarkdown(
+    astNode,
+    inlineContentOverride,
+    richtextRenderOptions,
+    animationState,
+    astBlockNodeComposer,
+  )
 }
 
 /**
