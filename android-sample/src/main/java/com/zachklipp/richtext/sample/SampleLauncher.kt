@@ -7,17 +7,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
   "Markdown Demo" to @Composable { MarkdownSample() },
+  "Lazy Markdown Demo" to @Composable { LazyMarkdownSample() },
   "Pagination" to @Composable { PagedSample() },
   "Printable Document" to @Composable { DocumentSample() },
   "Slideshow" to @Composable { SlideshowSample() },
@@ -60,9 +61,9 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
-  MaterialTheme(colors = darkColors()) {
+  SampleTheme(colorScheme = darkColorScheme()) {
     Scaffold(
       topBar = {
         TopAppBar(title = { Text("Samples") })
@@ -71,8 +72,9 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
       LazyColumn(modifier = Modifier.padding(contentPadding)) {
         itemsIndexed(Samples) { index, (title, sampleContent) ->
           ListItem(
-            Modifier.clickable(onClick = { onSampleClicked(index) }),
-            icon = {
+            headlineContent = { Text(title) },
+            modifier = Modifier.clickable(onClick = { onSampleClicked(index) }),
+            leadingContent = {
               // Slideshow tries to take over the screen through LocalView. It needs to be
               // overridden to prevent the launcher from going fullscreen.
               // Overriding the local view can't be done always, because it causes AndroidView
@@ -80,9 +82,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
               val overrideLocalView = (title == "Slideshow")
               SamplePreview(overrideLocalView = overrideLocalView, sampleContent)
             }
-          ) {
-            Text(title)
-          }
+          )
         }
       }
     }
@@ -102,7 +102,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   CompositionLocalProvider(LocalView provides localView) {
     ScreenPreview(
       Modifier
-        .height(50.dp)
+        .size(50.dp)
         .aspectRatio(1f)
         .clipToBounds()
         // "Zoom in" to the top-start corner to make the preview more legible.
@@ -111,7 +111,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
           transformOrigin = TransformOrigin(0f, 0f)
         ),
     ) {
-      MaterialTheme(colors = lightColors()) {
+      SampleTheme(colorScheme = darkColorScheme()) {
         Surface(content = content)
       }
     }

@@ -51,7 +51,7 @@ subprojects {
         allWarningsAsErrors = true
       }
 
-      freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
+      freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn", "-Xexpect-actual-classes")
     }
   }
 
@@ -133,7 +133,7 @@ subprojects {
     extensions.findByType<PublishingExtension>()?.apply {
       repositories {
         maven {
-          val localProperties = gradleLocalProperties(rootProject.rootDir)
+          val localProperties = gradleLocalProperties(rootProject.rootDir, providers)
 
           val sonatypeUsername =
             localProperties.getProperty("SONATYPE_USERNAME") ?: System.getenv("SONATYPE_USERNAME")
@@ -165,7 +165,7 @@ subprojects {
     }
 
     extensions.findByType<SigningExtension>()?.apply {
-      val localProperties = gradleLocalProperties(rootProject.rootDir)
+      val localProperties = gradleLocalProperties(rootProject.rootDir, providers)
 
       val gpgPrivateKey =
         localProperties.getProperty("GPG_PRIVATE_KEY")

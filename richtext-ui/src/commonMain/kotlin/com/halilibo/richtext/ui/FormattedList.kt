@@ -193,7 +193,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
 @Composable public inline fun RichTextScope.FormattedList(
   listType: ListType,
   vararg children: @Composable RichTextScope.() -> Unit
-): Unit = FormattedList(listType, items = children.asList()) { it() }
+): Unit = FormattedList(listType, items = children.asList(), startIndex = 0) { it() }
 
 /**
  * Creates a formatted list such as a bullet list or numbered list.
@@ -206,6 +206,7 @@ private val LocalListLevel = compositionLocalOf { 0 }
   markdownAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
   richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions(),
   items: List<T>,
+  startIndex: Int = 0,
   drawItem: @Composable RichTextScope.(T) -> Unit
 ) {
   val listStyle = currentRichTextStyle.resolveDefaults().listStyle!!
@@ -223,13 +224,15 @@ private val LocalListLevel = compositionLocalOf { 0 }
       val alpha = rememberAnimation(richTextRenderOptions, markdownAnimationState)
       Box(modifier = Modifier.alpha(alpha.value)) {
         when (listType) {
-          Ordered -> listStyle.orderedMarkers!!().drawMarker(currentLevel, index)
+          Ordered -> listStyle.orderedMarkers!!().drawMarker(currentLevel, startIndex + index)
           Unordered -> listStyle.unorderedMarkers!!().drawMarker(currentLevel)
         }
       }
     },
     itemForIndex = { index ->
-      BasicRichText(style = currentRichTextStyle.copy(paragraphSpacing = listStyle.itemSpacing)) {
+      BasicRichText(
+        style = currentRichTextStyle.copy(paragraphSpacing = listStyle.itemSpacing),
+      ) {
         CompositionLocalProvider(LocalListLevel provides currentLevel + 1) {
           drawItem(items[index])
         }
@@ -306,8 +309,12 @@ private val LocalListLevel = compositionLocalOf { 0 }
     val widestItem = itemPlaceables.maxByOrNull { it.width }!!
 
     val listWidth = widestPrefix.width + widestItem.width
-    val listHeight = itemPlaceables.sumOf { it.height } +
+    val itemsHeight = itemPlaceables.sumOf { it.height } +
         (itemPlaceables.size - 1) * itemSpacing.roundToPx()
+    val prefixesHeight = prefixPlaceables.sumOf { it.height } +
+        (prefixPlaceables.size - 1) * itemSpacing.roundToPx()
+
+    val listHeight = maxOf(itemsHeight, prefixesHeight)
     layout(listWidth, listHeight) {
       var y = 0
 
@@ -326,8 +333,8 @@ private val LocalListLevel = compositionLocalOf { 0 }
           layoutDirection = layoutDirection
         )
 
-        prefix.place(prefixOffset.x, y + prefixOffset.y)
-        item.place(widestPrefix.width, y)
+        prefix.placeRelative(prefixOffset.x, y + prefixOffset.y)
+        item.placeRelative(widestPrefix.width, y)
         y += rowHeight
       }
     }
