@@ -253,6 +253,11 @@ private val sampleMarkdown = """
 <!-- -->
   0. Ordered list starting with `0.`
 <!-- -->
+  1.
+      0. Sub-list starting with 0
+      0. Next item
+      0. Next item
+<!-- -->
   003. Ordered list starting with `003.`
 <!-- -->
   -1. Starting with `-1.` should not be list

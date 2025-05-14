@@ -149,13 +149,17 @@ private val DefaultOrderedMarkers: RichTextScope.() -> OrderedMarkers = {
   textOrderedMarkers(
     { "${it + 1}." },
     {
-      ('a'..'z').drop(it % 26)
-        .first() + "."
+      when (it >= 0) {
+        true -> ('a'..'z').drop(it % 26).first() + "."
+        false -> "0."
+      }
     },
     { "${it + 1})" },
     {
-      ('a'..'z').drop(it % 26)
-        .first() + ")"
+      when (it >= 0) {
+        true -> ('a'..'z').drop(it % 26).first() + ")"
+        false -> "0."
+      }
     }
   )
 }
