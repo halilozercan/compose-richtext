@@ -87,7 +87,7 @@ public fun RichTextScope.Text(
       maxLines = maxLines
     )
   } else {
-  val inlineTextConstraints = remember { mutableStateOf(Constraints()) }
+    val inlineTextConstraints = remember { mutableStateOf(Constraints()) }
     val inlineTextContents = manageInlineTextContents(
       inlineContents = inlineContents,
       textConstraints = inlineTextConstraints,
@@ -183,14 +183,10 @@ private fun rememberAnimatedText(
               renderOptions.onTextAnimate()
             }
           }
+          // Remove animation right away, in case it had split at an inappropriate unicode point.
+          animations.remove(phraseIndex)
         }
       }
-    // Since animations are already being updated, remove any animations that have finished.
-    animations.forEach { (key, animation) ->
-      if (animation.alpha == 1f) {
-        animations.remove(key)
-      }
-    }
   }
   LaunchedEffect(isLeafText, annotated) {
     val isComplete = !isLeafText
