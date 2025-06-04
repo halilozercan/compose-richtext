@@ -39,7 +39,8 @@ public data class TableStyle(
   val cellPadding: TextUnit? = null,
   val columnArrangement: ColumnArrangement? = null,
   val borderColor: Color? = null,
-  val borderStrokeWidth: Float? = null
+  val borderStrokeWidth: Float? = null,
+  val drawVerticalDividers: Boolean = DefaultDrawVerticalDividers,
 ) {
   public companion object {
     public val Default: TableStyle = TableStyle()
@@ -56,13 +57,15 @@ private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Unspecified
 private val DefaultColumnArrangement = ColumnArrangement.Uniform
 private const val DefaultBorderStrokeWidth = 1f
+private const val DefaultDrawVerticalDividers = true
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
     headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
     cellPadding = cellPadding ?: DefaultCellPadding,
     columnArrangement = columnArrangement ?: DefaultColumnArrangement,
     borderColor = borderColor ?: DefaultBorderColor,
-    borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
+    borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth,
+    drawVerticalDividers = drawVerticalDividers ?: DefaultDrawVerticalDividers,
 )
 
 public interface RichTextTableRowScope {
@@ -179,6 +182,7 @@ public fun RichTextScope.Table(
   TableLayout(
     columns = columns,
     rows = styledRows,
+    hasHeader = header != null,
     cellSpacing = tableStyle.borderStrokeWidth,
     tableMeasurer = measurer,
     drawDecorations = { layoutResult ->
@@ -186,7 +190,8 @@ public fun RichTextScope.Table(
         rowOffsets = layoutResult.rowOffsets,
         columnOffsets = layoutResult.columnOffsets,
         borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
-        borderStrokeWidth = tableStyle.borderStrokeWidth
+        borderStrokeWidth = tableStyle.borderStrokeWidth,
+        verticalDividers = tableStyle.drawVerticalDividers,
       )
     },
     modifier = tableModifier
@@ -197,7 +202,8 @@ private fun Modifier.drawTableBorders(
   rowOffsets: List<Float>,
   columnOffsets: List<Float>,
   borderColor: Color,
-  borderStrokeWidth: Float
+  borderStrokeWidth: Float,
+  verticalDividers: Boolean,
 ) = drawBehind {
   // Draw horizontal borders.
   rowOffsets.forEach { position ->
@@ -210,12 +216,14 @@ private fun Modifier.drawTableBorders(
   }
 
   // Draw vertical borders.
-  columnOffsets.forEach { position ->
-    drawLine(
+  if (verticalDividers) {
+    columnOffsets.forEach { position ->
+      drawLine(
         borderColor,
         Offset(position, 0f),
         Offset(position, size.height),
         borderStrokeWidth
-    )
+      )
+    }
   }
 }

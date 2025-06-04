@@ -25,6 +25,7 @@ internal data class TableLayoutResult(
 internal fun TableLayout(
   columns: Int,
   rows: List<List<@Composable () -> Unit>>,
+  hasHeader: Boolean,
   drawDecorations: (TableLayoutResult) -> Modifier,
   cellSpacing: Float,
   tableMeasurer: TableMeasurer,
@@ -61,7 +62,14 @@ internal fun TableLayout(
           if (rowIndex == 0) {
             columnOffsets.add(x - cellSpacing / 2f)
           }
-          cell.place(x.roundToInt(), y.roundToInt())
+
+          val cellY = if (hasHeader && rowIndex == 0) {
+            // Header is bottom-aligned
+            y + (measurements.rowHeights[0] - cell.height)
+          } else {
+            y
+          }
+          cell.place(x.roundToInt(), cellY.roundToInt())
           x += measurements.columnWidths[columnIndex] + cellSpacing
         }
 
