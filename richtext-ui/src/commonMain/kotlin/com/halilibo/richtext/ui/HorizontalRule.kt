@@ -6,17 +6,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+
+@Immutable
+public data class HorizontalRuleStyle(
+  val color: Color? = null,
+) {
+  public companion object {
+    public val Default: HorizontalRuleStyle = HorizontalRuleStyle()
+  }
+}
+
+internal fun HorizontalRuleStyle.resolveDefaults() = HorizontalRuleStyle(
+  color = color
+)
 
 /**
  * A simple horizontal line drawn with the current content color.
  */
 @Composable public fun RichTextScope.HorizontalRule() {
-  val color = currentContentColor.copy(alpha = .2f)
+  val resolvedStyle = currentRichTextStyle.resolveDefaults()
+  val color = resolvedStyle.horizontalRuleStyle?.color ?: currentContentColor.copy(alpha = .2f)
   val spacing = with(LocalDensity.current) {
-    currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp()
+    resolvedStyle.paragraphSpacing!!.toDp()
   }
   Box(
     Modifier

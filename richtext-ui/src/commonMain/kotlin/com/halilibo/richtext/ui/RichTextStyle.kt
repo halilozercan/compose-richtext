@@ -31,8 +31,9 @@ public data class RichTextStyle(
   val blockQuoteGutter: BlockQuoteGutter? = null,
   val codeBlockStyle: CodeBlockStyle? = null,
   val tableStyle: TableStyle? = null,
+  val horizontalRuleStyle: HorizontalRuleStyle? = null,
   val infoPanelStyle: InfoPanelStyle? = null,
-  val stringStyle: RichTextStringStyle? = null
+  val stringStyle: RichTextStringStyle? = null,
 ) {
   public companion object {
     public val Default: RichTextStyle = RichTextStyle()
@@ -46,8 +47,9 @@ public fun RichTextStyle.merge(otherStyle: RichTextStyle?): RichTextStyle = Rich
   blockQuoteGutter = otherStyle?.blockQuoteGutter ?: blockQuoteGutter,
   codeBlockStyle = otherStyle?.codeBlockStyle ?: codeBlockStyle,
   tableStyle = otherStyle?.tableStyle ?: tableStyle,
+  horizontalRuleStyle = otherStyle?.horizontalRuleStyle ?: horizontalRuleStyle,
   infoPanelStyle = otherStyle?.infoPanelStyle ?: infoPanelStyle,
-  stringStyle = stringStyle?.merge(otherStyle?.stringStyle) ?: otherStyle?.stringStyle
+  stringStyle = stringStyle?.merge(otherStyle?.stringStyle) ?: otherStyle?.stringStyle,
 )
 
 public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
@@ -57,6 +59,7 @@ public fun RichTextStyle.resolveDefaults(): RichTextStyle = RichTextStyle(
   blockQuoteGutter = blockQuoteGutter ?: DefaultBlockQuoteGutter,
   codeBlockStyle = (codeBlockStyle ?: CodeBlockStyle.Default).resolveDefaults(),
   tableStyle = (tableStyle ?: TableStyle.Default).resolveDefaults(),
+  horizontalRuleStyle = (horizontalRuleStyle ?: HorizontalRuleStyle.Default).resolveDefaults(),
   infoPanelStyle = (infoPanelStyle ?: InfoPanelStyle.Default).resolveDefaults(),
   stringStyle = (stringStyle ?: RichTextStringStyle.Default).resolveDefaults()
 )
