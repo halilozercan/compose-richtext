@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.halilibo.richtext.ui.BlockQuote
 import com.halilibo.richtext.ui.CodeBlock
 import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
+import com.halilibo.richtext.ui.DividerStyle
 import com.halilibo.richtext.ui.FormattedList
 import com.halilibo.richtext.ui.Heading
 import com.halilibo.richtext.ui.HorizontalRule
@@ -131,7 +132,9 @@ import com.halilibo.richtext.ui.material3.RichText
       currentStyle.copy(
         tableStyle = currentStyle.tableStyle!!.copy(
           columnArrangement = Adaptive(200.dp),
-          drawVerticalDividers = false,
+          dividerStyle = DividerStyle.Minimal,
+          headerBorderColor = Color.DarkGray,
+          borderColor = Color.LightGray
         )
       )
     ) {
