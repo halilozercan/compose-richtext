@@ -32,6 +32,8 @@ import kotlin.math.roundToInt
  * @param cellPadding The spacing between the contents of each cell and the borders.
  * @param borderColor The [Color] of the table border.
  * @param borderStrokeWidth The width of the table border.
+ * @param headerBorderColor Optional override of the header's [Color], defaulting to borderColor.
+ * @param drawVerticalDividers Whether to draw vertical dividers.
  */
 @Immutable
 public data class TableStyle(
@@ -39,7 +41,9 @@ public data class TableStyle(
   val cellPadding: TextUnit? = null,
   val columnArrangement: ColumnArrangement? = null,
   val borderColor: Color? = null,
-  val borderStrokeWidth: Float? = null
+  val borderStrokeWidth: Float? = null,
+  val headerBorderColor: Color? = null,
+  val dividerStyle: DividerStyle? = null,
 ) {
   public companion object {
     public val Default: TableStyle = TableStyle()
@@ -51,18 +55,26 @@ public sealed interface ColumnArrangement {
   public class Adaptive(public val maxWidth: Dp) : ColumnArrangement
 }
 
+public sealed interface DividerStyle {
+  public object Full : DividerStyle
+  public object Minimal : DividerStyle
+}
+
 private val DefaultTableHeaderTextStyle = TextStyle(fontWeight = FontWeight.Bold)
 private val DefaultCellPadding = 8.sp
 private val DefaultBorderColor = Color.Unspecified
 private val DefaultColumnArrangement = ColumnArrangement.Uniform
 private const val DefaultBorderStrokeWidth = 1f
+private val DefaultDividerStyle = DividerStyle.Full
 
 internal fun TableStyle.resolveDefaults() = TableStyle(
     headerTextStyle = headerTextStyle ?: DefaultTableHeaderTextStyle,
     cellPadding = cellPadding ?: DefaultCellPadding,
     columnArrangement = columnArrangement ?: DefaultColumnArrangement,
     borderColor = borderColor ?: DefaultBorderColor,
-    borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth
+    borderStrokeWidth = borderStrokeWidth ?: DefaultBorderStrokeWidth,
+    headerBorderColor = headerBorderColor,
+    dividerStyle = dividerStyle ?: DefaultDividerStyle,
 )
 
 public interface RichTextTableRowScope {
@@ -176,17 +188,21 @@ public fun RichTextScope.Table(
     modifier
   }
 
+  val borderColor = tableStyle.borderColor!!.takeOrElse { contentColor }
   TableLayout(
     columns = columns,
     rows = styledRows,
+    hasHeader = header != null,
     cellSpacing = tableStyle.borderStrokeWidth,
     tableMeasurer = measurer,
     drawDecorations = { layoutResult ->
       Modifier.drawTableBorders(
         rowOffsets = layoutResult.rowOffsets,
         columnOffsets = layoutResult.columnOffsets,
-        borderColor = tableStyle.borderColor!!.takeOrElse { contentColor },
-        borderStrokeWidth = tableStyle.borderStrokeWidth
+        borderColor = borderColor,
+        borderStrokeWidth = tableStyle.borderStrokeWidth,
+        headerBorderColor = tableStyle.headerBorderColor ?: borderColor,
+        dividerStyle = tableStyle.dividerStyle!!,
       )
     },
     modifier = tableModifier
@@ -197,25 +213,31 @@ private fun Modifier.drawTableBorders(
   rowOffsets: List<Float>,
   columnOffsets: List<Float>,
   borderColor: Color,
-  borderStrokeWidth: Float
+  borderStrokeWidth: Float,
+  headerBorderColor: Color,
+  dividerStyle: DividerStyle,
 ) = drawBehind {
   // Draw horizontal borders.
-  rowOffsets.forEach { position ->
-    drawLine(
-        borderColor,
+  rowOffsets.forEachIndexed { i, position ->
+    if (dividerStyle is DividerStyle.Full || (i > 0 && i < rowOffsets.size - 1)) {
+      drawLine(
+        if (i == 1) headerBorderColor else borderColor,
         start = Offset(0f, position),
         end = Offset(size.width, position),
         borderStrokeWidth
-    )
+      )
+    }
   }
 
   // Draw vertical borders.
-  columnOffsets.forEach { position ->
-    drawLine(
+  if (dividerStyle is DividerStyle.Full) {
+    columnOffsets.forEach { position ->
+      drawLine(
         borderColor,
         Offset(position, 0f),
         Offset(position, size.height),
         borderStrokeWidth
-    )
+      )
+    }
   }
 }
