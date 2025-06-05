@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.offset
@@ -30,11 +31,14 @@ internal val DefaultBlockQuoteGutter = BarGutter()
 public interface BlockQuoteGutter {
   @Composable public fun RichTextScope.drawGutter()
 
+  public val verticalContentPadding: Dp?
+
   @Immutable
   public data class BarGutter(
     val startMargin: TextUnit = 6.sp,
     val barWidth: TextUnit = 3.sp,
     val endMargin: TextUnit = 6.sp,
+    override val verticalContentPadding: Dp? = null,
     val color: (contentColor: Color) -> Color = { it.copy(alpha = .25f) }
   ) : BlockQuoteGutter {
 
@@ -65,7 +69,7 @@ public interface BlockQuoteGutter {
  */
 @Composable public fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
-  val spacing = with(LocalDensity.current) {
+  val spacing = gutter.verticalContentPadding ?: with(LocalDensity.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp() / 2
   }
 
