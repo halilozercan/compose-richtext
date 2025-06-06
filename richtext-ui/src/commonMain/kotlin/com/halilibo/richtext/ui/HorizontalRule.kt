@@ -10,11 +10,13 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Immutable
 public data class HorizontalRuleStyle(
   val color: Color? = null,
+  val spacing: Dp? = null,
 ) {
   public companion object {
     public val Default: HorizontalRuleStyle = HorizontalRuleStyle()
@@ -22,7 +24,8 @@ public data class HorizontalRuleStyle(
 }
 
 internal fun HorizontalRuleStyle.resolveDefaults() = HorizontalRuleStyle(
-  color = color
+  color = color,
+  spacing = spacing,
 )
 
 /**
@@ -30,8 +33,9 @@ internal fun HorizontalRuleStyle.resolveDefaults() = HorizontalRuleStyle(
  */
 @Composable public fun RichTextScope.HorizontalRule() {
   val resolvedStyle = currentRichTextStyle.resolveDefaults()
-  val color = resolvedStyle.horizontalRuleStyle?.color ?: currentContentColor.copy(alpha = .2f)
-  val spacing = with(LocalDensity.current) {
+  val horizontalRuleStyle = resolvedStyle.horizontalRuleStyle
+  val color = horizontalRuleStyle?.color ?: currentContentColor.copy(alpha = .2f)
+  val spacing = horizontalRuleStyle?.spacing ?: with(LocalDensity.current) {
     resolvedStyle.paragraphSpacing!!.toDp()
   }
   Box(
