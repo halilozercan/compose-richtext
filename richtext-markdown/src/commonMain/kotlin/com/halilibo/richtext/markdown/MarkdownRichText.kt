@@ -103,7 +103,7 @@ private fun computeRichTextString(astNode: AstNode): RichTextString {
               RemoteImage(
                 url = currentNodeType.destination,
                 contentDescription = currentNodeType.title,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier,
                 contentScale = ContentScale.Inside
               )
             }

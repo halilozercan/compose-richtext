@@ -188,6 +188,24 @@ private fun CheckboxPreference(
 }
 
 private val sampleMarkdown = """
+  
+  The relationship between Iran and Israel is currently hostile, marked by a lack of diplomatic
+  relations since
+  1979. [![](https://serpapi.com/searches/6853edc1ff7aa207aeb22fef/images/5a2d59fc4d35f7b2afb10a214798f581bb725442f0c4d4950c7e613c0d1b152e.png)](https://en.wikipedia.org/wiki/Iran%E2%80%93Israel_relations)
+  However, this wasn't always the case. For much of the Cold War, relations were cordial, and Iran was
+  one of the first countries to recognize Israel after its founding in
+  1948. [![](https://serpapi.com/searches/6853edc1ff7aa207aeb22fef/images/5a2d59fc4d35f7b2afb10a214798f58168812bb923ac4c7481e99e7ab79148bc.png)](https://www.dw.com/en/iran-israel-attacks-hezbollah-ayatollah-ali-khamenei-islamic-revolution/a-68780605)
+  The 1979 Iranian Islamic Revolution dramatically altered this, leading to the severing of ties and
+  the emergence of a significant proxy
+  conflict. [![](https://serpapi.com/searches/6853edc1ff7aa207aeb22fef/images/5a2d59fc4d35f7b2afb10a214798f581f66972d34a5e0796ecca3e9a2b788850.png)](https://en.wikipedia.org/wiki/Iran%E2%80%93Israel_proxy_conflict)
+  Recent events, such as Israeli attacks targeting Iranian missile capabilities, further exemplify the
+  ongoing
+  tensions. [![](https://serpapi.com/searches/6853edc1ff7aa207aeb22fef/images/5a2d59fc4d35f7b2afb10a214798f581fcca613aee7762d9229b64b69aa9807d.png)](https://www.cnn.com/world/live-news/israel-iran-conflict-06-18-25-intl-hnk)
+  The history of the relationship reveals periods of cooperation, a fact often overlooked given the
+  current
+  animosity. [![](https://serpapi.com/searches/6853edc1ff7aa207aeb22fef/images/5a2d59fc4d35f7b2afb10a214798f581f64f1897508d97e4d813aa04771c18df.png)](https://www.jstor.org/stable/10.7249/mg1143osd.7)
+  
+  
   # Demo
   Based on [this cheatsheet][cheatsheet]
 
