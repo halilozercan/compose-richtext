@@ -107,7 +107,7 @@ subprojects {
       pom {
         name.set(property("POM_NAME").toString())
         description.set(property("POM_DESCRIPTION").toString())
-        url.set("https://github.com/halilozercan/compose-richtext")
+        url.set("https://github.com/The-Wordlab/compose-richtext")
 
         licenses {
           license {
@@ -121,11 +121,15 @@ subprojects {
             id.set("halilozercan")
             name.set("Halil Ozercan")
           }
+          developer {
+            id.set("The-Wordlab")
+            name.set("The Wordlab")
+          }
         }
         scm {
-          connection.set("scm:git:git://github.com/halilozercan/compose-richtext.git")
-          url.set("https://github.com/halilozercan/compose-richtext/")
-          developerConnection.set("scm:git:ssh://git@github.com/halilozercan/compose-richtext.git")
+          connection.set("scm:git:git://github.com/The-Wordlab/compose-richtext.git")
+          url.set("https://github.com/The-Wordlab/compose-richtext/")
+          developerConnection.set("scm:git:ssh://git@github.com/The-Wordlab/compose-richtext.git")
         }
       }
     }
@@ -133,28 +137,11 @@ subprojects {
     extensions.findByType<PublishingExtension>()?.apply {
       repositories {
         maven {
-          val localProperties = gradleLocalProperties(rootProject.rootDir, providers)
-
-          val sonatypeUsername =
-            localProperties.getProperty("SONATYPE_USERNAME") ?: System.getenv("SONATYPE_USERNAME")
-
-          val sonatypePassword =
-            localProperties.getProperty("SONATYPE_PASSWORD") ?: System.getenv("SONATYPE_PASSWORD")
-
-          val releasesRepoUrl =
-            uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
-          val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-          val version = property("VERSION_NAME").toString()
-          url = uri(
-            if (version.endsWith("SNAPSHOT")) {
-              snapshotsRepoUrl
-            } else {
-              releasesRepoUrl
-            }
-          )
+          name = "GitHubPackages"
+          url = uri("https://maven.pkg.github.com/The-Wordlab/compose-richtext")
           credentials {
-            username = sonatypeUsername
-            password = sonatypePassword
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
           }
         }
       }

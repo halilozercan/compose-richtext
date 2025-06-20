@@ -23,10 +23,8 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
       - name: Release build
         run: ./gradlew :build
-      - name: Publish to MavenCentral
-        run: ./gradlew publishAllPublicationsToMavenRepository
+      - name: Publish to GitHub Packages
+        run: ./gradlew publish
         env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PRIVATE_PASSWORD: ${{ secrets.GPG_PRIVATE_PASSWORD }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
