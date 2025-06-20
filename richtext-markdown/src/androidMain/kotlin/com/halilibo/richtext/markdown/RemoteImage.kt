@@ -19,6 +19,7 @@ import coil.request.ImageRequest
 import coil.size.Size
 
 private val DEFAULT_IMAGE_SIZE = 64.dp
+private val MIN_IMAGE_SIZE = 16.dp
 
 /**
  * Implementation of RemoteImage by using Coil library for Android.
@@ -39,7 +40,7 @@ internal actual fun RemoteImage(
   )
 
   val density = LocalDensity.current
-
+  var isMinimumSize = false
   BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
     val sizeModifier by remember(density, painter) {
       derivedStateOf {
@@ -51,22 +52,26 @@ internal actual fun RemoteImage(
         ) {
           val width = painterIntrinsicSize.width
           val height = painterIntrinsicSize.height
-          val scale = if (width > constraints.maxWidth) {
-            constraints.maxWidth.toFloat() / width
+          val scale = if (width > this.constraints.maxWidth) {
+            this.constraints.maxWidth.toFloat() / width
           } else {
             1f
           }
 
           with(density) {
+            val calculatedWidth = (width * scale).toDp()
+            val calculatedHeight = (height * scale).toDp()
+            isMinimumSize = calculatedWidth < MIN_IMAGE_SIZE || calculatedHeight < MIN_IMAGE_SIZE
             Modifier.size(
-              (width * scale).toDp(),
-              (height * scale).toDp()
+              maxOf(calculatedWidth, MIN_IMAGE_SIZE),
+              maxOf(calculatedHeight, MIN_IMAGE_SIZE)
             )
           }
         } else {
           // if size is not defined at all, Coil fails to render the image
           // here, we give a default size for images until they are loaded.
-          Modifier.size(DEFAULT_IMAGE_SIZE)
+          // Ensure the width is at least MIN_IMAGE_WIDTH
+          Modifier.size(maxOf(DEFAULT_IMAGE_SIZE, MIN_IMAGE_SIZE))
         }
       }
     }
@@ -75,7 +80,7 @@ internal actual fun RemoteImage(
       painter = painter,
       contentDescription = contentDescription,
       modifier = sizeModifier,
-      contentScale = contentScale
+      contentScale = if (isMinimumSize) ContentScale.FillWidth else contentScale
     )
   }
 }
