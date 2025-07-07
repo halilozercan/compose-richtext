@@ -23,5 +23,5 @@ jobs:
       - name: Install dependencies
         run: pip install mkdocs-material
       - name: Generate docs
-        run: ./gen_docs.sh
+        run: ./gen_dokka_docs.sh
       - run: mkdocs gh-deploy --force

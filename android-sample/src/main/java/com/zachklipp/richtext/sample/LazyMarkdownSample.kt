@@ -69,10 +69,9 @@ import com.halilibo.richtext.ui.resolveDefaults
     )
   }
 
-  val colors = if (isDarkModeEnabled) darkColorScheme() else lightColorScheme()
   val context = LocalContext.current
 
-  SampleTheme(colorScheme = colors) {
+  SampleTheme(isDarkModeEnabled) {
     Surface {
       Column {
         // Config

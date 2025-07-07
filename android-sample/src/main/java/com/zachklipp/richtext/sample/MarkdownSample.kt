@@ -54,7 +54,6 @@ import com.halilibo.richtext.ui.resolveDefaults
 @OptIn(ExperimentalLayoutApi::class)
 @Composable fun MarkdownSample() {
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
-  var isDarkModeEnabled by remember { mutableStateOf(false) }
   var isWordWrapEnabled by remember { mutableStateOf(true) }
   var markdownParseOptions by remember { mutableStateOf(CommonMarkdownParseOptions.Default) }
   var isAutolinkEnabled by remember { mutableStateOf(true) }
@@ -73,74 +72,62 @@ import com.halilibo.richtext.ui.resolveDefaults
     )
   }
 
-  val colors = if (isDarkModeEnabled) darkColorScheme() else lightColorScheme()
   val context = LocalContext.current
 
   CompositionLocalProvider(
     LocalLayoutDirection provides if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr
   ) {
-    SampleTheme(colorScheme = colors) {
-      Surface {
+    Column {
+      // Config
+      Card(elevation = CardDefaults.elevatedCardElevation()) {
         Column {
-          // Config
-          Card(elevation = CardDefaults.elevatedCardElevation()) {
-            Column {
-              FlowRow {
-                CheckboxPreference(
-                  onClick = {
-                    isDarkModeEnabled = !isDarkModeEnabled
-                  },
-                  checked = isDarkModeEnabled,
-                  label = "Dark Mode"
-                )
-                CheckboxPreference(
-                  onClick = {
-                    isWordWrapEnabled = !isWordWrapEnabled
-                  },
-                  checked = isWordWrapEnabled,
-                  label = "Word Wrap"
-                )
-                CheckboxPreference(
-                  onClick = {
-                    isAutolinkEnabled = !isAutolinkEnabled
-                  },
-                  checked = isAutolinkEnabled,
-                  label = "Autolink"
-                )
-                CheckboxPreference(
-                  onClick = {
-                    isRtl = !isRtl
-                  },
-                  checked = isRtl,
-                  label = "RTL Layout"
-                )
-              }
-
-              RichTextStyleConfig(
-                richTextStyle = richTextStyle,
-                onChanged = { richTextStyle = it }
-              )
-            }
+          FlowRow {
+            CheckboxPreference(
+              onClick = {
+                isWordWrapEnabled = !isWordWrapEnabled
+              },
+              checked = isWordWrapEnabled,
+              label = "Word Wrap"
+            )
+            CheckboxPreference(
+              onClick = {
+                isAutolinkEnabled = !isAutolinkEnabled
+              },
+              checked = isAutolinkEnabled,
+              label = "Autolink"
+            )
+            CheckboxPreference(
+              onClick = {
+                isRtl = !isRtl
+              },
+              checked = isRtl,
+              label = "RTL Layout"
+            )
           }
 
-          SelectionContainer {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-              val parser = remember(markdownParseOptions) {
-                CommonmarkAstNodeParser(markdownParseOptions)
-              }
+          RichTextStyleConfig(
+            richTextStyle = richTextStyle,
+            onChanged = { richTextStyle = it }
+          )
+        }
+      }
 
-              val astNode = remember(parser) {
-                parser.parse(sampleMarkdown)
-              }
+      SelectionContainer {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+          val parser = remember(markdownParseOptions) {
+            CommonmarkAstNodeParser(markdownParseOptions)
+          }
 
-              ProvideToastUriHandler(context) {
-                RichText(
-                  style = richTextStyle,
-                  modifier = Modifier.padding(8.dp),
-                ) {
-                  BasicMarkdown(astNode, HeadingAstBlockNodeComposer)
-                }
-              }
+          val astNode = remember(parser) {
+            parser.parse(sampleMarkdown)
+          }
+
+          ProvideToastUriHandler(context) {
+            RichText(
+              style = richTextStyle,
+              modifier = Modifier.padding(8.dp),
+            ) {
+              BasicMarkdown(astNode, HeadingAstBlockNodeComposer)
             }
           }
         }

@@ -3,14 +3,22 @@ package com.zachklipp.richtext.sample
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -33,45 +41,71 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
   "RichText Demo" to @Composable { RichTextSample() },
   "Markdown Demo" to @Composable { MarkdownSample() },
   "Lazy Markdown Demo" to @Composable { LazyMarkdownSample() },
-  "Pagination" to @Composable { PagedSample() },
-  "Printable Document" to @Composable { DocumentSample() },
-  "Slideshow" to @Composable { SlideshowSample() },
 )
 
 @Preview(showBackground = true)
 @Composable private fun SampleLauncherPreview() {
-  SamplesListScreen(onSampleClicked = {})
+  SamplesListScreen(isDarkTheme = true, onSampleClicked = {}, onThemeToggleClicked = {})
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable fun SampleLauncher() {
+  val systemDarkTheme = isSystemInDarkTheme()
+  var isDarkTheme by remember(systemDarkTheme) { mutableStateOf(systemDarkTheme) }
   var currentSampleIndex: Int? by remember { mutableStateOf(null) }
 
-  Crossfade(currentSampleIndex) { index ->
-    if (index != null) {
-      BackHandler(onBack = { currentSampleIndex = null })
-      Samples[index].second()
-    } else {
-      SamplesListScreen(onSampleClicked = { currentSampleIndex = it })
+  SampleTheme(isDarkTheme) {
+    Crossfade(currentSampleIndex) { index ->
+      if (index != null) {
+        BackHandler(onBack = { currentSampleIndex = null })
+        Scaffold(
+          topBar = {
+            TopAppBar(title = { Text(Samples[index].first) }, actions = {
+              val icon = if (isDarkTheme) Icons.Filled.LightMode else Icons.Filled.DarkMode
+              IconButton(onClick = { isDarkTheme = !isDarkTheme }) {
+                Icon(icon, contentDescription = "Change color scheme")
+              }
+            })
+          }
+        ) {
+          Surface(Modifier.padding(it)) {
+            Samples[index].second()
+          }
+        }
+      } else {
+        SamplesListScreen(
+          isDarkTheme,
+          onSampleClicked = { currentSampleIndex = it },
+          onThemeToggleClicked = { isDarkTheme = !isDarkTheme }
+        )
+      }
     }
   }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable private fun SamplesListScreen(onSampleClicked: (Int) -> Unit) {
-  SampleTheme(colorScheme = darkColorScheme()) {
-    Scaffold(
-      topBar = {
-        TopAppBar(title = { Text("Samples") })
-      }
-    ) { contentPadding ->
-      LazyColumn(modifier = Modifier.padding(contentPadding)) {
-        itemsIndexed(Samples) { index, (title, sampleContent) ->
-          ListItem(
-            headlineContent = { Text(title) },
-            modifier = Modifier.clickable(onClick = { onSampleClicked(index) }),
-            leadingContent = { SamplePreview(sampleContent) }
-          )
+@Composable private fun SamplesListScreen(
+  isDarkTheme: Boolean,
+  onSampleClicked: (Int) -> Unit,
+  onThemeToggleClicked: () -> Unit,
+) {
+  Scaffold(
+    topBar = {
+      TopAppBar(title = { Text("Samples") }, actions = {
+        val icon = if (isDarkTheme) Icons.Filled.LightMode else Icons.Filled.DarkMode
+        IconButton(onClick = onThemeToggleClicked) {
+          Icon(icon, contentDescription = "Change color scheme")
         }
+      })
+    }
+  ) { contentPadding ->
+    LazyColumn(modifier = Modifier.padding(contentPadding)) {
+      itemsIndexed(Samples) { index, (title, sampleContent) ->
+        ListItem(
+          headlineContent = { Text(title) },
+          modifier = Modifier.clickable(onClick = { onSampleClicked(index) }),
+          leadingContent = { SamplePreview(sampleContent) }
+        )
       }
     }
   }
@@ -89,7 +123,7 @@ private val Samples = listOf<Pair<String, @Composable () -> Unit>>(
         transformOrigin = TransformOrigin(0f, 0f)
       ),
   ) {
-    SampleTheme(colorScheme = darkColorScheme()) {
+    SampleTheme {
       Surface(content = content)
     }
   }

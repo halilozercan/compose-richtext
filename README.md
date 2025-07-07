@@ -1,4 +1,4 @@
-# compose-richtext
+# Compose Markdown and Rich Text
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.halilibo.compose-richtext/richtext-ui.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.halilibo.compose-richtext%22)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -6,12 +6,9 @@
 > **Warning**
 > compose-richtext library and all its modules are very experimental. The roadmap is unclear at the moment. Thanks for your patience. Fork option is available as always.
 
-A collection of Compose libraries for working with rich text formatting and documents.
+A collection of Compose libraries for working with Markdown rendering and rich text formatting.
 
-Aside from `printing`, and `slideshow`, all modules are Kotlin Multiplatform Compose Libraries.
-
-This repo is currently very experimental and really just proofs-of-concept: there are no tests and some things
-might be broken or very non-performant.
+All modules are Compose Multiplatform compatible but lacks iOS support.
 
 ----
 
@@ -21,30 +18,24 @@ might be broken or very non-performant.
 
 ```kotlin
 @Composable fun App() {
-  val printController = rememberPrintableController()
+  RichText(Modifier.background(color = Color.LightGray)) {
+    Heading(0, "Title")
+    Text("Summary paragraph.")
 
-  Printable(printController) {
-    RichText(Modifier.background(color = Color.White)) {
-      Heading(0, "Title")
-      Text("Summary paragraph.")
+    HorizontalRule()
 
-      HorizontalRule()
-
-      BlockQuote {
-        Text("A wise person once said…")
-      }
+    BlockQuote {
+      Text("A wise person once said…")
     }
-  }
-
-  Button(onClick = { printController.print("README") }) {
-    Text("PRINT ME")
+    
+    Markdown("**Hello** `World`")
   }
 }
 ```
 
 ## License
 ```
-Copyright 2022 Halil Ozercan
+Copyright 2025 Halil Ozercan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

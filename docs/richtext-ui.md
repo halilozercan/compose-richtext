@@ -3,12 +3,12 @@
 [![Android Library](https://img.shields.io/badge/Platform-Android-green.svg?style=for-the-badge)](https://developer.android.com/studio/build/dependencies)
 [![JVM Library](https://img.shields.io/badge/Platform-JVM-red.svg?style=for-the-badge)](https://kotlinlang.org/docs/mpp-intro.html)
 
-A library of composables for formatting text using higher-level concepts than are supported by
-compose foundation, such as "bullet lists" and "headings".
+A library of Composables for formatting text using higher-level concepts than are not supported by
+compose foundation, such as "ordered lists" and "headings".
 
-RichText UI is a base library that is non-opinionated about higher level design requirements.
+Richtext UI is a base library that is non-opinionated about higher level design requirements.
 If you are already using `MaterialTheme` in your compose app, you can jump to [RichText UI Material](../richtext-ui-material/index.html)
-for quick start. There is also Material3 flavor at [RichText UI Material3](../richtext-ui-material3/index.html)
+for a quick start. There is also Material3 flavor at [RichText UI Material3](../richtext-ui-material3/index.html)
 
 ## Gradle
 
@@ -21,7 +21,7 @@ dependencies {
 ## [`BasicRichText`](../api/richtext-ui/com.halilibo.richtext.ui/-basic-rich-text.html)
 
 Richtext UI does not depend on Material artifact of Compose. Design agnostic API allows anyone
-to adopt RichText UI and its extensions like Markdown to their own design and typography systems.
+to adopt Richtext UI and its extensions like Markdown to their own design and typography systems.
 Hence, just like `foundation` and `material` modules of Compose, this library also names the 
 building block with `Basic` prefix.
 
@@ -30,7 +30,7 @@ for inspiration.
 
 ## [`RichTextScope`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-scope/index.html)
 
-`RichTextScope` is a context wrapper around composables that integrate and play well within RichText
+`RichTextScope` is a context wrapper around Composables that integrate and play well within Richtext
 content. 
 
 ## [`RichTextThemeProvider`](../api/richtext-ui/com.halilibo.richtext.ui/-rich-text-theme-provider.html)

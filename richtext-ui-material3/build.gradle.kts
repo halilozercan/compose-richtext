@@ -19,8 +19,6 @@ kotlin {
       dependencies {
         implementation(compose.runtime)
         implementation(compose.foundation)
-
-        @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
         implementation(compose.material3)
 
         api(project(":richtext-ui"))

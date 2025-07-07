@@ -27,14 +27,14 @@ object Kotlin {
 val ktlint = "org.jlleitschuh.gradle:ktlint-gradle:10.0.0"
 
 object Compose {
-  val desktopVersion = "1.7.1"
+  val desktopVersion = "1.8.2"
   val activity = "androidx.activity:activity-compose:1.8.2"
   val toolingData = "androidx.compose.ui:ui-tooling-data:1.6.0"
   val coil = "io.coil-kt:coil-compose:2.5.0"
 }
 
 object Commonmark {
-  private val version = "0.21.0"
+  private val version = "0.25.0"
   val core = "org.commonmark:commonmark:$version"
   val tables = "org.commonmark:commonmark-ext-gfm-tables:$version"
   val strikethrough = "org.commonmark:commonmark-ext-gfm-strikethrough:$version"
@@ -42,7 +42,7 @@ object Commonmark {
 }
 
 object AndroidConfiguration {
-  val minSdk = 21
-  val targetSdk = 34
+  val minSdk = 23
+  val targetSdk = 35
   val compileSdk = targetSdk
 }

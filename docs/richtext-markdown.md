@@ -19,7 +19,7 @@ dependencies {
 
 ## Rendering
 
-The simplest way to render markdown is just pass an `AstNode` to the [`Markdown`](../api/richtext-commonmark/com.halilibo.richtext.markdown/-markdown.html)
+The simplest way to render markdown is just pass an `AstNode` to the [`BasicMarkdown`](../api/richtext-markdown/com.halilibo.richtext.markdown/-basic-markdown.html)
 composable under RichText scope:
 
 ~~~kotlin

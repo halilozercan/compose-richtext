@@ -42,42 +42,21 @@ import com.halilibo.richtext.ui.resolveDefaults
 
 @Composable fun RichTextSample() {
   var richTextStyle by remember { mutableStateOf(RichTextStyle().resolveDefaults()) }
-  var isDarkModeEnabled by remember { mutableStateOf(false) }
 
-  val colors = if (isDarkModeEnabled) darkColorScheme() else lightColorScheme()
-
-  SampleTheme(colorScheme = colors) {
-    Surface {
+  Column {
+    // Config
+    Card(elevation = CardDefaults.elevatedCardElevation()) {
       Column {
-        // Config
-        Card(elevation = CardDefaults.elevatedCardElevation()) {
-          Column {
-            Row(
-              Modifier
-                .clickable(onClick = { isDarkModeEnabled = !isDarkModeEnabled })
-                .padding(8.dp),
-              horizontalArrangement = Arrangement.spacedBy(8.dp),
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              Checkbox(
-                checked = isDarkModeEnabled,
-                onCheckedChange = { isDarkModeEnabled = it },
+        RichTextStyleConfig(
+          richTextStyle = richTextStyle,
+          onChanged = { richTextStyle = it }
+        )
+      }
+    }
 
-                )
-              Text("Dark Mode")
-            }
-            RichTextStyleConfig(
-              richTextStyle = richTextStyle,
-              onChanged = { richTextStyle = it }
-            )
-          }
-        }
-
-        SelectionContainer {
-          Column(Modifier.verticalScroll(rememberScrollState())) {
-            RichTextDemo(style = richTextStyle)
-          }
-        }
+    SelectionContainer {
+      Column(Modifier.verticalScroll(rememberScrollState())) {
+        RichTextDemo(style = richTextStyle)
       }
     }
   }
