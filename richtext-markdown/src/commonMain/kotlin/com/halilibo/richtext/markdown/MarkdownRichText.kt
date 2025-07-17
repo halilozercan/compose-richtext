@@ -1,12 +1,13 @@
 package com.halilibo.richtext.markdown
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.halilibo.richtext.markdown.local.LocalImageLinkHandler
 import com.halilibo.richtext.markdown.node.AstBlockQuote
 import com.halilibo.richtext.markdown.node.AstCode
 import com.halilibo.richtext.markdown.node.AstEmphasis
@@ -100,10 +101,15 @@ private fun computeRichTextString(astNode: AstNode): RichTextString {
                 IntSize(128.dp.roundToPx(), 128.dp.roundToPx())
               }
             ) {
+              val linkHandler = LocalImageLinkHandler.current
+              val hasLinkParent = currentNode.links.parent?.type is AstLink
+              val modifier = if (hasLinkParent) Modifier else Modifier.clickable {
+                linkHandler.openImage(currentNodeType.destination)
+              }
               RemoteImage(
                 url = currentNodeType.destination,
                 contentDescription = currentNodeType.title,
-                modifier = Modifier,
+                modifier = modifier,
                 contentScale = ContentScale.Inside
               )
             }
