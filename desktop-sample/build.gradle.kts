@@ -10,6 +10,7 @@ dependencies {
   implementation(project(":richtext-commonmark"))
   implementation(project(":richtext-ui-material"))
   implementation(compose.desktop.currentOs)
+  implementation(compose.materialIconsExtended)
 }
 
 compose.desktop {
