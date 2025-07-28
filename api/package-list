@@ -1,0 +1,16 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:richtext-commonmark
+com.halilibo.richtext.commonmark
+module:richtext-markdown
+com.halilibo.richtext.markdown
+com.halilibo.richtext.markdown.node
+module:richtext-ui
+com.halilibo.richtext.ui
+com.halilibo.richtext.ui.string
+com.halilibo.richtext.ui.util
+module:richtext-ui-material
+com.halilibo.richtext.ui.material
+module:richtext-ui-material3
+com.halilibo.richtext.ui.material3
