@@ -1,6 +1,29 @@
 Changelog
 =========
 
+1.0.0-alpha03
+-------
+
+This release removes the `printing` and `slideshow` modules to focus on the core Markdown and RichText functionalities. It also adds support for inline base64 images.
+
+### Breaking Changes
+- The `printing` and `slideshow` modules have been removed. If you were using them, you will need to find an alternative or use a previous version of the library.
+
+### New Features
+- **Inline Base64 Image Rendering**: Markdown images can now be rendered from inline base64-encoded data URIs.
+
+### Updates & Maintenance
+- **Dependencies Updated**:
+    - Compose Multiplatform updated to `1.8.2`.
+    - Commonmark updated to `0.25.0`.
+    - Dokka updated to `2.0.0`.
+- **Build & CI**:
+    - Android Gradle Plugin and other dependencies have been updated.
+    - CI now uses `actions/cache@v4`.
+- **Sample App**:
+    - The Android sample app has been updated to reflect the removal of the `printing` and `slideshow` modules.
+    - Theme handling in the sample app has been simplified.
+
 v0.11.0
 ------
 
@@ -64,24 +87,13 @@ Special thanks @zach-klippenstein @LouisCAD @russhwolf for their reviews and hel
 v0.7.0
 ------
 
-_2021-9-1_
-
-* Improved markdown rendering for editor like environments (#46)
-* Finalized MaterialRichText API. (#47)
-  * Move from BasicRichText/RichText to RichText/MaterialRichText + SetupMaterialRichText
-  * Update docs accordingly
-* Cleaned RichTextString rendering from hacks that were left from earlier compose versions (#48)
-
-v0.6.0
-------
-
 _2021-8-6_
 
 * RichText UI no longer depends on Material (#45)
 * A new artifact richtext-ui-material is published to easily integrate RichText for apps that use Material design.
 * Upgraded compose to 1.0.1 and kotlin to 1.5.21
 
-v0.5.0
+v0.6.0
 ------
 
 _2021-7-29_
@@ -93,7 +105,7 @@ _2021-7-29_
 * Artifacts have moved from com.zachklipp.compose-richtext to com.halilibo.compose-richtext.
 * Similarly, documentation is also now available at halilibo.com/compose-richtext
 
-v0.3.0
+v0.5.0
 ------
 
 _2021-5-18_

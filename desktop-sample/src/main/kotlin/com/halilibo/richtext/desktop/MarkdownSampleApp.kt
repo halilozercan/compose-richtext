@@ -79,7 +79,9 @@ fun main(): Unit = singleWindowApplication(
           horizontalArrangement = Arrangement.spacedBy(32.dp)
         ) {
           Column(modifier = Modifier.weight(1f)) {
-            RichTextStyleConfig(richTextStyle = richTextStyle, onChanged = { richTextStyle = it })
+            DisableSelection {
+              RichTextStyleConfig(richTextStyle = richTextStyle, onChanged = { richTextStyle = it })
+            }
             BasicTextField(
               state = state,
               modifier = Modifier
