@@ -74,11 +74,14 @@ internal fun RichTextScope.MarkdownRichText(
   Text(
     text = richText,
     modifier = modifier,
-    isLeafText = astNode.links.next == null && astNode.links.parent?.links?.next == null,
+    isLeafText = astNode.isLastInTree(),
     renderOptions = richTextRenderOptions,
     sharedAnimationState = markdownAnimationState,
   )
 }
+
+private fun AstNode?.isLastInTree(): Boolean = this?.links?.parent == null ||
+    (links.next == null && links.parent.isLastInTree())
 
 private fun RichTextScope.computeRichTextString(
   astNode: AstNode,
