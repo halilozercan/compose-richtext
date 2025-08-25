@@ -2,8 +2,6 @@
 
 package com.halilibo.richtext.ui
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -11,15 +9,13 @@ import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -225,8 +221,8 @@ private val LocalListLevel = compositionLocalOf { 0 }
     itemSpacing = itemSpacing,
     prefixPadding = PaddingValues(start = markerIndent, end = contentsIndent),
     prefixForIndex = { index ->
-      val alpha = rememberAnimation(richTextRenderOptions, markdownAnimationState)
-      Box(modifier = Modifier.alpha(alpha.value)) {
+      val alpha = rememberMarkdownFade(richTextRenderOptions, markdownAnimationState)
+      Box(modifier = Modifier.graphicsLayer { this.alpha = alpha.value }) {
         when (listType) {
           Ordered -> listStyle.orderedMarkers!!().drawMarker(currentLevel, startIndex + index)
           Unordered -> listStyle.unorderedMarkers!!().drawMarker(currentLevel)
@@ -243,26 +239,6 @@ private val LocalListLevel = compositionLocalOf { 0 }
       }
     }
   )
-}
-
-@Composable private fun rememberAnimation(
-  richTextRenderOptions: RichTextRenderOptions,
-  markdownAnimationState: MarkdownAnimationState,
-): State<Float> {
-  val targetAlpha = remember {
-    mutableFloatStateOf(if (richTextRenderOptions.animate) 0f else 1f)
-  }
-  LaunchedEffect(Unit) {
-    targetAlpha.value = 1f
-  }
-  val alpha = animateFloatAsState(
-    targetAlpha.value,
-    tween(
-      richTextRenderOptions.textFadeInMs,
-      delayMillis = markdownAnimationState.toDelayMs(),
-    )
-  )
-  return alpha
 }
 
 @Composable private fun PrefixListLayout(

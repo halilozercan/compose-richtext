@@ -13,6 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -20,6 +22,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.BlockQuoteGutter.BarGutter
+import com.halilibo.richtext.ui.string.MarkdownAnimationState
+import com.halilibo.richtext.ui.string.RichTextRenderOptions
 
 internal val DefaultBlockQuoteGutter = BarGutter()
 
@@ -67,13 +71,18 @@ public interface BlockQuoteGutter {
 /**
  * Draws a block quote, with a [BlockQuoteGutter] drawn beside the children on the start side.
  */
-@Composable public fun RichTextScope.BlockQuote(children: @Composable RichTextScope.() -> Unit) {
+@Composable public fun RichTextScope.BlockQuote(
+  markdownAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
+  richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions(),
+  children: @Composable RichTextScope.() -> Unit
+) {
   val gutter = currentRichTextStyle.resolveDefaults().blockQuoteGutter!!
   val spacing = gutter.verticalContentPadding ?: with(LocalDensity.current) {
     currentRichTextStyle.resolveDefaults().paragraphSpacing!!.toDp() / 2
   }
 
-  Layout(content = {
+  val alpha = rememberMarkdownFade(richTextRenderOptions, markdownAnimationState)
+  Layout(modifier = Modifier.graphicsLayer { this.alpha = alpha.value }, content = {
     with(gutter) { drawGutter() }
     BasicRichText(
       modifier = Modifier.padding(top = spacing, bottom = spacing),

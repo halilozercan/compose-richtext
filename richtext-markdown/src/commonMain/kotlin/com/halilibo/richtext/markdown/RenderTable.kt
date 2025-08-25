@@ -20,6 +20,8 @@ internal fun RichTextScope.RenderTable(
   markdownAnimationState: MarkdownAnimationState,
 ) {
   Table(
+    markdownAnimationState = markdownAnimationState,
+    richTextRenderOptions = richtextRenderOptions,
     headerRow = {
       node.filterChildrenType<AstTableHeader>()
         .firstOrNull()

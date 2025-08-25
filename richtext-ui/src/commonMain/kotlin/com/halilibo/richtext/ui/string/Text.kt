@@ -132,8 +132,6 @@ public class MarkdownAnimationState {
       else -> diffMs + (renderOptions.delayMs * (renderOptions.delayMs / diffMs.toDouble()).pow(
         renderOptions.delayExponent
       )).toLong()
-    }.also {
-      println("Calculated delay: $it now: $now last: $lastAnimationStartMs diff: $diffMs")
     }
   }
 

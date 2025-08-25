@@ -230,7 +230,10 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
     when (val astNodeType = astNode.type) {
       is AstDocument -> visitChildren(astNode)
       is AstBlockQuote -> {
-        BlockQuote {
+        BlockQuote(
+          markdownAnimationState = markdownAnimationState,
+          richTextRenderOptions = richTextRenderOptions,
+        ) {
           visitChildren(astNode)
         }
       }
@@ -238,6 +241,8 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
       is AstUnorderedList -> {
         FormattedList(
           listType = Unordered,
+          markdownAnimationState = markdownAnimationState,
+          richTextRenderOptions = richTextRenderOptions,
           items = astNode.filterChildrenType<AstListItem>().toList()
         ) { astListItem ->
           // if this list item has no child, it should at least emit a single pixel layout.
@@ -252,6 +257,8 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
       is AstOrderedList -> {
         FormattedList(
           listType = Ordered,
+          markdownAnimationState = markdownAnimationState,
+          richTextRenderOptions = richTextRenderOptions,
           items = astNode.childrenSequence().toList(),
           startIndex = astNodeType.startNumber - 1,
         ) { astListItem ->
@@ -265,7 +272,10 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
       }
 
       is AstThematicBreak -> {
-        HorizontalRule()
+        HorizontalRule(
+          markdownAnimationState = markdownAnimationState,
+          richTextRenderOptions = richTextRenderOptions,
+        )
       }
 
       is AstHeading -> {
@@ -281,11 +291,19 @@ private val DefaultAstNodeComposer = object : AstBlockNodeComposer {
       }
 
       is AstIndentedCodeBlock -> {
-        CodeBlock(text = astNodeType.literal.trim())
+        CodeBlock(
+          text = astNodeType.literal.trim(),
+          markdownAnimationState = markdownAnimationState,
+          richTextRenderOptions = richTextRenderOptions,
+        )
       }
 
       is AstFencedCodeBlock -> {
-        CodeBlock(text = astNodeType.literal.trim())
+        CodeBlock(
+          text = astNodeType.literal.trim(),
+          markdownAnimationState = markdownAnimationState,
+          richTextRenderOptions = richTextRenderOptions,
+        )
       }
 
       is AstHtmlBlock -> {

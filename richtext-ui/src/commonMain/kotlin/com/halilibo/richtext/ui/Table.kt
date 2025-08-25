@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -22,6 +24,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.halilibo.richtext.ui.ColumnArrangement.Adaptive
 import com.halilibo.richtext.ui.ColumnArrangement.Uniform
+import com.halilibo.richtext.ui.string.MarkdownAnimationState
+import com.halilibo.richtext.ui.string.RichTextRenderOptions
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -112,10 +116,13 @@ private class RowBuilder : RichTextTableCellScope {
 @Composable
 public fun RichTextScope.Table(
   modifier: Modifier = Modifier,
+  markdownAnimationState: MarkdownAnimationState = remember { MarkdownAnimationState() },
+  richTextRenderOptions: RichTextRenderOptions = RichTextRenderOptions(),
   headerRow: (RichTextTableCellScope.() -> Unit)? = null,
   bodyRows: RichTextTableRowScope.() -> Unit
 ) {
   val tableStyle = currentRichTextStyle.resolveDefaults().tableStyle!!
+  val alpha = rememberMarkdownFade(richTextRenderOptions, markdownAnimationState)
   val contentColor = currentContentColor
   val header = remember(headerRow) {
     headerRow?.let { RowBuilder().apply(headerRow).row }
@@ -182,10 +189,11 @@ public fun RichTextScope.Table(
     }
   }
 
+  val baseModifier = modifier.graphicsLayer { this.alpha = alpha.value }
   val tableModifier = if (columnArrangement is Adaptive) {
-    modifier.horizontalScroll(rememberScrollState())
+    baseModifier.horizontalScroll(rememberScrollState())
   } else {
-    modifier
+    baseModifier
   }
 
   val borderColor = tableStyle.borderColor!!.takeOrElse { contentColor }
