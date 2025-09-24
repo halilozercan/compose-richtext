@@ -27,6 +27,7 @@ kotlin {
     val androidMain by getting {
       dependencies {
         implementation(Compose.coil)
+        implementation(Compose.coilHttp)
       }
     }
 
