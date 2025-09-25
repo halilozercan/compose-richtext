@@ -50,6 +50,26 @@ public class RichTextStringStyle(
   public val codeStyle: SpanStyle? = null,
   public val linkStyle: TextLinkStyles? = null
 ) {
+  public fun copy(
+    boldStyle: SpanStyle? = null,
+    italicStyle: SpanStyle? = null,
+    underlineStyle: SpanStyle? = null,
+    strikethroughStyle: SpanStyle? = null,
+    subscriptStyle: SpanStyle? = null,
+    superscriptStyle: SpanStyle? = null,
+    codeStyle: SpanStyle? = null,
+    linkStyle: TextLinkStyles? = null
+  ): RichTextStringStyle = RichTextStringStyle(
+    boldStyle = boldStyle ?: this.boldStyle,
+    italicStyle = italicStyle ?: this.italicStyle,
+    underlineStyle = underlineStyle ?: this.underlineStyle,
+    strikethroughStyle = strikethroughStyle ?: this.strikethroughStyle,
+    subscriptStyle = subscriptStyle ?: this.subscriptStyle,
+    superscriptStyle = superscriptStyle ?: this.superscriptStyle,
+    codeStyle = codeStyle ?: this.codeStyle,
+    linkStyle = linkStyle ?: this.linkStyle
+  )
+
   internal fun merge(otherStyle: RichTextStringStyle?): RichTextStringStyle {
     if (otherStyle == null) return this
     return RichTextStringStyle(
