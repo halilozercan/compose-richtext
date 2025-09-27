@@ -100,7 +100,7 @@ public interface UnorderedMarkers {
  * Creates an [UnorderedMarkers] that will cycle through the values in [markers] for each
  * indentation level.
  */
-public fun @Composable RichTextScope.textUnorderedMarkers(
+public fun RichTextScope.textUnorderedMarkers(
   vararg markers: String
 ): UnorderedMarkers = UnorderedMarkers {
   Text(markers[it % markers.size])
