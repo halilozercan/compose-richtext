@@ -11,6 +11,7 @@ public data class RichTextRenderOptions(
   val delayExponent: Double = 0.7,
   val maxPhraseLength: Int = 30,
   val phraseMarkersOverride: List<Char>? = null,
+  val onlyRenderVisibleText: Boolean = false,
   val onTextAnimate: () -> Unit = {},
   val onPhraseAnimate: () -> Unit = {},
 ) {

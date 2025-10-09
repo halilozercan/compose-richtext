@@ -157,11 +157,11 @@ private fun rememberAnimatedText(
     lastPhrases.value = phrases
     textToRender.value = phrases.makeCompletePhraseString(!isLeafText)
     phrases.phraseSegments
-      .filter { it > lastAnimationIndex.value }
+      .filter { it > lastAnimationIndex.intValue }
       .forEach { phraseIndex ->
         val animation = TextAnimation(phraseIndex)
         animations[phraseIndex] = animation
-        lastAnimationIndex.value = phraseIndex
+        lastAnimationIndex.intValue = phraseIndex
         coroutineScope.launch {
           sharedAnimationState.addAnimation(renderOptions)
           var hasAnimationFired = false
@@ -218,7 +218,11 @@ private fun rememberAnimatedText(
     // the text will just be re-drawn, since the animated alpha state was read only inside
     // DynamicSolidColor during the draw phase.
     derivedStateOf {
-      textToRender.value.withDynamicColorPhrases(contentColor, animations.values)
+      textToRender.value.withDynamicColorPhrases(
+        contentColor = contentColor,
+        animations = animations.values,
+        onlyVisible = renderOptions.onlyRenderVisibleText,
+      )
     }
   }.value
 }
@@ -226,20 +230,27 @@ private fun rememberAnimatedText(
 private class TextAnimation(val startIndex: Int) {
 
   var alpha by mutableFloatStateOf(0f)
+  val isVisible by derivedStateOf { alpha > 0f }
 }
 
 private fun AnnotatedString.withDynamicColorPhrases(
-  contentColor: Color, animations: Collection<TextAnimation>,
+  contentColor: Color,
+  animations: Collection<TextAnimation>,
+  onlyVisible: Boolean,
 ): AnnotatedString {
   if (text.isEmpty() || animations.isEmpty()) {
     return this
   }
   var remainingLength = length
   val modifiedTextSnippets = mutableListOf<AnnotatedString>()
+  var dropInvisible = onlyVisible
   for (animation in animations.sortedByDescending { it.startIndex }) {
     if (animation.startIndex >= remainingLength) continue
-    modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
-      .withDynamicColor(contentColor, alpha = { animation.alpha })
+    if (!dropInvisible || !animation.isVisible) {
+      dropInvisible = false
+      modifiedTextSnippets += subSequence(animation.startIndex, remainingLength)
+        .withDynamicColor(contentColor, alpha = { animation.alpha })
+    }
     remainingLength = animation.startIndex
   }
   return buildAnnotatedString {
