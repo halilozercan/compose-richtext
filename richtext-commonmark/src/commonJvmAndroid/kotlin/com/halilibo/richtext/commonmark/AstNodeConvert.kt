@@ -43,6 +43,7 @@ import org.commonmark.ext.gfm.tables.TableCell.Alignment.RIGHT
 import org.commonmark.ext.gfm.tables.TableHead
 import org.commonmark.ext.gfm.tables.TableRow
 import org.commonmark.ext.gfm.tables.TablesExtension
+import org.commonmark.ext.image.attributes.ImageAttributesExtension
 import org.commonmark.node.BlockQuote
 import org.commonmark.node.BulletList
 import org.commonmark.node.Code
@@ -191,6 +192,7 @@ public actual class CommonmarkAstNodeParser actual constructor(
       listOfNotNull(
         TablesExtension.create(),
         StrikethroughExtension.create(),
+        ImageAttributesExtension.create(),
         if (options.autolink) AutolinkExtension.create() else null
       )
     )
