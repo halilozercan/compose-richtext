@@ -1,0 +1,647 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.halilibo.richtext.markdown.node</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+<a class="library-name--link" href="../../index.html">
+                    compose-richtext
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":richtext-markdown:dokkaHtmlPartial/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filter=":richtext-markdown:dokkaHtmlPartial/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    compose-richtext
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="richtext-markdown::com.halilibo.richtext.markdown.node////PointingToDeclaration//-1929336366">
+  <div class="breadcrumbs"><a href="../index.html">richtext-markdown</a><span class="delimiter">/</span><span class="current">com.halilibo.richtext.markdown.node</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1974584248%2FClasslikes%2F-1929336366" anchor-label="AstBlockNodeType" id="1974584248%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-block-node-type/index.html"><span>Ast</span><wbr><span>Block</span><wbr><span>Node</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1974584248%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-ast-block-node-type/index.html">AstBlockNodeType</a> : <a href="-ast-node-type/index.html">AstNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1512243278%2FClasslikes%2F-1929336366" anchor-label="AstBlockQuote" id="-1512243278%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-block-quote/index.html"><span>Ast</span><wbr><span>Block</span><wbr><span><span>Quote</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1512243278%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-block-quote/index.html">AstBlockQuote</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div><div class="brief "><p class="paragraph">A block quote container that will indent its contents relative to its own indentation.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1290940788%2FClasslikes%2F-1929336366" anchor-label="AstCode" id="1290940788%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-code/index.html"><span>Ast</span><wbr><span><span>Code</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1290940788%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-code/index.html">AstCode</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1754081607%2FClasslikes%2F-1929336366" anchor-label="AstContainerBlockNodeType" id="-1754081607%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-container-block-node-type/index.html"><span>Ast</span><wbr><span>Container</span><wbr><span>Block</span><wbr><span>Node</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1754081607%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a> : <a href="-ast-block-node-type/index.html">AstBlockNodeType</a></div><div class="brief "><p class="paragraph">Defines a subtype of Block Node that can contain other nodes.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="130127366%2FClasslikes%2F-1929336366" anchor-label="AstDocument" id="130127366%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-document/index.html"><span>Ast</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="130127366%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-document/index.html">AstDocument</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div><div class="brief "><p class="paragraph">Usually defines the root of a markdown document.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1752739643%2FClasslikes%2F-1929336366" anchor-label="AstEmphasis" id="-1752739643%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-emphasis/index.html"><span>Ast</span><wbr><span><span>Emphasis</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1752739643%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-emphasis/index.html">AstEmphasis</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">delimiter<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1964669260%2FClasslikes%2F-1929336366" anchor-label="AstFencedCodeBlock" id="-1964669260%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-fenced-code-block/index.html"><span>Ast</span><wbr><span>Fenced</span><wbr><span>Code</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1964669260%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-fenced-code-block/index.html">AstFencedCodeBlock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>fenceChar<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char/index.html">Char</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fenceLength<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fenceIndent<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>info<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1285090591%2FClasslikes%2F-1929336366" anchor-label="AstHardLineBreak" id="-1285090591%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-hard-line-break/index.html"><span>Ast</span><wbr><span>Hard</span><wbr><span>Line</span><wbr><span><span>Break</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1285090591%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-hard-line-break/index.html">AstHardLineBreak</a> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1699463201%2FClasslikes%2F-1929336366" anchor-label="AstHeading" id="-1699463201%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-heading/index.html"><span>Ast</span><wbr><span><span>Heading</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1699463201%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-heading/index.html">AstHeading</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>level<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="47666751%2FClasslikes%2F-1929336366" anchor-label="AstHtmlBlock" id="47666751%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-html-block/index.html"><span>Ast</span><wbr><span>Html</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="47666751%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-html-block/index.html">AstHtmlBlock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1577343715%2FClasslikes%2F-1929336366" anchor-label="AstHtmlInline" id="-1577343715%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-html-inline/index.html"><span>Ast</span><wbr><span>Html</span><wbr><span><span>Inline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1577343715%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-html-inline/index.html">AstHtmlInline</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2076772698%2FClasslikes%2F-1929336366" anchor-label="AstImage" id="-2076772698%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-image/index.html"><span>Ast</span><wbr><span><span>Image</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2076772698%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-image/index.html">AstImage</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>title<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>destination<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1387964244%2FClasslikes%2F-1929336366" anchor-label="AstIndentedCodeBlock" id="-1387964244%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-indented-code-block/index.html"><span>Ast</span><wbr><span>Indented</span><wbr><span>Code</span><wbr><span><span>Block</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1387964244%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-indented-code-block/index.html">AstIndentedCodeBlock</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="561916492%2FClasslikes%2F-1929336366" anchor-label="AstInlineNodeType" id="561916492%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-inline-node-type/index.html"><span>Ast</span><wbr><span>Inline</span><wbr><span>Node</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="561916492%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-ast-inline-node-type/index.html">AstInlineNodeType</a> : <a href="-ast-node-type/index.html">AstNodeType</a></div><div class="brief "><p class="paragraph">Defines a node type that can only apply to inline content.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-112713546%2FClasslikes%2F-1929336366" anchor-label="AstLeafBlockNodeType" id="-112713546%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-leaf-block-node-type/index.html"><span>Ast</span><wbr><span>Leaf</span><wbr><span>Block</span><wbr><span>Node</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-112713546%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a> : <a href="-ast-block-node-type/index.html">AstBlockNodeType</a></div><div class="brief "><p class="paragraph">Defines a subtype of Block Node that can only contain plain text and full-length annotations.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1679665159%2FClasslikes%2F-1929336366" anchor-label="AstLink" id="1679665159%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-link/index.html"><span>Ast</span><wbr><span><span>Link</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1679665159%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-link/index.html">AstLink</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>destination<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>title<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-784615555%2FClasslikes%2F-1929336366" anchor-label="AstLinkReferenceDefinition" id="-784615555%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-link-reference-definition/index.html"><span>Ast</span><wbr><span>Link</span><wbr><span>Reference</span><wbr><span><span>Definition</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-784615555%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-link-reference-definition/index.html">AstLinkReferenceDefinition</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>label<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>destination<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>title<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1333149456%2FClasslikes%2F-1929336366" anchor-label="AstListItem" id="1333149456%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-list-item/index.html"><span>Ast</span><wbr><span>List</span><wbr><span><span>Item</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1333149456%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-list-item/index.html">AstListItem</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div><div class="brief "><p class="paragraph">Ordered or Unordered list item.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="325124863%2FClasslikes%2F-1929336366" anchor-label="AstNode" id="325124863%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-node/index.html"><span>Ast</span><wbr><span><span>Node</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="325124863%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-ast-node/index.html">AstNode</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>type<span class="token operator">: </span><a href="-ast-node-type/index.html">AstNodeType</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>links<span class="token operator">: </span><a href="-ast-node-links/index.html">AstNodeLinks</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Generic AstNode implementation that can define any node in Abstract Syntax Tree.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="329296042%2FClasslikes%2F-1929336366" anchor-label="AstNodeLinks" id="329296042%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-node-links/index.html"><span>Ast</span><wbr><span>Node</span><wbr><span><span>Links</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="329296042%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">class </span><a href="-ast-node-links/index.html">AstNodeLinks</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">var </span>parent<span class="token operator">: </span><a href="-ast-node/index.html">AstNode</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>firstChild<span class="token operator">: </span><a href="-ast-node/index.html">AstNode</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>lastChild<span class="token operator">: </span><a href="-ast-node/index.html">AstNode</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>previous<span class="token operator">: </span><a href="-ast-node/index.html">AstNode</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>next<span class="token operator">: </span><a href="-ast-node/index.html">AstNode</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">All the pointers that can exist for a node in an AST.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="448430565%2FClasslikes%2F-1929336366" anchor-label="AstNodeType" id="448430565%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-node-type/index.html"><span>Ast</span><wbr><span>Node</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="448430565%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-ast-node-type/index.html">AstNodeType</a></div><div class="brief "><p class="paragraph">Refer to https://spec.commonmark.org/0.30/#precedence</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="838092630%2FClasslikes%2F-1929336366" anchor-label="AstOrderedList" id="838092630%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-ordered-list/index.html"><span>Ast</span><wbr><span>Ordered</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="838092630%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-ordered-list/index.html">AstOrderedList</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>startNumber<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>delimiter<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char/index.html">Char</a></span></span><span class="token punctuation">)</span> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div><div class="brief "><p class="paragraph">A list type that uses numbers to mark its items.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="549112307%2FClasslikes%2F-1929336366" anchor-label="AstParagraph" id="549112307%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-paragraph/index.html"><span>Ast</span><wbr><span><span>Paragraph</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="549112307%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-paragraph/index.html">AstParagraph</a> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-273238432%2FClasslikes%2F-1929336366" anchor-label="AstSoftLineBreak" id="-273238432%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-soft-line-break/index.html"><span>Ast</span><wbr><span>Soft</span><wbr><span>Line</span><wbr><span><span>Break</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-273238432%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-soft-line-break/index.html">AstSoftLineBreak</a> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1020610606%2FClasslikes%2F-1929336366" anchor-label="AstStrikethrough" id="1020610606%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-strikethrough/index.html"><span>Ast</span><wbr><span><span>Strikethrough</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1020610606%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-strikethrough/index.html">AstStrikethrough</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>delimiter<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1777212654%2FClasslikes%2F-1929336366" anchor-label="AstStrongEmphasis" id="1777212654%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-strong-emphasis/index.html"><span>Ast</span><wbr><span>Strong</span><wbr><span><span>Emphasis</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1777212654%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-strong-emphasis/index.html">AstStrongEmphasis</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">delimiter<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1391618833%2FClasslikes%2F-1929336366" anchor-label="AstTableBody" id="1391618833%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-table-body/index.html"><span>Ast</span><wbr><span>Table</span><wbr><span><span>Body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1391618833%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-table-body/index.html">AstTableBody</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-963161263%2FClasslikes%2F-1929336366" anchor-label="AstTableCell" id="-963161263%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-table-cell/index.html"><span>Ast</span><wbr><span>Table</span><wbr><span><span>Cell</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-963161263%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-table-cell/index.html">AstTableCell</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>header<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>alignment<span class="token operator">: </span><a href="-ast-table-cell-alignment/index.html">AstTableCellAlignment</a></span></span><span class="token punctuation">)</span> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2033962158%2FClasslikes%2F-1929336366" anchor-label="AstTableCellAlignment" id="2033962158%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-table-cell-alignment/index.html"><span>Ast</span><wbr><span>Table</span><wbr><span>Cell</span><wbr><span><span>Alignment</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2033962158%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-ast-table-cell-alignment/index.html">AstTableCellAlignment</a> : <a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-ast-table-cell-alignment/index.html">AstTableCellAlignment</a><span class="token operator">&gt; </span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-626784250%2FClasslikes%2F-1929336366" anchor-label="AstTableHeader" id="-626784250%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-table-header/index.html"><span>Ast</span><wbr><span>Table</span><wbr><span><span>Header</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-626784250%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-table-header/index.html">AstTableHeader</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1429064657%2FClasslikes%2F-1929336366" anchor-label="AstTableRoot" id="1429064657%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-table-root/index.html"><span>Ast</span><wbr><span>Table</span><wbr><span><span>Root</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1429064657%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-table-root/index.html">AstTableRoot</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1819894037%2FClasslikes%2F-1929336366" anchor-label="AstTableRow" id="1819894037%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-table-row/index.html"><span>Ast</span><wbr><span>Table</span><wbr><span><span>Row</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1819894037%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-table-row/index.html">AstTableRow</a> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="958874164%2FClasslikes%2F-1929336366" anchor-label="AstText" id="958874164%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-text/index.html"><span>Ast</span><wbr><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="958874164%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-text/index.html">AstText</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>literal<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-ast-inline-node-type/index.html">AstInlineNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="476278411%2FClasslikes%2F-1929336366" anchor-label="AstThematicBreak" id="476278411%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-thematic-break/index.html"><span>Ast</span><wbr><span>Thematic</span><wbr><span><span>Break</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="476278411%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">object </span><a href="-ast-thematic-break/index.html">AstThematicBreak</a> : <a href="-ast-leaf-block-node-type/index.html">AstLeafBlockNodeType</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1673125521%2FClasslikes%2F-1929336366" anchor-label="AstUnorderedList" id="-1673125521%2FClasslikes%2F-1929336366" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":richtext-markdown:dokkaHtmlPartial/commonMain" data-filterable-set=":richtext-markdown:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ast-unordered-list/index.html"><span>Ast</span><wbr><span>Unordered</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1673125521%2FClasslikes%2F-1929336366"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":richtext-markdown:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/compose/runtime/Immutable.html"><span class="token annotation builtin">Immutable</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-ast-unordered-list/index.html">AstUnorderedList</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>bulletMarker<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-char/index.html">Char</a></span></span><span class="token punctuation">)</span> : <a href="-ast-container-block-node-type/index.html">AstContainerBlockNodeType</a></div><div class="brief "><p class="paragraph">A list type that marks its items with bullets to signify a lack of order.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
