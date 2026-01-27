@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -115,8 +116,27 @@ public fun RichTextScope.Text(
   val inlineContents = decoratedTextResult.inlineContents
   val decoratedLinkRanges = decoratedTextResult.decoratedLinkRanges
   var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-  val underlineSpecs = remember(decoratedLinkRanges, resolvedStyle, contentColor) {
+  val animatedText = if (renderOptions.animate && inlineContents.isEmpty()) {
+    rememberAnimatedText(
+      annotated = decoratedTextResult.annotatedString,
+      contentColor = contentColor,
+      renderOptions = renderOptions,
+      isLeafText = isLeafText,
+      sharedAnimationState = sharedAnimationState,
+    )
+  } else {
+    decoratedTextResult.annotatedString
+  }
+  val isPartialText = animatedText.text.length < decoratedTextResult.annotatedString.text.length
+  val underlineSpecs = remember(
+    decoratedLinkRanges,
+    resolvedStyle,
+    contentColor,
+    animatedText,
+    isPartialText,
+  ) {
     decoratedLinkRanges.mapNotNull { range ->
+      if (isPartialText && range.end > animatedText.text.length) return@mapNotNull null
       val linkStyle = range.linkStyleOverride
         ?.invoke(resolvedStyle.linkStyle)
         ?: resolvedStyle.linkStyle
@@ -124,6 +144,14 @@ public fun RichTextScope.Text(
         ?: linkStyle?.style?.color
           ?.takeIf { it.isSpecified }
         ?: contentColor
+      val textLength = animatedText.text.length
+      val clampedStart = range.start.coerceIn(0, textLength)
+      val clampedEnd = range.end.coerceIn(0, textLength)
+      if (clampedStart >= clampedEnd) return@mapNotNull null
+      val hasLinkAnnotation = animatedText
+        .getLinkAnnotations(clampedStart, clampedEnd)
+        .isNotEmpty()
+      if (!hasLinkAnnotation) return@mapNotNull null
       UnderlineSpec(
         range = range,
         color = underlineColor,
@@ -146,18 +174,6 @@ public fun RichTextScope.Text(
     }
   } else {
     Modifier
-  }
-
-  val animatedText = if (renderOptions.animate && inlineContents.isEmpty()) {
-    rememberAnimatedText(
-      annotated = decoratedTextResult.annotatedString,
-      contentColor = contentColor,
-      renderOptions = renderOptions,
-      isLeafText = isLeafText,
-      sharedAnimationState = sharedAnimationState,
-    )
-  } else {
-    decoratedTextResult.annotatedString
   }
 
   if (inlineContents.isEmpty()) {
@@ -445,7 +461,17 @@ private fun AnnotatedString.withDynamicColor(color: Color, alpha: () -> Float): 
     start = 0,
     end = length
   )
-  return AnnotatedString(text, subStyles + fullStyle)
+  val builder = AnnotatedString.Builder(text)
+  subStyles.fastForEach { builder.addStyle(it.item, it.start, it.end) }
+  builder.addStyle(fullStyle.item, fullStyle.start, fullStyle.end)
+  paragraphStyles.fastForEach { builder.addStyle(it.item, it.start, it.end) }
+  getLinkAnnotations(0, length).fastForEach { annotation ->
+    when (val link = annotation.item) {
+      is LinkAnnotation.Url -> builder.addLink(link, annotation.start, annotation.end)
+      is LinkAnnotation.Clickable -> builder.addLink(link, annotation.start, annotation.end)
+    }
+  }
+  return builder.toAnnotatedString()
 }
 
 private fun CharSequence.maybeContainsEmojis(): Boolean {
