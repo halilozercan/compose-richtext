@@ -70,7 +70,104 @@ import org.commonmark.node.ThematicBreak
 import org.commonmark.parser.Parser
 
 /**
- * Converts common-markdown tree to AstNode tree in a recursive fashion.
+ * Holds the data for a pending conversion task in the iterative tree traversal.
+ */
+private class ConvertWorkItem(
+  val startNode: Node,
+  val parentAstNode: AstNode?,
+  val initialPrev: AstNode?,
+  val onFirstCreated: (AstNode?) -> Unit
+)
+
+/**
+ * Maps a CommonMark [Node] to its corresponding [AstNodeType].
+ * Returns null for unrecognized node types (CustomNode, CustomBlock, etc.).
+ */
+private fun convertNodeType(node: Node): AstNodeType? = when (node) {
+  is BlockQuote -> AstBlockQuote
+  is BulletList -> AstUnorderedList(bulletMarker = node.bulletMarker)
+  is Code -> AstCode(literal = node.literal)
+  is Document -> AstDocument
+  is Emphasis -> AstEmphasis(delimiter = node.openingDelimiter)
+  is FencedCodeBlock -> AstFencedCodeBlock(
+    literal = node.literal,
+    fenceChar = node.fenceChar,
+    fenceIndent = node.fenceIndent,
+    fenceLength = node.fenceLength,
+    info = node.info
+  )
+  is HardLineBreak -> AstHardLineBreak
+  is Heading -> AstHeading(
+    level = node.level
+  )
+  is ThematicBreak -> AstThematicBreak
+  is HtmlInline -> AstHtmlInline(
+    literal = node.literal
+  )
+  is HtmlBlock -> AstHtmlBlock(
+    literal = node.literal
+  )
+  is Image -> {
+    if (node.destination == null) {
+      null
+    }
+    else {
+      AstImage(
+        title = node.title ?: "",
+        destination = node.destination
+      )
+    }
+  }
+  is IndentedCodeBlock -> AstIndentedCodeBlock(
+    literal = node.literal
+  )
+  is Link -> AstLink(
+    title = node.title ?: "",
+    destination = node.destination
+  )
+  is ListItem -> AstListItem
+  is OrderedList -> AstOrderedList(
+    startNumber = node.startNumber,
+    delimiter = node.delimiter
+  )
+  is Paragraph -> AstParagraph
+  is SoftLineBreak -> AstSoftLineBreak
+  is StrongEmphasis -> AstStrongEmphasis(
+    delimiter = node.openingDelimiter
+  )
+  is Text -> AstText(
+    literal = node.literal
+  )
+  is LinkReferenceDefinition -> AstLinkReferenceDefinition(
+    title = node.title ?: "",
+    destination = node.destination,
+    label = node.label
+  )
+  is TableBlock -> AstTableRoot
+  is TableHead -> AstTableHeader
+  is TableBody -> AstTableBody
+  is TableRow -> AstTableRow
+  is TableCell -> AstTableCell(
+    header = node.isHeader,
+    alignment = when (node.alignment) {
+      LEFT -> AstTableCellAlignment.LEFT
+      CENTER -> AstTableCellAlignment.CENTER
+      RIGHT -> AstTableCellAlignment.RIGHT
+      null -> AstTableCellAlignment.LEFT
+      else -> AstTableCellAlignment.LEFT
+    }
+  )
+  is Strikethrough -> AstStrikethrough(
+    node.openingDelimiter
+  )
+  is CustomNode -> null
+  is CustomBlock -> null
+  else -> null
+}
+
+/**
+ * Converts common-markdown tree to AstNode tree iteratively using an explicit stack,
+ * avoiding StackOverflowError on deeply nested or long markdown documents.
  */
 internal fun convert(
   node: Node?,
@@ -79,107 +176,60 @@ internal fun convert(
 ): AstNode? {
   node ?: return null
 
-  val nodeLinks = AstNodeLinks(
-    parent = parentNode,
-    previous = previousNode,
-  )
+  var result: AstNode? = null
+  val stack = ArrayDeque<ConvertWorkItem>()
+  stack.addLast(ConvertWorkItem(node, parentNode, previousNode) { result = it })
 
-  val newNodeType: AstNodeType? = when (node) {
-    is BlockQuote -> AstBlockQuote
-    is BulletList -> AstUnorderedList(bulletMarker = node.bulletMarker)
-    is Code -> AstCode(literal = node.literal)
-    is Document -> AstDocument
-    is Emphasis -> AstEmphasis(delimiter = node.openingDelimiter)
-    is FencedCodeBlock -> AstFencedCodeBlock(
-      literal = node.literal,
-      fenceChar = node.fenceChar,
-      fenceIndent = node.fenceIndent,
-      fenceLength = node.fenceLength,
-      info = node.info
-    )
-    is HardLineBreak -> AstHardLineBreak
-    is Heading -> AstHeading(
-      level = node.level
-    )
-    is ThematicBreak -> AstThematicBreak
-    is HtmlInline -> AstHtmlInline(
-      literal = node.literal
-    )
-    is HtmlBlock -> AstHtmlBlock(
-      literal = node.literal
-    )
-    is Image -> {
-      if (node.destination == null) {
-        null
+  while (stack.isNotEmpty()) {
+    val item = stack.removeLast()
+
+    var prev: AstNode? = null
+    var firstCreated: AstNode? = null
+    var cmNode: Node? = item.startNode
+    var nullTypeNode: Node? = null
+
+    // Iterate through siblings instead of recursing
+    while (cmNode != null) {
+      val nodeType = convertNodeType(cmNode)
+      val newNode = nodeType?.let {
+        AstNode(it, AstNodeLinks(
+          parent = item.parentAstNode,
+          previous = prev ?: item.initialPrev
+        ))
       }
-      else {
-        AstImage(
-          title = node.title ?: "",
-          destination = node.destination
-        )
+
+      if (newNode != null) {
+        if (firstCreated == null) firstCreated = newNode
+        prev?.links?.next = newNode
+
+        // Push child processing onto the explicit stack instead of recursing
+        val child = cmNode.firstChild
+        if (child != null) {
+          stack.addLast(ConvertWorkItem(child, newNode, null) { newNode.links.firstChild = it })
+        }
+
+        prev = newNode
+        cmNode = cmNode.next
+      } else {
+        // Unrecognized node type — stop sibling chain (preserves original behavior)
+        nullTypeNode = cmNode
+        cmNode = null
       }
     }
-    is IndentedCodeBlock -> AstIndentedCodeBlock(
-      literal = node.literal
-    )
-    is Link -> AstLink(
-      title = node.title ?: "",
-      destination = node.destination
-    )
-    is ListItem -> AstListItem
-    is OrderedList -> AstOrderedList(
-      startNumber = node.startNumber,
-      delimiter = node.delimiter
-    )
-    is Paragraph -> AstParagraph
-    is SoftLineBreak -> AstSoftLineBreak
-    is StrongEmphasis -> AstStrongEmphasis(
-      delimiter = node.openingDelimiter
-    )
-    is Text -> AstText(
-      literal = node.literal
-    )
-    is LinkReferenceDefinition -> AstLinkReferenceDefinition(
-      title = node.title ?: "",
-      destination = node.destination,
-      label = node.label
-    )
-    is TableBlock -> AstTableRoot
-    is TableHead -> AstTableHeader
-    is TableBody -> AstTableBody
-    is TableRow -> AstTableRow
-    is TableCell -> AstTableCell(
-      header = node.isHeader,
-      alignment = when (node.alignment) {
-        LEFT -> AstTableCellAlignment.LEFT
-        CENTER -> AstTableCellAlignment.CENTER
-        RIGHT -> AstTableCellAlignment.RIGHT
-        null -> AstTableCellAlignment.LEFT
-        else -> AstTableCellAlignment.LEFT
+
+    // Set lastChild on the parent, matching the original recursive behavior
+    if (nullTypeNode != null) {
+      if (nullTypeNode.next == null) {
+        item.parentAstNode?.links?.lastChild = null
       }
-    )
-    is Strikethrough -> AstStrikethrough(
-      node.openingDelimiter
-    )
-    is CustomNode -> null
-    is CustomBlock -> null
-    else -> null
+    } else {
+      item.parentAstNode?.links?.lastChild = prev
+    }
+
+    item.onFirstCreated(firstCreated)
   }
 
-  val newNode = newNodeType?.let {
-    AstNode(newNodeType, nodeLinks)
-  }
-
-  if (newNode != null) {
-    newNode.links.firstChild = convert(node.firstChild, parentNode = newNode, previousNode = null)
-    newNode.links.next = convert(node.next, parentNode = parentNode, previousNode = newNode)
-  }
-
-  if (node.next == null) {
-    parentNode?.links?.lastChild = newNode
-  }
-
-  return newNode
+  return result
 }
 
 public actual class CommonmarkAstNodeParser actual constructor(
