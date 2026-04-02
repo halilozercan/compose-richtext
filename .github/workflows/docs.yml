@@ -1,13 +1,7 @@
 name: Doc Site
 
 on:
-  release:
-    # Build docs when a new release is created, so the API docs don't get out of date.
-    types: [ published ]
-  push:
-    branches:
-      # A specific branch to only update docs without going through a release cycle
-      - docs
+  workflow_dispatch:
 
 jobs:
   deploy:

@@ -1,8 +1,6 @@
 name: Publish
 
 on:
-  release:
-    types: [released]
   workflow_dispatch:
 
 jobs:
@@ -12,10 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: gradle/wrapper-validation-action@v1
-      - name: set up JDK 17
+      - name: set up JDK 21
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 21
       - uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
@@ -24,9 +22,9 @@ jobs:
       - name: Release build
         run: ./gradlew :build
       - name: Publish to MavenCentral
-        run: ./gradlew publishAllPublicationsToMavenRepository
+        run: ./gradlew publishAllPublicationsToMavenCentralRepository
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PRIVATE_PASSWORD: ${{ secrets.GPG_PRIVATE_PASSWORD }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}

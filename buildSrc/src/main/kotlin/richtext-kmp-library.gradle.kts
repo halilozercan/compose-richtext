@@ -26,16 +26,11 @@ signing {
   }
 }
 
+// Maven Central credentials are provided via ORG_GRADLE_PROJECT_mavenCentralUsername
+// and ORG_GRADLE_PROJECT_mavenCentralPassword environment variables.
 mavenPublishing {
   publishToMavenCentral()
   signAllPublications()
-
-  val sonatypeUsername = System.getenv("SONATYPE_USERNAME")
-  val sonatypePassword = System.getenv("SONATYPE_PASSWORD")
-  if (sonatypeUsername != null && sonatypePassword != null) {
-    project.extra.set("mavenCentralUsername", sonatypeUsername)
-    project.extra.set("mavenCentralPassword", sonatypePassword)
-  }
 }
 
 kotlin {
