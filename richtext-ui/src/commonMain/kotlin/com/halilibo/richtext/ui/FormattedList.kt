@@ -175,9 +175,6 @@ private val LocalListLevel = compositionLocalOf { 0 }
 
 /**
  * Creates a formatted list such as a bullet list or numbered list.
- *
- * @sample com.halilibo.richtext.ui.previews.OrderedListPreview
- * @sample com.halilibo.richtext.ui.previews.UnorderedListPreview
  */
 // inline is required for https://github.com/halilozercan/compose-richtext/issues/7
 @Suppress("NOTHING_TO_INLINE")
@@ -188,9 +185,6 @@ private val LocalListLevel = compositionLocalOf { 0 }
 
 /**
  * Creates a formatted list such as a bullet list or numbered list.
- *
- * @sample com.halilibo.richtext.ui.previews.OrderedListPreview
- * @sample com.halilibo.richtext.ui.previews.UnorderedListPreview
  */
 @Composable public fun <T> RichTextScope.FormattedList(
   listType: ListType,

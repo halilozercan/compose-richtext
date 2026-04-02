@@ -31,7 +31,5 @@ nav:
   - richtext-ui.md
   - richtext-markdown.md
   - richtext-commonmark.md
-  - printing.md
-  - slideshow.md
   - 'API Reference': api/
   - Changelog: https://github.com/halilozercan/compose-richtext/releases
