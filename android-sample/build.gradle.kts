@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
   id("com.android.application")
   kotlin("android")
-  id("org.jetbrains.compose") version Compose.desktopVersion
-  id("org.jetbrains.kotlin.plugin.compose") version Kotlin.version
+  id("org.jetbrains.compose")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {

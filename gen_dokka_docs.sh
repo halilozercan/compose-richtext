@@ -11,7 +11,7 @@ mkdir $DOCS_ROOT
 # Clear out the old API docs
 [ -d docs/api ] && rm -r docs/api
 # Build the docs with dokka
-./gradlew dokkaHtmlMultiModule --stacktrace
+./gradlew dokkaGenerate --stacktrace
 
 # Create a copy of our docs at our $DOCS_ROOT
 cp -a docs/* $DOCS_ROOT

@@ -4,10 +4,13 @@ import AndroidConfiguration.targetSdk
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  id("com.android.library")
   kotlin("multiplatform")
-  id("maven-publish")
-  id("signing")
+  id("com.android.kotlin.multiplatform.library")
+  id("org.jetbrains.kotlin.plugin.compose")
+  id("org.jetbrains.compose")
+  id("com.vanniktech.maven.publish")
+  id("org.jetbrains.dokka")
+  signing
 }
 
 repositories {
@@ -15,28 +18,36 @@ repositories {
   mavenCentral()
 }
 
+signing {
+  val signingKey = System.getenv("GPG_PRIVATE_KEY")?.replace("\\n", "\n")
+  val signingPassword = System.getenv("GPG_PRIVATE_PASSWORD")
+  if (signingKey != null && signingPassword != null) {
+    useInMemoryPgpKeys(signingKey, signingPassword)
+  }
+}
+
+mavenPublishing {
+  publishToMavenCentral()
+  signAllPublications()
+
+  val sonatypeUsername = System.getenv("SONATYPE_USERNAME")
+  val sonatypePassword = System.getenv("SONATYPE_PASSWORD")
+  if (sonatypeUsername != null && sonatypePassword != null) {
+    project.extra.set("mavenCentralUsername", sonatypeUsername)
+    project.extra.set("mavenCentralPassword", sonatypePassword)
+  }
+}
+
 kotlin {
   jvm()
-  androidTarget {
-    publishLibraryVariants("release")
+  explicitApi()
+
+  android {
+    compileSdk = 36
+
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_11)
     }
   }
-  explicitApi()
 }
 
-android {
-  compileSdk = 36
-  sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-  }
-
-  defaultConfig {
-    minSdk = 21
-    targetSdk = compileSdk
-  }
-}

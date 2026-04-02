@@ -1,19 +1,11 @@
 plugins {
   id("richtext-kmp-library")
-  id("org.jetbrains.compose") version Compose.desktopVersion
-  id("org.jetbrains.kotlin.plugin.compose") version Kotlin.version
-  id("org.jetbrains.dokka")
-}
-
-repositories {
-  maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-}
-
-android {
-  namespace = "com.halilibo.richtext.markdown"
 }
 
 kotlin {
+  android {
+    namespace = "com.halilibo.richtext.markdown"
+  }
   sourceSets {
     val commonMain by getting {
       dependencies {
