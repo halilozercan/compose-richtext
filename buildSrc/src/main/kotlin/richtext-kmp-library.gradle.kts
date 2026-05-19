@@ -39,6 +39,7 @@ kotlin {
 
   android {
     compileSdk = 36
+    minSdk = AndroidConfiguration.minSdk
 
     compilerOptions {
       jvmTarget.set(JvmTarget.JVM_11)
