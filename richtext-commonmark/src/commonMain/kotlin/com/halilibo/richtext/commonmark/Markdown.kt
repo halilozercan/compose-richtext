@@ -8,6 +8,10 @@ import com.halilibo.richtext.markdown.AstBlockNodeComposer
 import com.halilibo.richtext.markdown.BasicMarkdown
 import com.halilibo.richtext.markdown.node.AstNode
 import com.halilibo.richtext.ui.RichTextScope
+import org.commonmark.ext.autolink.AutolinkExtension
+import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
+import org.commonmark.ext.gfm.tables.TablesExtension
+import org.commonmark.parser.Parser
 
 /**
  * A composable that renders Markdown content according to Commonmark specification using RichText.
@@ -43,15 +47,29 @@ public fun RichTextScope.Markdown(
 /**
  * A helper class that can convert any text content into an ASTNode tree and return its root.
  */
-public expect class CommonmarkAstNodeParser(
+public class CommonmarkAstNodeParser(
   options: CommonMarkdownParseOptions = CommonMarkdownParseOptions.Default
 ) {
 
-  /**
-   * Parse markdown content and return Abstract Syntax Tree(AST).
-   *
-   * @param text Markdown text to be parsed.
-   * @param options Options for the Commonmark Markdown parser.
-   */
-  public fun parse(text: String): AstNode
+  private val parser = Parser.builder()
+    .extensions(
+      listOfNotNull(
+        TablesExtension.create(),
+        StrikethroughExtension.create(),
+        if (options.autolink) AutolinkExtension.create() else null
+      )
+    )
+    .build()
+
+  public fun parse(text: String): AstNode {
+    val commonmarkNode = parser.parse(text)
+      ?: throw IllegalArgumentException(
+        "Could not parse the given text content into a meaningful Markdown representation!"
+      )
+
+    return convert(commonmarkNode)
+      ?: throw IllegalArgumentException(
+        "Could not convert the generated Commonmark Node into an ASTNode!"
+      )
+  }
 }

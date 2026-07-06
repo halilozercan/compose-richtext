@@ -26,5 +26,15 @@ kotlin {
     val jvmMain by getting {
       dependsOn(jvmAndroidMain)
     }
+
+    val iosMain by creating {
+      dependsOn(commonMain)
+    }
+    val iosArm64Main by getting {
+      dependsOn(iosMain)
+    }
+    val iosSimulatorArm64Main by getting {
+      dependsOn(iosMain)
+    }
   }
 }
