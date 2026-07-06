@@ -12,5 +12,6 @@ include(":richtext-ui-material3")
 include(":richtext-commonmark")
 include(":richtext-markdown")
 include(":android-sample")
+include(":ios-sample")
 include(":desktop-sample")
 rootProject.name = "compose-richtext"

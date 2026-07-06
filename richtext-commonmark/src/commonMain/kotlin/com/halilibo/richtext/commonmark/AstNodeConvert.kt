@@ -31,9 +31,7 @@ import com.halilibo.richtext.markdown.node.AstTableRow
 import com.halilibo.richtext.markdown.node.AstText
 import com.halilibo.richtext.markdown.node.AstThematicBreak
 import com.halilibo.richtext.markdown.node.AstUnorderedList
-import org.commonmark.ext.autolink.AutolinkExtension
 import org.commonmark.ext.gfm.strikethrough.Strikethrough
-import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension
 import org.commonmark.ext.gfm.tables.TableBlock
 import org.commonmark.ext.gfm.tables.TableBody
 import org.commonmark.ext.gfm.tables.TableCell
@@ -42,7 +40,6 @@ import org.commonmark.ext.gfm.tables.TableCell.Alignment.LEFT
 import org.commonmark.ext.gfm.tables.TableCell.Alignment.RIGHT
 import org.commonmark.ext.gfm.tables.TableHead
 import org.commonmark.ext.gfm.tables.TableRow
-import org.commonmark.ext.gfm.tables.TablesExtension
 import org.commonmark.node.BlockQuote
 import org.commonmark.node.BulletList
 import org.commonmark.node.Code
@@ -67,7 +64,6 @@ import org.commonmark.node.SoftLineBreak
 import org.commonmark.node.StrongEmphasis
 import org.commonmark.node.Text
 import org.commonmark.node.ThematicBreak
-import org.commonmark.parser.Parser
 
 /**
  * Holds the data for a pending conversion task in the iterative tree traversal.
@@ -85,16 +81,16 @@ private class ConvertWorkItem(
  */
 private fun convertNodeType(node: Node): AstNodeType? = when (node) {
   is BlockQuote -> AstBlockQuote
-  is BulletList -> AstUnorderedList(bulletMarker = node.bulletMarker)
+  is BulletList -> AstUnorderedList(bulletMarker = node.marker?.firstOrNull() ?: '*')
   is Code -> AstCode(literal = node.literal)
   is Document -> AstDocument
-  is Emphasis -> AstEmphasis(delimiter = node.openingDelimiter)
+  is Emphasis -> AstEmphasis(delimiter = node.openingDelimiter ?: "")
   is FencedCodeBlock -> AstFencedCodeBlock(
-    literal = node.literal,
-    fenceChar = node.fenceChar,
+    literal = node.literal ?: "",
+    fenceChar = node.fenceCharacter?.firstOrNull() ?: '`',
     fenceIndent = node.fenceIndent,
-    fenceLength = node.fenceLength,
-    info = node.info
+    fenceLength = node.openingFenceLength ?: 0,
+    info = node.info ?: ""
   )
   is HardLineBreak -> AstHardLineBreak
   is Heading -> AstHeading(
@@ -102,13 +98,13 @@ private fun convertNodeType(node: Node): AstNodeType? = when (node) {
   )
   is ThematicBreak -> AstThematicBreak
   is HtmlInline -> AstHtmlInline(
-    literal = node.literal
+    literal = node.literal ?: ""
   )
   is HtmlBlock -> AstHtmlBlock(
-    literal = node.literal
+    literal = node.literal ?: ""
   )
   is Image -> {
-    if (node.destination == null) {
+    if (node.destination.isEmpty()) {
       null
     }
     else {
@@ -119,7 +115,7 @@ private fun convertNodeType(node: Node): AstNodeType? = when (node) {
     }
   }
   is IndentedCodeBlock -> AstIndentedCodeBlock(
-    literal = node.literal
+    literal = node.literal ?: ""
   )
   is Link -> AstLink(
     title = node.title ?: "",
@@ -127,21 +123,21 @@ private fun convertNodeType(node: Node): AstNodeType? = when (node) {
   )
   is ListItem -> AstListItem
   is OrderedList -> AstOrderedList(
-    startNumber = node.startNumber,
-    delimiter = node.delimiter
+    startNumber = node.markerStartNumber ?: 1,
+    delimiter = node.markerDelimiter?.firstOrNull() ?: '.'
   )
   is Paragraph -> AstParagraph
   is SoftLineBreak -> AstSoftLineBreak
   is StrongEmphasis -> AstStrongEmphasis(
-    delimiter = node.openingDelimiter
+    delimiter = node.openingDelimiter ?: ""
   )
   is Text -> AstText(
     literal = node.literal
   )
   is LinkReferenceDefinition -> AstLinkReferenceDefinition(
     title = node.title ?: "",
-    destination = node.destination,
-    label = node.label
+    destination = node.destination ?: "",
+    label = node.label ?: ""
   )
   is TableBlock -> AstTableRoot
   is TableHead -> AstTableHeader
@@ -231,31 +227,3 @@ internal fun convert(
 
   return result
 }
-
-public actual class CommonmarkAstNodeParser actual constructor(
-  options: CommonMarkdownParseOptions
-) {
-
-  private val parser = Parser.builder()
-    .extensions(
-      listOfNotNull(
-        TablesExtension.create(),
-        StrikethroughExtension.create(),
-        if (options.autolink) AutolinkExtension.create() else null
-      )
-    )
-    .build()
-
-  public actual fun parse(text: String): AstNode {
-    val commonmarkNode = parser.parse(text)
-      ?: throw IllegalArgumentException(
-        "Could not parse the given text content into a meaningful Markdown representation!"
-      )
-
-    return convert(commonmarkNode)
-      ?: throw IllegalArgumentException(
-        "Could not convert the generated Commonmark Node into an ASTNode!"
-      )
-  }
-}
-
